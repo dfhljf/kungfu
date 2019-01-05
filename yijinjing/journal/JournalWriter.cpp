@@ -26,7 +26,7 @@
 #include "Journal.h"
 #include "PageProvider.h"
 #include "Timer.h"
-#include "longfist/sys_messages.h"
+//#include "longfist/sys_messages.h"
 #include <mutex> // used by JournalSafeWriter
 
 USING_YJJ_NAMESPACE
@@ -47,7 +47,7 @@ short JournalWriter::getPageNum() const
 
 long JournalWriter::writeStr(const string& str)
 {
-    return write_frame(str.c_str(), str.length() + 1, 0, MSG_TYPE_PYTHON_OBJ, 1, -1);
+    return write_frame(str.c_str(), str.length() + 1, 0, 0, 1, -1);
 }
 
 long JournalWriter::writePyData(uintptr_t data, FH_TYPE_LENGTH length, FH_TYPE_SOURCE source,

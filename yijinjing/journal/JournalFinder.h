@@ -26,7 +26,7 @@
 #include "YJJ_DECLARE.h"
 
 #include "StrategyUtil.h"
-#include "longfist/LFUtils.h"
+//#include "longfist/LFUtils.h"
 
 #include <string>
 #include <boost/regex.hpp>
@@ -39,8 +39,8 @@ YJJ_NAMESPACE_START
 class JournalFinder {
 private:
     void addJournalInfo(std::string name, std::string folder);
-    void loadJournalInfo(short source, JournalPair (*getJournalPair)(short));
-    void loadJournalInfo(short source);
+    //void loadJournalInfo(short source, JournalPair (*getJournalPair)(short));
+    //void loadJournalInfo(short source);
 protected:
     vector<std::string> all_journal_names;
     vector<std::string> avaliable_journal_names;

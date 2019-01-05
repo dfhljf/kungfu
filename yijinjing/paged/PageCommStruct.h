@@ -23,7 +23,7 @@
 #define YIJINJING_PAGECOMMSTRUCT_H
 
 #include "constants.h"
-#include "longfist/sys_messages.h"
+//#include "longfist/sys_messages.h"
 #include <string.h>
 
 YJJ_NAMESPACE_START

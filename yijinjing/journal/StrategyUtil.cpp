@@ -24,7 +24,7 @@
 #include "StrategySocketHandler.h"
 #include "TypeConvert.hpp"
 #include "PageCommStruct.h"
-#include "longfist/sys_messages.h"
+#include "SysMessages.h"
 
 USING_YJJ_NAMESPACE
 

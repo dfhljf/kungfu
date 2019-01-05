@@ -24,7 +24,7 @@
 
 #include "YJJ_DECLARE.h"
 #include "json.hpp"
-#include "longfist/LFDataStruct.h"
+//#include "longfist/LFDataStruct.h"
 #include <algorithm>
 
 using json = nlohmann::json;

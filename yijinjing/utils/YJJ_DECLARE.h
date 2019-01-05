@@ -31,7 +31,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 #include <pybind11/pybind11.h>
-PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
+PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
 #include <pybind11/stl.h>
 #include <string>
 #include <vector>
@@ -56,7 +56,7 @@ typedef std::pair<int, int> IntPair;
 #define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER "system/" /**< paged system journal folder */
 #define PAGED_JOURNAL_NAME "SYSTEM"                     /**< paged system journal name */
 
-#define DECLARE_PTR(X) typedef boost::shared_ptr<X> X##Ptr; /**< define smart ptr */
+#define DECLARE_PTR(X) typedef std::shared_ptr<X> X##Ptr; /**< define smart ptr */
 #define FORWARD_DECLARE_PTR(X) class X; DECLARE_PTR(X)      /**< forward defile smart ptr */
 #define YJJ_NAMESPACE_START namespace kungfu { namespace yijinjing { /**< start of yjj namespace */
 #define YJJ_NAMESPACE_END }};                               /**< end of yjj namespace */

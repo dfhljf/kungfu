@@ -23,14 +23,14 @@
 #include "Hash.hpp"
 #include "PageUtil.h"
 #include "json.hpp"
-
+#include "SysMessages.h"
 #include <sstream>
 #include <mutex>
 #include <signal.h>
 
 USING_YJJ_NAMESPACE
 
-namespace py = pybind11;
+//namespace py = pybind11;
 using json = nlohmann::json;
 
 std::mutex paged_mtx;
@@ -646,7 +646,6 @@ string getJournalName()
     return PAGED_JOURNAL_NAME;
 }
 
-namespace py = pybind11;
 PYBIND11_MODULE(libpaged, m)
 {
     py::class_<PageEngine, boost::shared_ptr<PageEngine> >(m, "PageEngine")

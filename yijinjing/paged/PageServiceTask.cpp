@@ -25,6 +25,7 @@
 #include "PageEngine.h"
 #include "PageUtil.h"
 #include "Timer.h"
+#include "SysMessages.h"
 #ifdef ENABLE_ACTIVATION_CODE
 #include "ActivationCode.hpp"
 #endif

@@ -17,14 +17,15 @@ PROJECT(yijinjing)
 
 ############################################################
 
-INCLUDE_DIRECTORIES(../longfist)
-
-INCLUDE_DIRECTORIES(journal)
-INCLUDE_DIRECTORIES(log)
-INCLUDE_DIRECTORIES(paged)
-INCLUDE_DIRECTORIES(utils)
+#INCLUDE_DIRECTORIES(../longfist)
+#SET(YJJ_DIR "external/kungfu/yijinjing")
+#
+#INCLUDE_DIRECTORIES(${YJJ_DIR}/journal)
+#INCLUDE_DIRECTORIES(${YJJ_DIR}/log)
+#INCLUDE_DIRECTORIES(${YJJ_DIR}/paged)
+#INCLUDE_DIRECTORIES(${YJJ_DIR}/utils)
 
 ADD_SUBDIRECTORY(log)
 ADD_SUBDIRECTORY(journal)
 ADD_SUBDIRECTORY(paged)
-ADD_SUBDIRECTORY(tools)
+#ADD_SUBDIRECTORY(tools)

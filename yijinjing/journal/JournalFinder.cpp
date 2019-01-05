@@ -28,9 +28,9 @@
 
 USING_YJJ_NAMESPACE
 
-JournalPair getSystemJournalPair(short source) {
-    return {PAGED_JOURNAL_FOLDER, PAGED_JOURNAL_NAME};
-}
+//JournalPair getSystemJournalPair(short source) {
+//    return {PAGED_JOURNAL_FOLDER, PAGED_JOURNAL_NAME};
+//}
 
 void JournalFinder::addJournalInfo(std::string name, std::string folder) {
     all_journal[name] = folder;
@@ -43,34 +43,34 @@ void JournalFinder::addJournalInfo(std::string name, std::string folder) {
     }
 }
 
-void JournalFinder::loadJournalInfo(short source, JournalPair (*getJournalPair)(short)) {
-    JournalPair pair = getJournalPair(source);
-    if (pair.first.length() > 0) {
-        all_journal[pair.second] = pair.first;
-        all_journal_names.push_back(pair.second);
+//void JournalFinder::loadJournalInfo(short source, JournalPair (*getJournalPair)(short)) {
+//    JournalPair pair = getJournalPair(source);
+//    if (pair.first.length() > 0) {
+//        all_journal[pair.second] = pair.first;
+//        all_journal_names.push_back(pair.second);
+//
+//        vector<short> pageNums = PageUtil::GetPageNums(pair.first, pair.second);
+//        if (!pageNums.empty()) {
+//            avaliable_journal_names.push_back(pair.second);
+//            avaliable_journal_folders.push_back(pair.first);
+//        }
+//    }
+//}
 
-        vector<short> pageNums = PageUtil::GetPageNums(pair.first, pair.second);
-        if (!pageNums.empty()) {
-            avaliable_journal_names.push_back(pair.second);
-            avaliable_journal_folders.push_back(pair.first);
-        }
-    }
-}
-
-void JournalFinder::loadJournalInfo(short source) {
-    loadJournalInfo(source, getMdJournalPair);
-    loadJournalInfo(source, getMdRawJournalPair);
-    loadJournalInfo(source, getTdJournalPair);
-    loadJournalInfo(source, getTdRawJournalPair);
-    loadJournalInfo(source, getTdSendJournalPair);
-    loadJournalInfo(source, getTdQJournalPair);
-}
+//void JournalFinder::loadJournalInfo(short source) {
+//    loadJournalInfo(source, getMdJournalPair);
+//    loadJournalInfo(source, getMdRawJournalPair);
+//    loadJournalInfo(source, getTdJournalPair);
+//    loadJournalInfo(source, getTdRawJournalPair);
+//    loadJournalInfo(source, getTdSendJournalPair);
+//    loadJournalInfo(source, getTdQJournalPair);
+//}
 
 JournalFinder::JournalFinder() {
-    loadJournalInfo(SOURCE_CTP);
-    loadJournalInfo(SOURCE_XTP);
-
-    loadJournalInfo(0, getSystemJournalPair);
+//    loadJournalInfo(SOURCE_CTP);
+//    loadJournalInfo(SOURCE_XTP);
+//
+//    loadJournalInfo(0, getSystemJournalPair);
 
     boost::filesystem::path bl_journal_folder(BL_BASE_FOLDER);
     boost::regex pattern(JOURNAL_NAME_PATTERN);

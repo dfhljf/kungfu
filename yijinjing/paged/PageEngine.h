@@ -115,7 +115,7 @@ public:
     /** return true if msg is written in system journal */
     bool switch_trading_day();
     /** get status in python dictionary */
-    pybind11::dict  getStatus() const;
+    py::dict  getStatus() const;
 
 public:
     // functions required by IPageSocketUtil
