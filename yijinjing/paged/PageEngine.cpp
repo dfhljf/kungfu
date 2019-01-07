@@ -648,7 +648,7 @@ string getJournalName()
 
 PYBIND11_MODULE(libpaged, m)
 {
-    py::class_<PageEngine, boost::shared_ptr<PageEngine> >(m, "PageEngine")
+    py::class_<PageEngine, PageEnginePtr >(m, "PageEngine")
     .def(py::init<>())
     .def("start", &PageEngine::start)
     .def("stop", &PageEngine::stop)
@@ -660,10 +660,10 @@ PYBIND11_MODULE(libpaged, m)
     .def("switch_trading_day", &PageEngine::switch_trading_day);
 
     // TODO boost::noncopyable ??
-    py::class_<PstBase, boost::shared_ptr<PstBase>>(m, "PstBase");
-    py::class_<PstTimeTick, PstBase, boost::shared_ptr<PstTimeTick> >(m, "TimeTick").def(py::init<PageEngine* >());
-    py::class_<PstTempPage, PstBase, boost::shared_ptr<PstTempPage> >(m, "TempPage").def(py::init<PageEngine* >());
-    py::class_<PstKfController, PstBase, boost::shared_ptr<PstKfController> >(m, "Controller").def(py::init<PageEngine* >())
+    py::class_<PstBase, PstBasePtr>(m, "PstBase");
+    py::class_<PstTimeTick, PstBase, PstTimeTickPtr >(m, "TimeTick").def(py::init<PageEngine* >());
+    py::class_<PstTempPage, PstBase, PstTempPagePtr >(m, "TempPage").def(py::init<PageEngine* >());
+    py::class_<PstKfController, PstBase, PstKfControllerPtr >(m, "Controller").def(py::init<PageEngine* >())
     .def("set_switch_day_time", &PstKfController::setDaySwitch)
     .def("add_engine_start_time", &PstKfController::addEngineStart)
     .def("add_engine_end_time", &PstKfController::addEngineEnd);

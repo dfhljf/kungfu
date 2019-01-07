@@ -99,7 +99,7 @@ PYBIND11_MODULE(libjournal, m)
 //    m.def("createPosHandler0", &createEmptyPosHandler, py::arg("source"));
 
     // JournalReader
-    py::class_<JournalReader, boost::shared_ptr<JournalReader> >(m, "Reader")
+    py::class_<JournalReader, JournalReaderPtr >(m, "Reader")
     .def("addJ", &JournalReader::addJournal, py::arg("folder"), py::arg("jname"))
     .def("expireJ", &JournalReader::expireJournalByName, py::arg("jname"))
     .def("restartJ", &JournalReader::seekTimeJournalByName, py::arg("jname"), py::arg("nano"))
@@ -107,13 +107,13 @@ PYBIND11_MODULE(libjournal, m)
     .def("name", &JournalReader::getFrameName);
 
     // JournalWriter
-    py::class_<JournalWriter, boost::shared_ptr<JournalWriter> >(m, "Writer")
+    py::class_<JournalWriter, JournalWriterPtr >(m, "Writer")
     .def("write_str", &JournalWriter::writeStr)
     .def("get_page_num", &JournalWriter::getPageNum)
     .def("write", &JournalWriter::writePyData);
 
     // StrategyUtil
-    py::class_<StrategyUtil, boost::shared_ptr<StrategyUtil> >(m, "StrategyUtil")
+    py::class_<StrategyUtil, StrategyUtilPtr >(m, "StrategyUtil")
     .def("rids", &StrategyUtil::getPyRids)
     .def("subscribe", &StrategyUtil::pySubscribe)
     .def("login_trade", &StrategyUtil::td_connect)
@@ -121,7 +121,7 @@ PYBIND11_MODULE(libjournal, m)
     .def("write", &StrategyUtil::writePyData);
 
     // Frame
-    py::class_<Frame, boost::shared_ptr<Frame> >(m, "Frame")
+    py::class_<Frame, FramePtr >(m, "Frame")
     .def("status", &Frame::getStatus)
     .def("nano", &Frame::getNano)
     .def("extra_nano", &Frame::getExtraNano)

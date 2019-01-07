@@ -36,9 +36,9 @@
 YJJ_NAMESPACE_START
 
 FORWARD_DECLARE_PTR(PstBase);
-typedef boost::shared_ptr<std::thread> ThreadPtr;
+typedef std::shared_ptr<std::thread> ThreadPtr;
 namespace py = pybind11;
-
+FORWARD_DECLARE_PTR(PageEngine);
 /** we call each journal handler (writer or reader)
  *      -- a client for page engine.
  *  we call each "journal" linked by client
