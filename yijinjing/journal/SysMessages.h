@@ -17,8 +17,8 @@
 // Created by cjiang on 17/5/24.
 //
 
-#ifndef LONGFIST_SYS_MESSAGES_H_H
-#define LONGFIST_SYS_MESSAGES_H_H
+#ifndef SYS_MESSAGES_H_H
+#define SYS_MESSAGES_H_H
 
 /* system message types  0 ~ 99 */
 // 0 - 9 for test
@@ -39,6 +39,8 @@ const short MSG_TYPE_MD_ENGINE_OPEN = 32;
 const short MSG_TYPE_MD_ENGINE_CLOSE = 33;
 const short MSG_TYPE_SWITCH_TRADING_DAY = 34;
 const short MSG_TYPE_STRING_COMMAND = 35;
+const short MSG_TYPE_START_DAY=36;
+const short MSG_TYPE_END_DAY=37;
 // 50 - 89 utilities
 const short MSG_TYPE_TIME_TICK = 50;
 const short MSG_TYPE_SUBSCRIBE_MARKET_DATA = 51;

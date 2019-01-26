@@ -86,40 +86,52 @@ void PstTempPage::go()
 
 PstKfController::PstKfController(PageEngine *pe): engine(pe) {}
 
-long getFirstNano(string& formatTime)
-{
-    long cur_nano = getNanoTime();
-    struct tm time_part;
-    strptime(formatTime.c_str(), "%H:%M:%S", &time_part);
-    struct tm current_part = parseNano(cur_nano);
-    current_part.tm_hour = time_part.tm_hour;
-    current_part.tm_min = time_part.tm_min;
-    current_part.tm_sec = time_part.tm_sec;
-    long res = parseTm(current_part);
-    while (res < cur_nano)
-        res += NANOSECONDS_PER_DAY;
-    return res;
-}
+//long getFirstNano(string& formatTime)
+//{
+//    long cur_nano = getNanoTime();
+//    struct tm time_part;
+//    strptime(formatTime.c_str(), "%H:%M:%S", &time_part);
+//    struct tm current_part = parseNano(cur_nano);
+//    current_part.tm_hour = time_part.tm_hour;
+//    current_part.tm_min = time_part.tm_min;
+//    current_part.tm_sec = time_part.tm_sec;
+//    long res = parseTm(current_part);
+//    while (res < cur_nano)
+//        res += NANOSECONDS_PER_DAY;
+//    return res;
+//}
 
-void PstKfController::setDaySwitch(string formatTime)
+void PstKfController::setDaySwitch(long time)
 {
-    long cur_nano = getFirstNano(formatTime);
-    engine->set_last_switch_nano(cur_nano - NANOSECONDS_PER_DAY);
-    next_nanos.push_back(cur_nano);
+    //long cur_nano = getFirstNano(formatTime);
+    engine->set_last_switch_nano(time);
+    next_nanos.push_back(time);
     nano_types.push_back(CONTROLLER_SWITCH_DAY);
 }
 
-void PstKfController::addEngineStart(string formatTime)
+void PstKfController::setStartDay(long time)
 {
-    long cur_nano = getFirstNano(formatTime);
-    next_nanos.push_back(cur_nano);
+    next_nanos.push_back(time);
+    nano_types.push_back(CONTROLLER_START_DAY);
+}
+
+void PstKfController::setEndDay(long time)
+{
+    next_nanos.push_back(time);
+    nano_types.push_back(CONTROLLER_END_DAY);
+}
+
+void PstKfController::addEngineStart(long time)
+{
+    //long cur_nano = getFirstNano(formatTime);
+    next_nanos.push_back(time);
     nano_types.push_back(CONTROLLER_ENGINE_STARTS);
 }
 
-void PstKfController::addEngineEnd(string formatTime)
+void PstKfController::addEngineEnd(long time)
 {
-    long cur_nano = getFirstNano(formatTime);
-    next_nanos.push_back(cur_nano);
+    //long cur_nano = getFirstNano(formatTime);
+    next_nanos.push_back(time);
     nano_types.push_back(CONTROLLER_ENGINE_ENDS);
 }
 
@@ -145,6 +157,12 @@ void PstKfController::go()
                 case CONTROLLER_ENGINE_ENDS:
                     engine->write("", MSG_TYPE_MD_ENGINE_CLOSE);
                     engine->write("", MSG_TYPE_TRADE_ENGINE_CLOSE);
+                    break;
+                case CONTROLLER_START_DAY:
+                    engine->write("", MSG_TYPE_START_DAY);
+                    break;
+                case CONTROLLER_END_DAY:
+                    engine->write("",MSG_TYPE_END_DAY);
                     break;
             }
             l += NANOSECONDS_PER_DAY;
