@@ -62,10 +62,10 @@ KfLogPtr KfLog::getLogger(string name)
     return KfLogPtr(new KfLog(name));
 }
 
-KfLogPtr KfLog::getStrategyLogger(string name, string log_file_name)
-{
-    return KfLogPtr(new KfLogStrategy(name, log_file_name));
-}
+//KfLogPtr KfLog::getStrategyLogger(string name, string log_file_name)
+//{
+//    return KfLogPtr(new KfLogStrategy(name, log_file_name));
+//}
 
 KfLog::KfLog(string name)
 {
@@ -77,28 +77,28 @@ string KfLog::getConfigFolder()
 {
     return LOG_CONFIGURATION_FOLDER;
 }
-
-KfLogStrategy::KfLogStrategy(string name, string log_file_name)
-{
-    if (configured)
-        throw std::runtime_error("KfLogStrategy error: duplicate configuration!");
-    std::stringstream ss;
-    ss << STRATEGY_LOG_FOLDER << log_file_name;
-    if (log_file_name.find('.') == string::npos)
-        ss << ".log";
-    string pattern;
-    std::ifstream fin(LOG_CONFIGURATION_STRATEGY_PATTERN_FILE);
-    std::getline(fin, pattern);
-    // file appender
-    SharedAppenderPtr fileAppender(new RollingFileAppender(ss.str(), STRATEGY_LOG_MAX_FILE_SIZE, STRATEGY_LOG_MAX_BACKUP_INDEX));
-    fileAppender->setLayout(std::auto_ptr<Layout>(new PatternLayout(pattern)));
-    Logger::getRoot().addAppender(fileAppender);
-    // console appender
-    SharedAppenderPtr consoleAppender(new ConsoleAppender());
-    consoleAppender->setLayout(std::auto_ptr<Layout>(new PatternLayout(pattern)));
-    Logger::getRoot().addAppender(consoleAppender);
-    // final
-    logger = Logger::getInstance(name);
-    logger.setLogLevel(DEBUG_LOG_LEVEL);
-    configured = true;
-}
+//static bool strategy_configured = false;
+//KfLogStrategy::KfLogStrategy(string name, string log_file_name)
+//{
+//    if (strategy_configured)
+//        throw std::runtime_error("KfLogStrategy error: duplicate configuration!");
+//    std::stringstream ss;
+//    ss << STRATEGY_LOG_FOLDER << log_file_name;
+//    if (log_file_name.find('.') == string::npos)
+//        ss << ".log";
+//    string pattern;
+//    std::ifstream fin(LOG_CONFIGURATION_STRATEGY_PATTERN_FILE);
+//    std::getline(fin, pattern);
+//    // file appender
+//    SharedAppenderPtr fileAppender(new RollingFileAppender(ss.str(), STRATEGY_LOG_MAX_FILE_SIZE, STRATEGY_LOG_MAX_BACKUP_INDEX));
+//    fileAppender->setLayout(std::auto_ptr<Layout>(new PatternLayout(pattern)));
+//    Logger::getRoot().addAppender(fileAppender);
+//    // console appender
+//    SharedAppenderPtr consoleAppender(new ConsoleAppender());
+//    consoleAppender->setLayout(std::auto_ptr<Layout>(new PatternLayout(pattern)));
+//    Logger::getRoot().addAppender(consoleAppender);
+//    // final
+//    logger = Logger::getInstance(name);
+//    logger.setLogLevel(DEBUG_LOG_LEVEL);
+//    strategy_configured = true;
+//}

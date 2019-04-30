@@ -18,12 +18,12 @@
 //
 
 #include "PageEngine.h"
-#include "Page.h"
-#include "Timer.h"
-#include "Hash.hpp"
-#include "PageUtil.h"
-#include "json.hpp"
-#include "SysMessages.h"
+#include "journal/Page.h"
+#include "../utils/Timer.h"
+#include "../utils/Hash.hpp"
+#include "journal/PageUtil.h"
+#include "../utils/json.hpp"
+#include "journal/SysMessages.h"
 #include <sstream>
 #include <mutex>
 #include <signal.h>
@@ -97,9 +97,9 @@ void PageEngine::start()
     memset(commBuffer, 0, COMM_SIZE);
     // step 1: start commBuffer checking thread
     comm_running = false;
-    commThread = ThreadPtr(new std::thread(boost::bind(&PageEngine::start_comm, this)));
+    commThread = ThreadPtr(new std::thread(std::bind(&PageEngine::start_comm, this)));
     // step 2: start socket listening
-    socketThread = ThreadPtr(new std::thread(boost::bind(&PageEngine::start_socket, this)));
+    socketThread = ThreadPtr(new std::thread(std::bind(&PageEngine::start_socket, this)));
     // make sure buffer / socket are running
     while (!(PageSocketHandler::getInstance()->is_running() && comm_running))
     {
@@ -111,7 +111,7 @@ void PageEngine::start()
     if (microsecFreq <= 0)
         throw std::runtime_error("unaccepted task time interval");
     task_running = true;
-    taskThread = ThreadPtr(new std::thread(boost::bind(&PageEngine::start_task, this)));
+    taskThread = ThreadPtr(new std::thread(std::bind(&PageEngine::start_task, this)));
     write("", MSG_TYPE_PAGED_START);
 }
 

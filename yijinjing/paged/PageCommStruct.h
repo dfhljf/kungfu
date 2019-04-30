@@ -22,7 +22,7 @@
 #ifndef YIJINJING_PAGECOMMSTRUCT_H
 #define YIJINJING_PAGECOMMSTRUCT_H
 
-#include "constants.h"
+#include "../utils/constants.h"
 //#include "longfist/sys_messages.h"
 #include <string.h>
 

@@ -23,8 +23,8 @@
 #ifndef YIJINJING_PAGEHEADER_H
 #define YIJINJING_PAGEHEADER_H
 
-#include "YJJ_DECLARE.h"
-#include "constants.h"
+#include "../utils/YJJ_DECLARE.h"
+#include "../utils/constants.h"
 
 YJJ_NAMESPACE_START
 

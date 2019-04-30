@@ -28,7 +28,7 @@
 #ifndef YIJINJING_FRAMEHEADER_H
 #define YIJINJING_FRAMEHEADER_H
 
-#include "constants.h"
+#include "../utils/constants.h"
 
 YJJ_NAMESPACE_START
 

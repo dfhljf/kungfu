@@ -23,9 +23,9 @@
 
 #include "PageServiceTask.h"
 #include "PageEngine.h"
-#include "PageUtil.h"
-#include "Timer.h"
-#include "SysMessages.h"
+#include "journal/PageUtil.h"
+#include "../utils/Timer.h"
+#include "journal/SysMessages.h"
 #ifdef ENABLE_ACTIVATION_CODE
 #include "ActivationCode.hpp"
 #endif

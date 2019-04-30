@@ -23,7 +23,7 @@
 #ifndef YIJINJING_PAGEUTIL_H
 #define YIJINJING_PAGEUTIL_H
 
-#include "YJJ_DECLARE.h"
+#include "../utils/YJJ_DECLARE.h"
 
 YJJ_NAMESPACE_START
 

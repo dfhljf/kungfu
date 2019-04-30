@@ -23,7 +23,7 @@
 #include "JournalHandler.h"
 #include "PageProvider.h"
 #include "Journal.h"
-#include "Timer.h"
+#include "../utils/Timer.h"
 #include <sstream>
 
 USING_YJJ_NAMESPACE

@@ -22,22 +22,22 @@
 
 #include "Timer.h"
 #include "json.hpp"
-#include "PageSocketStruct.h"
+#include "paged/PageSocketStruct.h"
 #include <chrono>
 #include <boost/asio.hpp>
-#include <boost/array.hpp>
+//#include <boost/array.hpp>
 
 USING_YJJ_NAMESPACE
 
 using json = nlohmann::json;
 
-boost::shared_ptr<NanoTimer> NanoTimer::m_ptr = boost::shared_ptr<NanoTimer>(nullptr);
+std::shared_ptr<NanoTimer> NanoTimer::m_ptr = std::shared_ptr<NanoTimer>(nullptr);
 
 NanoTimer* NanoTimer::getInstance()
 {
     if (m_ptr.get() == nullptr)
     {
-        m_ptr = boost::shared_ptr<NanoTimer>(new NanoTimer());
+        m_ptr = std::shared_ptr<NanoTimer>(new NanoTimer());
     }
     return m_ptr.get();
 }
@@ -56,7 +56,7 @@ inline std::chrono::steady_clock::time_point get_time_now()
 inline long get_socket_diff()
 {
     using namespace boost::asio;
-    boost::array<char, SOCKET_MESSAGE_MAX_LENGTH> input, output;
+    std::array<char, SOCKET_MESSAGE_MAX_LENGTH> input, output;
     io_service io_service;
     local::stream_protocol::socket socket(io_service);
     socket.connect(local::stream_protocol::endpoint(PAGED_SOCKET_FILE));
@@ -79,14 +79,14 @@ inline long get_local_diff()
 
 NanoTimer::NanoTimer()
 {
-    try
-    {
-        secDiff = get_socket_diff();
-    }
-    catch(...)
-    {
+//    try
+//    {
+//        secDiff = get_socket_diff();
+//    }
+//    catch(...)
+//    {
         secDiff = get_local_diff();
-    }
+    //}
 }
 
 long NanoTimer::getNano() const

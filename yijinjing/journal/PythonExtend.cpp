@@ -24,9 +24,9 @@
 #include "JournalWriter.h"
 #include "StrategyUtil.h"
 #include "Frame.hpp"
-#include "Timer.h"
+#include "../utils/Timer.h"
 //#include "PosHandler.hpp"
-#include "TypeConvert.hpp"
+#include "../utils/TypeConvert.hpp"
 
 namespace py = pybind11;
 

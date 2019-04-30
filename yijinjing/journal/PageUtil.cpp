@@ -64,8 +64,11 @@ vector<short> PageUtil::GetPageNums(const string& dir, const string& jname)
     boost::filesystem::path p(dir);
     boost::regex pattern(namePattern);
     vector<short> res;
-    for (auto &file : boost::filesystem::directory_iterator(p)) {
-        string filename = file.path().filename().string();
+    boost::filesystem::directory_iterator end_iter;
+    //for (auto &file : boost::filesystem::directory_iterator(p)) {
+    for(boost::filesystem::directory_iterator iter(p);iter!=end_iter;++iter)
+    {
+        string filename = iter->path().filename().string();
         if (boost::regex_match(filename.begin(), filename.end(), pattern))
             res.push_back(PageUtil::ExtractPageNum(filename, jname));
     }

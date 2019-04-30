@@ -23,7 +23,7 @@
 #ifndef YIJINJING_JOURNALFINDER_H
 #define YIJINJING_JOURNALFINDER_H
 
-#include "YJJ_DECLARE.h"
+#include "../utils/YJJ_DECLARE.h"
 
 #include "StrategyUtil.h"
 //#include "longfist/LFUtils.h"

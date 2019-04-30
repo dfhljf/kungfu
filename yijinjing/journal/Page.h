@@ -23,8 +23,8 @@
 #ifndef YIJINJING_PAGE_H
 #define YIJINJING_PAGE_H
 
-#include "YJJ_DECLARE.h"
-#include "constants.h"
+#include "../utils/YJJ_DECLARE.h"
+#include "../utils/constants.h"
 #include "FrameHeader.h"
 #include "Frame.hpp"
 

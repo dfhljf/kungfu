@@ -21,18 +21,18 @@
  */
 
 #include "PageProvider.h"
-#include "PageCommStruct.h"
-#include "PageSocketStruct.h"
+#include "paged/PageCommStruct.h"
+#include "paged/PageSocketStruct.h"
 #include "PageUtil.h"
 #include "Page.h"
 #include "StrategySocketHandler.h"
 
 #include <boost/asio.hpp>
-#include <boost/array.hpp>
+//#include <boost/array.hpp>
 
 USING_YJJ_NAMESPACE
 
-typedef boost::array<char, SOCKET_MESSAGE_MAX_LENGTH> SocketMArray;
+typedef std::array<char, SOCKET_MESSAGE_MAX_LENGTH> SocketMArray;
 
 /** get socket response via paged_socket */
 void getSocketRsp(SocketMArray &input, SocketMArray &output)

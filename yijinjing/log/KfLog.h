@@ -20,7 +20,7 @@
 #ifndef PROJECT_KFLOG_H
 #define PROJECT_KFLOG_H
 
-#include "YJJ_DECLARE.h"
+#include "../utils/YJJ_DECLARE.h"
 #include <log4cplus/logger.h>
 #include <log4cplus/loggingmacros.h>
 
@@ -72,14 +72,14 @@ public:
 
     static KfLogPtr getLogger(string name);
 
-    static KfLogPtr getStrategyLogger(string name, string log_file_name);
+    //static KfLogPtr getStrategyLogger(string name, string log_file_name);
 };
 
-class KfLogStrategy: public KfLog
-{
-public:
-    KfLogStrategy(string name, string log_file_name);
-};
+//class KfLogStrategy: public KfLog
+//{
+//public:
+//    KfLogStrategy(string name, string log_file_name);
+//};
 
 YJJ_NAMESPACE_END
 

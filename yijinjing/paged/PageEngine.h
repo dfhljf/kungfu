@@ -25,10 +25,10 @@
 #define YIJINJING_PAGEENGINE_H
 
 #include "PageCommStruct.h"
-#include "KfLog.h"
+#include "log/KfLog.h"
 #include "PageSocketHandler.h"
 #include "PageServiceTask.h"
-#include "JournalWriter.h"
+#include "journal/JournalWriter.h"
 
 #include <utility>
 #include <thread>

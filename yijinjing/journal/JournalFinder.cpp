@@ -76,8 +76,12 @@ JournalFinder::JournalFinder() {
     boost::regex pattern(JOURNAL_NAME_PATTERN);
     vector<short> res;
     boost::unordered_set<string> strategy_names;
-    for (auto &file : boost::filesystem::directory_iterator(bl_journal_folder)) {
-        std::string filename = file.path().filename().string();
+    //for (auto &file : boost::filesystem::directory_iterator(bl_journal_folder)) {
+        boost::filesystem::directory_iterator end_iter;
+    
+    for(boost::filesystem::directory_iterator iter(bl_journal_folder);iter!=end_iter;++iter)
+    {
+        std::string filename = iter->path().filename().string();
         boost::smatch result;
         if (boost::regex_match(filename, result, pattern)) {
             std::string journal_name(result[1].first, result[1].second);

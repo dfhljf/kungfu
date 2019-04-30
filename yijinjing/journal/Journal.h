@@ -24,7 +24,7 @@
 #ifndef YIJINJING_JOURNAL_H
 #define YIJINJING_JOURNAL_H
 
-#include "YJJ_DECLARE.h"
+#include "../utils/YJJ_DECLARE.h"
 #include "Page.h"
 
 YJJ_NAMESPACE_START

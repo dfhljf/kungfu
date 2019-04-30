@@ -22,8 +22,8 @@
 
 #include "StrategyUtil.h"
 #include "StrategySocketHandler.h"
-#include "TypeConvert.hpp"
-#include "PageCommStruct.h"
+#include "../utils/TypeConvert.hpp"
+#include "paged/PageCommStruct.h"
 #include "SysMessages.h"
 
 USING_YJJ_NAMESPACE

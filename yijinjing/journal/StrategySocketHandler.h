@@ -26,7 +26,7 @@
 #ifndef PROJECT_STRATEGYSOCKETHANDLER_H
 #define PROJECT_STRATEGYSOCKETHANDLER_H
 
-#include "YJJ_DECLARE.h"
+#include "../utils/YJJ_DECLARE.h"
 #include "PageProvider.h"
 #include "IStrategyUtil.h"
 
