@@ -24,7 +24,7 @@
 
 #include "../utils/constants.h"
 
-#define PAGED_SOCKET_FILE KUNGFU_SOCKET_FOLDER "paged.sock"
+#define PAGED_SOCKET_FILE KUNGFU_SOCKET_FOLDER+"paged.sock"
 
 YJJ_NAMESPACE_START
 

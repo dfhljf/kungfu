@@ -37,6 +37,7 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include "config/StrategyManager.h"
 
 using std::string; /**< default using string */
 using std::vector; /**< default using vector */
@@ -49,11 +50,11 @@ typedef unsigned char byte;
 typedef unsigned int uint;
 typedef std::pair<int, int> IntPair;
 
-#define KUNGFU_FOLDER "/shared/kungfu/"                 /**< base folder of kungfu system */
-#define KUNGFU_JOURNAL_FOLDER KUNGFU_FOLDER "journal/"  /**< where we put journal files */
-#define KUNGFU_SOCKET_FOLDER KUNGFU_FOLDER "socket/"    /**< where we put socket files */
-#define KUNGFU_LOG_FOLDER KUNGFU_FOLDER "log/"          /**< where we put log files */
-#define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER "system/" /**< paged system journal folder */
+#define KUNGFU_FOLDER config::StrategyManager::instance().getBaseFolder()                /**< base folder of kungfu system */
+#define KUNGFU_JOURNAL_FOLDER config::StrategyManager::instance().getJournalFolder()//KUNGFU_FOLDER "journal/"  /**< where we put journal files */
+#define KUNGFU_SOCKET_FOLDER KUNGFU_FOLDER+"socket/"    /**< where we put socket files */
+#define KUNGFU_LOG_FOLDER KUNGFU_FOLDER+"log/"          /**< where we put log files */
+#define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER+"system/" /**< paged system journal folder */
 #define PAGED_JOURNAL_NAME "SYSTEM"                     /**< paged system journal name */
 
 #define DECLARE_PTR(X) typedef std::shared_ptr<X> X##Ptr; /**< define smart ptr */

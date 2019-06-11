@@ -24,6 +24,7 @@
 #include "PageProvider.h"
 #include "Journal.h"
 #include "../utils/Timer.h"
+#include "utils/OS.h"
 #include <sstream>
 
 USING_YJJ_NAMESPACE
@@ -42,9 +43,15 @@ size_t JournalHandler::addJournal(const string& _dir, const string& jname)
     // directory should not contain '/' in the back
     string dir;
     if (_dir.back() == '/')
+    {
+        utils::OS::makedirs(_dir);
         dir = _dir.substr(0, _dir.length() - 1);
+    }
     else
+    {
+        utils::OS::makedirs(_dir+"/");
         dir = _dir;
+    }
     // register this journal
     int service_idx = page_provider->register_journal(dir, jname);
     journals.push_back(Journal::create(dir, jname, service_idx, page_provider));

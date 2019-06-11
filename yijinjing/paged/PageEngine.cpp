@@ -24,6 +24,7 @@
 #include "journal/PageUtil.h"
 #include "../utils/json.hpp"
 #include "journal/SysMessages.h"
+#include "utils/OS.h"
 #include <sstream>
 #include <mutex>
 #include <signal.h>
@@ -35,7 +36,7 @@ using json = nlohmann::json;
 
 std::mutex paged_mtx;
 
-#define COMM_FILE KUNGFU_JOURNAL_FOLDER "PAGE_ENGINE_COMM"
+#define COMM_FILE "PAGE_ENGINE_COMM"
 const string commFileName = COMM_FILE;
 const int INTERVAL_IN_MILLISEC = 1000000;
 
@@ -65,7 +66,7 @@ void PageEngine::release_mutex() const
     paged_mtx.unlock();
 }
 
-PageEngine::PageEngine(): commBuffer(nullptr), commFile(commFileName), maxIdx(0),
+PageEngine::PageEngine(): commBuffer(nullptr), commFile(KUNGFU_JOURNAL_FOLDER+commFileName), maxIdx(0),
                           microsecFreq(INTERVAL_IN_MILLISEC),
                           task_running(false), last_switch_nano(0), comm_running(false)
 {
@@ -90,9 +91,11 @@ PageEngine::~PageEngine()
 void PageEngine::start()
 {
     KF_LOG_INFO(logger, "reset socket: " << PAGED_SOCKET_FILE);
-    remove(PAGED_SOCKET_FILE);
+    utils::OS::makedirs(PAGED_SOCKET_FILE);
+    remove((PAGED_SOCKET_FILE).c_str());
     // step 0: init commBuffer
     KF_LOG_INFO(logger, "loading page buffer: " << commFile);
+    utils::OS::makedirs(commFile);
     commBuffer = PageUtil::LoadPageBuffer(commFile, COMM_SIZE, true, true);
     memset(commBuffer, 0, COMM_SIZE);
     // step 1: start commBuffer checking thread

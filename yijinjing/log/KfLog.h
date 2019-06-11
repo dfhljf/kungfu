@@ -65,7 +65,7 @@ public:
         LOG4CPLUS_DEBUG(logger, content);
     }
 
-    static string getConfigFolder();
+    //static string getConfigFolder();
 
     // attention: return true if really configured.
     static bool doConfigure(string configureName);

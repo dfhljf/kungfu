@@ -29,12 +29,12 @@
 #include <fstream>
 #include <unistd.h>
 
-#define LOG_CONFIGURATION_FOLDER "/opt/kungfu/master/etc/log4cplus/"
-#define LOG_CONFIGURATION_BASIC_FILENAME "default.properties"
+//#define LOG_CONFIGURATION_FOLDER config::StrategyManager::instance().getLogConfigFolder()
+//#define LOG_CONFIGURATION_BASIC_FILENAME config::StrategyManager::instance().getLogConfigFile()
 #define LOG_CONFIGURATION_STRATEGY_PATTERN_FILENAME "strategy.pattern"
-#define LOG_CONFIGURATION_BASIC_FILE LOG_CONFIGURATION_FOLDER LOG_CONFIGURATION_BASIC_FILENAME
-#define LOG_CONFIGURATION_STRATEGY_PATTERN_FILE LOG_CONFIGURATION_FOLDER LOG_CONFIGURATION_STRATEGY_PATTERN_FILENAME
-#define STRATEGY_LOG_FOLDER KUNGFU_LOG_FOLDER "strategy/"
+#define LOG_CONFIGURATION_BASIC_FILE config::StrategyManager::instance().getLogConfigFile()//LOG_CONFIGURATION_FOLDER LOG_CONFIGURATION_BASIC_FILENAME
+//#define LOG_CONFIGURATION_STRATEGY_PATTERN_FILE LOG_CONFIGURATION_FOLDER LOG_CONFIGURATION_STRATEGY_PATTERN_FILENAME
+//#define STRATEGY_LOG_FOLDER KUNGFU_LOG_FOLDER "strategy/"
 #define STRATEGY_LOG_MAX_FILE_SIZE 10 * 1024 * 1024
 #define STRATEGY_LOG_MAX_BACKUP_INDEX 10
 
@@ -47,7 +47,7 @@ bool KfLog::doConfigure(string configureName)
 {
     if (!configured)
     {
-        log4cplus::PropertyConfigurator::doConfigure(LOG4CPLUS_TEXT(configureName));
+        log4cplus::PropertyConfigurator::doConfigure(configureName);
         configured = true;
         return true;
     }
@@ -73,10 +73,10 @@ KfLog::KfLog(string name)
     logger = log4cplus::Logger::getInstance(name);
 }
 
-string KfLog::getConfigFolder()
-{
-    return LOG_CONFIGURATION_FOLDER;
-}
+//string KfLog::getConfigFolder()
+//{
+//    return LOG_CONFIGURATION_FOLDER;
+//}
 //static bool strategy_configured = false;
 //KfLogStrategy::KfLogStrategy(string name, string log_file_name)
 //{

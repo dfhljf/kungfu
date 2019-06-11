@@ -32,7 +32,7 @@
 
 USING_YJJ_NAMESPACE
 
-#define TEMP_PAGE KUNGFU_JOURNAL_FOLDER "TEMP_PAGE"
+#define TEMP_PAGE KUNGFU_JOURNAL_FOLDER+"TEMP_PAGE"
 const string PstTempPage::PageFullPath = TEMP_PAGE;
 
 PstPidCheck::PstPidCheck(PageEngine *pe): engine(pe) {}
