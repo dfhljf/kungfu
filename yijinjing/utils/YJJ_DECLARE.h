@@ -30,14 +30,15 @@
 /** we use boost shared_ptr as our smart pointer */
 //#include <boost/shared_ptr.hpp>
 //#include <boost/bind.hpp>
-#include <pybind11/pybind11.h>
-PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-#include <pybind11/stl.h>
+//#include <pybind11/pybind11.h>
+//PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>,)
+//#include <pybind11/stl.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
-#include "config/StrategyManager.h"
+#include <memory>
+#include "config/ConfigManager.h"
 
 using std::string; /**< default using string */
 using std::vector; /**< default using vector */
@@ -50,8 +51,8 @@ typedef unsigned char byte;
 typedef unsigned int uint;
 typedef std::pair<int, int> IntPair;
 
-#define KUNGFU_FOLDER config::StrategyManager::instance().getBaseFolder()                /**< base folder of kungfu system */
-#define KUNGFU_JOURNAL_FOLDER config::StrategyManager::instance().getJournalFolder()//KUNGFU_FOLDER "journal/"  /**< where we put journal files */
+#define KUNGFU_FOLDER config::ConfigManager::instance().getBaseFolder()                /**< base folder of kungfu system */
+#define KUNGFU_JOURNAL_FOLDER config::ConfigManager::instance().getJournalFolder()//KUNGFU_FOLDER "journal/"  /**< where we put journal files */
 #define KUNGFU_SOCKET_FOLDER KUNGFU_FOLDER+"socket/"    /**< where we put socket files */
 #define KUNGFU_LOG_FOLDER KUNGFU_FOLDER+"log/"          /**< where we put log files */
 #define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER+"system/" /**< paged system journal folder */
@@ -60,7 +61,7 @@ typedef std::pair<int, int> IntPair;
 #define DECLARE_PTR(X) typedef std::shared_ptr<X> X##Ptr; /**< define smart ptr */
 #define FORWARD_DECLARE_PTR(X) class X; DECLARE_PTR(X)      /**< forward defile smart ptr */
 #define YJJ_NAMESPACE_START namespace kungfu { namespace yijinjing { /**< start of yjj namespace */
-#define YJJ_NAMESPACE_END }};                               /**< end of yjj namespace */
+#define YJJ_NAMESPACE_END }}                             /**< end of yjj namespace */
 #define USING_YJJ_NAMESPACE using namespace kungfu::yijinjing;
 
 #define JOURNAL_PREFIX string("yjj")        /**< journal file prefix */

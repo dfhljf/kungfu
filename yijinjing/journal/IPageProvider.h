@@ -27,7 +27,7 @@
 
 YJJ_NAMESPACE_START
 
-FORWARD_DECLARE_PTR(Page);
+FORWARD_DECLARE_PTR(Page)
 
 /** abstract interface class */
 class IPageProvider
@@ -42,7 +42,7 @@ public:
     /** destructor */
     virtual ~IPageProvider() {};
 };
-DECLARE_PTR(IPageProvider);
+DECLARE_PTR(IPageProvider)
 
 YJJ_NAMESPACE_END
 

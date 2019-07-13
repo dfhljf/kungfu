@@ -48,7 +48,7 @@ public:
     virtual bool md_subscribe(const vector<string>& tickers, short source, short msg_type);
 };
 
-DECLARE_PTR(StrategySocketHandler);
+DECLARE_PTR(StrategySocketHandler)
 
 YJJ_NAMESPACE_END
 

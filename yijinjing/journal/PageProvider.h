@@ -48,7 +48,7 @@ public:
     virtual bool isWriter() const {return is_writer; };
 };
 
-DECLARE_PTR(PageProvider);
+DECLARE_PTR(PageProvider)
 
 /**
  * LocalPageProvider,

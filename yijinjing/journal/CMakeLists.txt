@@ -23,20 +23,31 @@ IF(USE_HASH_CODE)
     ADD_DEFINITIONS(-DFRAME_AUTO_SET_HASHCODE)
 ENDIF(USE_HASH_CODE)
 
+function( print_option OPT )
+	if ( NOT DEFINED PRINT_OPTION_CURR_${OPT} OR ( NOT PRINT_OPTION_CURR_${OPT} STREQUAL ${OPT} ) )
+		set( PRINT_OPTION_CURR_${OPT} ${${OPT}} CACHE BOOL "" )
+		mark_as_advanced(PRINT_OPTION_CURR_${OPT})
+		message( "# date: ${OPT} ${${OPT}}" )
+	endif( )
+endfunction( )
+
+print_option( USE_SERVICE )
+print_option( USE_HASH_CODE )
+
 SET(LIB_UTIL_INCLUDE_FILES ../utils/Timer.h ../utils/Hash.hpp ../utils/TypeConvert.hpp ../utils/json.hpp )#../utils/PosHandler.hpp ../utils/FeeHandler.hpp
 SET(LIB_UTIL_SOURCE_FILES ../utils/Timer.cpp)
 SET(LIB_INCLUDE_FILES ../utils/constants.h ../utils/YJJ_DECLARE.h Frame.hpp FrameHeader.h Journal.h JournalHandler.h
         JournalReader.h JournalWriter.h Page.h PageUtil.h PageHeader.h PageProvider.h IPageProvider.h
         StrategySocketHandler.h StrategyUtil.h IJournalVisitor.h IStrategyUtil.h JournalFinder.h)
 SET(LIB_SOURCE_FILES Journal.cpp JournalHandler.cpp JournalReader.cpp JournalWriter.cpp Page.cpp PageUtil.cpp
-        PythonExtend.cpp PageProvider.cpp StrategyUtil.cpp JournalFinder.cpp)
+        PageProvider.cpp StrategyUtil.cpp JournalFinder.cpp)
 
 ADD_LIBRARY(${PROJECT_NAME} ${LIB_SOURCE_FILES} ${LIB_INCLUDE_FILES} ${LIB_UTIL_SOURCE_FILES} ${LIB_UTIL_INCLUDE_FILES} )
 
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES SOVERSION 1.1 VERSION 1.1)
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES SOVERSION 1.1 VERSION 1.1)
+#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Python_LIBRARIES} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES})#${Python_LIBRARIES} 
 
 #INSTALL(FILES ${LIB_UTIL_INCLUDE_FILES} ${LIB_INCLUDE_FILES} DESTINATION "include")
 #

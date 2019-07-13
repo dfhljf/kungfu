@@ -35,8 +35,8 @@
 
 YJJ_NAMESPACE_START
 
-FORWARD_DECLARE_PTR(Journal);
-FORWARD_DECLARE_PTR(PageProvider);
+FORWARD_DECLARE_PTR(Journal)
+FORWARD_DECLARE_PTR(PageProvider)
 /*
  * JournalHandler
  */

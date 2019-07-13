@@ -35,10 +35,10 @@
 
 YJJ_NAMESPACE_START
 
-FORWARD_DECLARE_PTR(PstBase);
+FORWARD_DECLARE_PTR(PstBase)
 typedef std::shared_ptr<std::thread> ThreadPtr;
-namespace py = pybind11;
-FORWARD_DECLARE_PTR(PageEngine);
+//namespace py = pybind11;
+FORWARD_DECLARE_PTR(PageEngine)
 /** we call each journal handler (writer or reader)
  *      -- a client for page engine.
  *  we call each "journal" linked by client
@@ -115,7 +115,7 @@ public:
     /** return true if msg is written in system journal */
     bool switch_trading_day();
     /** get status in python dictionary */
-    py::dict  getStatus() const;
+ //   py::dict  getStatus() const;
 
 public:
     // functions required by IPageSocketUtil
@@ -163,14 +163,14 @@ private:
     /** initialize the page assigned in comm msg */
     byte initiate_page(const PageCommMsg& msg);
 
-    /** helper functions for getStatus */
-    py::dict  getClientInfo() const;
-    py::dict  getPidInfo() const;
-    py::dict  getUserInfo() const;
-    py::dict  getFileReaderInfo() const;
-    py::dict  getFileWriterInfo() const;
-    py::list  getLockingFiles() const;
-    py::tuple getTaskInfo() const;
+//    /** helper functions for getStatus */
+//    py::dict  getClientInfo() const;
+//    py::dict  getPidInfo() const;
+//    py::dict  getUserInfo() const;
+//    py::dict  getFileReaderInfo() const;
+//    py::dict  getFileWriterInfo() const;
+//    py::list  getLockingFiles() const;
+//    py::tuple getTaskInfo() const;
 };
 
 YJJ_NAMESPACE_END

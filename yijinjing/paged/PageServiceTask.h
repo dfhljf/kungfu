@@ -35,10 +35,10 @@ class PstBase
 public:
     virtual void go() {};
     virtual string getName() const { return "Base"; };
-    virtual pybind11::dict getInfo() const { return pybind11::dict(); }
+    //virtual pybind11::dict getInfo() const { return pybind11::dict(); }
     virtual ~PstBase() {};
 };
-DECLARE_PTR(PstBase);
+DECLARE_PTR(PstBase)
 
 class PstPidCheck: public PstBase
 {
@@ -49,7 +49,7 @@ public:
 private:
     PageEngine* engine;
 };
-DECLARE_PTR(PstPidCheck);
+DECLARE_PTR(PstPidCheck)
 
 class PstTimeTick: public PstBase
 {
@@ -60,7 +60,7 @@ public:
 private:
     PageEngine* engine;
 };
-DECLARE_PTR(PstTimeTick);
+DECLARE_PTR(PstTimeTick)
 
 class PstTempPage: public PstBase
 {
@@ -72,7 +72,7 @@ public:
 private:
     PageEngine* engine;
 };
-DECLARE_PTR(PstTempPage);
+DECLARE_PTR(PstTempPage)
 
 #define CONTROLLER_SWITCH_DAY   1
 #define CONTROLLER_ENGINE_STARTS    2
@@ -86,7 +86,7 @@ public:
     PstKfController(PageEngine* pe);
     void go();
     string getName() const { return "KfController"; }
-    pybind11::dict getInfo() const;
+    //pybind11::dict getInfo() const;
     void setDaySwitch(long time);
     void setStartDay(long time);
     void setEndDay(long time);
@@ -97,7 +97,7 @@ private:
     vector<long> next_nanos;
     vector<short> nano_types;
 };
-DECLARE_PTR(PstKfController);
+DECLARE_PTR(PstKfController)
 
 YJJ_NAMESPACE_END
 

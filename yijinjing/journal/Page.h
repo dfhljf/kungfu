@@ -30,7 +30,7 @@
 
 YJJ_NAMESPACE_START
 
-FORWARD_DECLARE_PTR(Page);
+FORWARD_DECLARE_PTR(Page)
 
 /**
  * Page class

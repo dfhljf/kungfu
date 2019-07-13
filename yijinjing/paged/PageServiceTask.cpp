@@ -26,6 +26,7 @@
 #include "journal/PageUtil.h"
 #include "../utils/Timer.h"
 #include "journal/SysMessages.h"
+#include <sys/stat.h>
 #ifdef ENABLE_ACTIVATION_CODE
 #include "ActivationCode.hpp"
 #endif
@@ -170,31 +171,31 @@ void PstKfController::go()
     }
 }
 
-pybind11::dict PstKfController::getInfo() const
-{
-    pybind11::dict res;
-    string switch_day;
-    pybind11::list engine_starts;
-    pybind11::list engine_ends;
-    for (size_t i = 0; i < next_nanos.size(); i++)
-    {
-        string time_str = parseNano(next_nanos[i], "%Y-%m-%d %H:%M:%S");
-
-        switch (nano_types[i])
-        {
-            case CONTROLLER_SWITCH_DAY:
-                switch_day = time_str;
-                break;
-            case CONTROLLER_ENGINE_STARTS:
-                engine_starts.append(time_str);
-                break;
-            case CONTROLLER_ENGINE_ENDS:
-                engine_ends.append(time_str);
-                break;
-        }
-    }
-    res["switch_day"] = switch_day;
-    res["engine_starts"] = engine_starts;
-    res["engine_ends"] = engine_ends;
-    return res;
-}
+//pybind11::dict PstKfController::getInfo() const
+//{
+//    pybind11::dict res;
+//    string switch_day;
+//    pybind11::list engine_starts;
+//    pybind11::list engine_ends;
+//    for (size_t i = 0; i < next_nanos.size(); i++)
+//    {
+//        string time_str = parseNano(next_nanos[i], "%Y-%m-%d %H:%M:%S");
+//
+//        switch (nano_types[i])
+//        {
+//            case CONTROLLER_SWITCH_DAY:
+//                switch_day = time_str;
+//                break;
+//            case CONTROLLER_ENGINE_STARTS:
+//                engine_starts.append(time_str);
+//                break;
+//            case CONTROLLER_ENGINE_ENDS:
+//                engine_ends.append(time_str);
+//                break;
+//        }
+//    }
+//    res["switch_day"] = switch_day;
+//    res["engine_starts"] = engine_starts;
+//    res["engine_ends"] = engine_ends;
+//    return res;
+//}

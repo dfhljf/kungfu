@@ -32,7 +32,7 @@ USING_YJJ_NAMESPACE
 //    return {PAGED_JOURNAL_FOLDER, PAGED_JOURNAL_NAME};
 //}
 
-void JournalFinder::addJournalInfo(std::string name, std::string folder) {
+void JournalFinder::addJournalInfo(const std::string & name, const std::string & folder) {
     all_journal[name] = folder;
     all_journal_names.push_back(name);
 
@@ -42,6 +42,7 @@ void JournalFinder::addJournalInfo(std::string name, std::string folder) {
         avaliable_journal_folders.push_back(folder);
     }
 }
+
 
 //void JournalFinder::loadJournalInfo(short source, JournalPair (*getJournalPair)(short)) {
 //    JournalPair pair = getJournalPair(source);
@@ -57,20 +58,19 @@ void JournalFinder::addJournalInfo(std::string name, std::string folder) {
 //    }
 //}
 
-//void JournalFinder::loadJournalInfo(short source) {
-//    loadJournalInfo(source, getMdJournalPair);
-//    loadJournalInfo(source, getMdRawJournalPair);
-//    loadJournalInfo(source, getTdJournalPair);
-//    loadJournalInfo(source, getTdRawJournalPair);
-//    loadJournalInfo(source, getTdSendJournalPair);
-//    loadJournalInfo(source, getTdQJournalPair);
-//}
+void JournalFinder::loadJournalInfo(config::ApiType source) {
+    
+    auto name=config::to_string(source);
+    addJournalInfo("MD_"+name,KUNGFU_JOURNAL_FOLDER+"MD/"+name+"/");
+    addJournalInfo("TD_"+name,KUNGFU_JOURNAL_FOLDER+"TD/"+name+"/");
+}
 
 JournalFinder::JournalFinder() {
-//    loadJournalInfo(SOURCE_CTP);
-//    loadJournalInfo(SOURCE_XTP);
-//
-//    loadJournalInfo(0, getSystemJournalPair);
+    //loadJournalInfo(config::ApiType::CTP);
+    //loadJournalInfo(SOURCE_XTP);
+
+    addJournalInfo("SYSTEM",KUNGFU_JOURNAL_FOLDER+"system/");
+    
 
     boost::filesystem::path bl_journal_folder(BL_BASE_FOLDER);
     boost::regex pattern(JOURNAL_NAME_PATTERN);

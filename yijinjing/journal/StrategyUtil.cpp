@@ -22,7 +22,7 @@
 
 #include "StrategyUtil.h"
 #include "StrategySocketHandler.h"
-#include "../utils/TypeConvert.hpp"
+//#include "../utils/TypeConvert.hpp"
 #include "paged/PageCommStruct.h"
 #include "SysMessages.h"
 
@@ -77,10 +77,10 @@ IntPair StrategyUtil::getRequestIds() const
     return std::make_pair(rid_start, rid_end);
 }
 
-pybind11::tuple StrategyUtil::getPyRids() const
-{
-    return pybind11::make_tuple(rid_start, rid_end);
-}
+//pybind11::tuple StrategyUtil::getPyRids() const
+//{
+//    return pybind11::make_tuple(rid_start, rid_end);
+//}
 
 bool StrategyUtil::pySubscribe(vector<string> pyTickers, int source)
 {

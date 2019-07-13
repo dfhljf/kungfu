@@ -65,7 +65,7 @@ ClientPageProvider::ClientPageProvider(const string& clientName, bool isWriting,
 
 void ClientPageProvider::register_client()
 {
-    PagedSocketRequest req = {};
+    PagedSocketRequest req;
     req.type = is_writer ? PAGED_SOCKET_WRITER_REGISTER : PAGED_SOCKET_READER_REGISTER;
     req.pid = getpid();
     SocketMArray rspArray;
@@ -84,7 +84,7 @@ void ClientPageProvider::register_client()
 
 void ClientPageProvider::exit_client()
 {// send message to say good bye
-    PagedSocketRequest req = {};
+    PagedSocketRequest req;
     req.type = PAGED_SOCKET_CLIENT_EXIT;
     req.hash_code = hash_code;
     SocketMArray rspArray;
@@ -93,7 +93,7 @@ void ClientPageProvider::exit_client()
 
 int ClientPageProvider::register_journal(const string& dir, const string& jname)
 {
-    PagedSocketRequest req = {};
+    PagedSocketRequest req;
     req.type = PAGED_SOCKET_JOURNAL_REGISTER;
     SocketMArray rspArray;
     getSocketRspOnReq(req, rspArray, client_name);
@@ -163,7 +163,7 @@ StrategySocketHandler::StrategySocketHandler(const string& strategyName):
 bool StrategySocketHandler::td_connect(short source)
 {
     SocketMArray rspArray;
-    PagedSocketRequest req = {};
+    PagedSocketRequest req;
     req.type = PAGED_SOCKET_TD_LOGIN;
     req.source = source;
     getSocketRspOnReq(req, rspArray, client_name);
@@ -211,7 +211,7 @@ bool StrategySocketHandler::md_subscribe(const vector<string>& tickers, short so
 
 bool StrategySocketHandler::register_strategy(int& requestIdStart, int& requestIdEnd)
 {
-    PagedSocketRequest req = {};
+    PagedSocketRequest req;
     req.type = PAGED_SOCKET_STRATEGY_REGISTER;
     SocketMArray rspArray;
     getSocketRspOnReq(req, rspArray, client_name);

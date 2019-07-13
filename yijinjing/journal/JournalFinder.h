@@ -31,6 +31,7 @@
 #include <string>
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
+#include "config/ConfigEnum.h"
 
 YJJ_NAMESPACE_START
 
@@ -38,9 +39,9 @@ YJJ_NAMESPACE_START
 
 class JournalFinder {
 private:
-    void addJournalInfo(std::string name, std::string folder);
+    void addJournalInfo(const std::string & name, const std::string & folder);
     //void loadJournalInfo(short source, JournalPair (*getJournalPair)(short));
-    //void loadJournalInfo(short source);
+    
 protected:
     vector<std::string> all_journal_names;
     vector<std::string> avaliable_journal_names;
@@ -52,6 +53,7 @@ public:
     vector<std::string> const &getAvailableJournalNames() const { return avaliable_journal_names; }
     vector<std::string> const &getAvailableJournalFolders() const { return avaliable_journal_folders; }
     std::string const &getJournalFolder(const std::string &name) { return all_journal[name]; }
+    void loadJournalInfo(config::ApiType source);
 };
 
 YJJ_NAMESPACE_END

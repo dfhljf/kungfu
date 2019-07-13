@@ -29,8 +29,8 @@
 
 YJJ_NAMESPACE_START
 
-FORWARD_DECLARE_PTR(Journal);
-FORWARD_DECLARE_PTR(IPageProvider);
+FORWARD_DECLARE_PTR(Journal)
+FORWARD_DECLARE_PTR(IPageProvider)
 
 /**
  * Journal class, the abstraction of continuous memory access
@@ -99,7 +99,7 @@ inline void* Journal::locateFrame()
             return curPage->locateReadableFrame();
     }
     return nullptr;
-};
+}
 
 inline void Journal::passFrame()
 {   // only called after frame is taken, so current frame is applicable for sure; just skip

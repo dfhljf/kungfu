@@ -75,12 +75,12 @@ struct PageCommMsg
     short   last_page_num;
 
     // operators for map key
-    bool const operator == (const PageCommMsg &p) const
+    bool operator == (const PageCommMsg &p) const
     {
         return page_num == p.page_num && strcmp(folder, p.folder) == 0 && strcmp(name, p.name) == 0;
     }
 
-    bool const operator < (const PageCommMsg &p) const
+    bool operator < (const PageCommMsg &p) const
     {
         return (strcmp(folder, p.folder) != 0) ? strcmp(folder, p.folder) < 0
                                                : (strcmp(name, p.name) != 0) ? strcmp(name, p.name) < 0

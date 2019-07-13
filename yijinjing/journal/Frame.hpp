@@ -104,7 +104,7 @@ private:
     void setFrameLength(FH_TYPE_LENGTH);
 };
 
-DECLARE_PTR(Frame);
+DECLARE_PTR(Frame)
 
 inline Frame::Frame(void * fm)
 {

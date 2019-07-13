@@ -31,9 +31,9 @@
 
 USING_YJJ_NAMESPACE
 
-const string JournalReader::PREFIX = "reader";
+        const string JournalReader::PREFIX = "reader";
 
-JournalReader::JournalReader(PageProviderPtr ptr): JournalHandler(ptr)
+JournalReader::JournalReader(PageProviderPtr ptr) : JournalHandler(ptr)
 {
     journalMap.clear();
 }
@@ -54,10 +54,11 @@ size_t JournalReader::addJournal(const string& dir, const string& jname)
 
 JournalReaderPtr JournalReader::create(const vector<string>& dirs, const vector<string>& jnames, long startTime, const string& readerName)
 {
+
+#ifdef USE_PAGED_SERVICE
     std::stringstream ss;
     ss << readerName << "_R";
     string clientName = ss.str();
-#ifdef USE_PAGED_SERVICE
     PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(clientName, false));
 #else
     PageProviderPtr provider = PageProviderPtr(new LocalPageProvider(false));
@@ -118,10 +119,11 @@ JournalReaderPtr JournalReader::createSysReader(const string& clientName)
 
 JournalReaderPtr JournalReader::createRevisableReader(const string& readerName)
 {
+
+#ifdef USE_PAGED_SERVICE
     std::stringstream ss;
     ss << readerName << "_SR";
     string clientName = ss.str();
-#ifdef USE_PAGED_SERVICE
     PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(clientName, false, true));
 #else
     PageProviderPtr provider = PageProviderPtr(new LocalPageProvider(false, true));
@@ -135,7 +137,7 @@ JournalReaderPtr JournalReader::createRevisableReader(const string& readerName)
 
 void JournalReader::jumpStart(long startTime)
 {
-    for (JournalPtr& journal: journals)
+    for (JournalPtr& journal : journals)
         journal->seekTime(startTime);
 }
 
@@ -156,7 +158,7 @@ void JournalReader::startVisiting()
         if (frame.get() != nullptr)
         {
             string name = getFrameName();
-            for (auto visitor: visitors)
+            for (auto visitor : visitors)
                 visitor->visit(name, *frame);
         }
     }

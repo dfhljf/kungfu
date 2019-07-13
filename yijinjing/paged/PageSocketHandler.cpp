@@ -150,7 +150,7 @@ void PageSocketHandler::process_msg()
         case PAGED_SOCKET_CLIENT_EXIT:
         {
             util->exit_client(req->name, req->hash_code, true);
-            PagedSocketResponse rsp = {};
+            PagedSocketResponse rsp;
             rsp.type = req_type;
             rsp.success = true;
             memcpy(&_data[0], &rsp, sizeof(rsp));
@@ -176,7 +176,7 @@ void PageSocketHandler::process_msg()
                     break;
             }
             bool ret = util->sub_md(tickers, source, msg_type, req_type == PAGED_SOCKET_SUBSCRIBE);
-            PagedSocketResponse rsp = {};
+            PagedSocketResponse rsp;
             rsp.type = req_type;
             rsp.success = ret;
             memcpy(&_data[0], &rsp, sizeof(rsp));
@@ -185,7 +185,7 @@ void PageSocketHandler::process_msg()
         case PAGED_SOCKET_TD_LOGIN:
         {
             bool ret = util->login_td(req->name, req->source);
-            PagedSocketResponse rsp = {};
+            PagedSocketResponse rsp;
             rsp.type = req_type;
             rsp.success = ret;
             memcpy(&_data[0], &rsp, sizeof(rsp));

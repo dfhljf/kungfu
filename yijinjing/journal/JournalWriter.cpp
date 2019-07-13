@@ -115,7 +115,12 @@ long JournalSafeWriter::write_frame_full(const void* data, FH_TYPE_LENGTH length
 
 JournalWriterPtr JournalSafeWriter::create(const string& dir, const string& jname, const string& writerName)
 {
+    //PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(writerName, true));
+    #ifdef USE_PAGED_SERVICE
     PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(writerName, true));
+#else
+    PageProviderPtr provider = PageProviderPtr(new LocalPageProvider(true));
+#endif
     JournalWriterPtr jwp = JournalWriterPtr(new JournalSafeWriter(provider));
     jwp->init(dir, jname);
     return jwp;

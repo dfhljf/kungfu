@@ -31,9 +31,9 @@ YJJ_NAMESPACE_START
 #define BL_BASE_FOLDER KUNGFU_JOURNAL_FOLDER+"strategy/"
 #define BL_REPLAY_FOLDER KUNGFU_JOURNAL_FOLDER+"strategy_replay/"
 
-FORWARD_DECLARE_PTR(StrategySocketHandler);
-FORWARD_DECLARE_PTR(JournalWriter);
-FORWARD_DECLARE_PTR(StrategyUtil);
+FORWARD_DECLARE_PTR(StrategySocketHandler)
+FORWARD_DECLARE_PTR(JournalWriter)
+FORWARD_DECLARE_PTR(StrategyUtil)
 
 /**
  * Wrapper of strategy utilities
@@ -96,7 +96,7 @@ public:
     /** get request id range */
     IntPair getRequestIds() const;
     /** get request id (python) */
-    pybind11::tuple getPyRids() const;
+//    pybind11::tuple getPyRids() const;
     /** python interface for subscription */
     bool pySubscribe(vector<string> tickers, int source);
 
