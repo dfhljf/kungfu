@@ -48,39 +48,39 @@ YJJ_NAMESPACE_START
 /// (byte) PagedCommTypeConstants
 //////////////////////////////////////////
 // status in process 0 ~ 9
-#define PAGED_COMM_RAW          0   /**< this msg block is not allocated (default) */
-#define PAGED_COMM_OCCUPIED     1   /**< comm msg idx occupied (by server) */
-#define PAGED_COMM_HOLDING      2   /**< folder / name ready (by client) */
-#define PAGED_COMM_REQUESTING   3   /**< page number specified (by client) */
-#define PAGED_COMM_ALLOCATED    4   /**< finish allocated, user may getPage (by server) */
+#define PAGED_COMM_RAW 0 /**< this msg block is not allocated (default) */
+#define PAGED_COMM_OCCUPIED 1 /**< comm msg idx occupied (by server) */
+#define PAGED_COMM_HOLDING 2 /**< folder / name ready (by client) */
+#define PAGED_COMM_REQUESTING 3 /**< page number specified (by client) */
+#define PAGED_COMM_ALLOCATED 4 /**< finish allocated, user may getPage (by server) */
 // failures 10 ~ 19
-#define PAGED_COMM_NON_EXIST    11  /**< default position */
-#define PAGED_COMM_MEM_OVERFLOW 12  /**< default position */
-#define PAGED_COMM_MORE_THAN_ONE_WRITE      13  /**< default position */
-#define PAGED_COMM_CANNOT_RENAME_FROM_TEMP  14  /**< default position */
+#define PAGED_COMM_NON_EXIST 11 /**< default position */
+#define PAGED_COMM_MEM_OVERFLOW 12 /**< default position */
+#define PAGED_COMM_MORE_THAN_ONE_WRITE 13 /**< default position */
+#define PAGED_COMM_CANNOT_RENAME_FROM_TEMP 14 /**< default position */
 
 struct PageCommMsg
 {
     /** PagedCommTypeConstants (by both server and client) */
-    volatile byte    status;
+    volatile byte status;
     /** journal folder (by client) */
-    char    folder[JOURNAL_FOLDER_MAX_LENGTH];
+    char folder[JOURNAL_FOLDER_MAX_LENGTH];
     /** journal name (by client) */
-    char    name[JOURNAL_SHORT_NAME_MAX_LENGTH];
+    char name[JOURNAL_SHORT_NAME_MAX_LENGTH];
     /** return true if the client is writer (by client) */
-    bool    is_writer;
+    bool is_writer;
     /** page number to request (by client) */
-    short   page_num;
+    short page_num;
     /** page number requested (by server) */
-    short   last_page_num;
+    short last_page_num;
 
     // operators for map key
-    bool operator == (const PageCommMsg &p) const
+    bool operator==(const PageCommMsg& p) const
     {
         return page_num == p.page_num && strcmp(folder, p.folder) == 0 && strcmp(name, p.name) == 0;
     }
 
-    bool operator < (const PageCommMsg &p) const
+    bool operator<(const PageCommMsg& p) const
     {
         return (strcmp(folder, p.folder) != 0) ? strcmp(folder, p.folder) < 0
                                                : (strcmp(name, p.name) != 0) ? strcmp(name, p.name) < 0

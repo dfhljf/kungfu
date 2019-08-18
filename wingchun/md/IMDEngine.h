@@ -32,7 +32,7 @@ typedef std::map<string, int> SubCountMap;
 /**
  * Base class of all market data engine
  */
-class IMDEngine: public IEngine
+class IMDEngine : public IEngine
 {
 private:
     /** internal structure for subscription */
@@ -55,6 +55,7 @@ protected:
     virtual void init();
     /** subscribe historically-subscribed tickers */
     void subscribeHistorySubs();
+
 public:
     /** subscribe market data, should be override by child-class */
     virtual void subscribeMarketData(const vector<string>& instruments, const vector<string>& markets)

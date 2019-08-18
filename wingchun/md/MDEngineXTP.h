@@ -28,7 +28,7 @@
 
 WC_NAMESPACE_START
 
-class MDEngineXTP: public IMDEngine, public XTP::API::QuoteSpi
+class MDEngineXTP : public IMDEngine, public XTP::API::QuoteSpi
 {
 public:
     /** load internal information from config json */
@@ -38,9 +38,18 @@ public:
     virtual void logout();
     virtual void release_api();
     virtual void subscribeMarketData(const vector<string>& instruments, const vector<string>& markets);
-    virtual bool is_connected() const { return connected; };
-    virtual bool is_logged_in() const { return logged_in; };
-    virtual string name() const { return "MDEngineXTP"; };
+    virtual bool is_connected() const
+    {
+        return connected;
+    };
+    virtual bool is_logged_in() const
+    {
+        return logged_in;
+    };
+    virtual string name() const
+    {
+        return "MDEngineXTP";
+    };
 
 public:
     MDEngineXTP();
@@ -63,7 +72,7 @@ private:
     // internal flags
     bool connected;
     bool logged_in;
-    int  reqId;
+    int reqId;
     bool to_dump_static_info;
 
 public:
@@ -78,19 +87,19 @@ public:
     virtual void OnDisconnected(int reason);
 
     ///订阅行情应答
-    virtual void OnSubMarketData(XTPST *ticker, XTPRI *error_info, bool is_last);
+    virtual void OnSubMarketData(XTPST* ticker, XTPRI* error_info, bool is_last);
 
     ///深度行情通知
-    virtual void OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int32_t bid1_count, int32_t max_bid1_count, int64_t ask1_qty[], int32_t ask1_count, int32_t max_ask1_count);
+    virtual void OnDepthMarketData(XTPMD* market_data, int64_t bid1_qty[], int32_t bid1_count, int32_t max_bid1_count, int64_t ask1_qty[], int32_t ask1_count, int32_t max_ask1_count);
 
     ///查询可交易合约的应答
     ///@param ticker_info 可交易合约信息
     ///@param error_info 查询可交易合约时发生错误时返回的错误信息，当error_info为空，或者error_info.error_id为0时，表明没有错误
     ///@param is_last 是否此次查询可交易合约的最后一个应答，当为最后一个的时候为true，如果为false，表示还有其他后续消息响应
-    virtual void OnQueryAllTickers(XTPQSI* ticker_info, XTPRI *error_info, bool is_last);
+    virtual void OnQueryAllTickers(XTPQSI* ticker_info, XTPRI* error_info, bool is_last);
 
     ///错误应答
-    virtual void OnError(XTPRI *error_info,bool is_last);
+    virtual void OnError(XTPRI* error_info, bool is_last);
 };
 
 DECLARE_PTR(MDEngineXTP);

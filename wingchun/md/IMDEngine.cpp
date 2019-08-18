@@ -26,7 +26,8 @@
 
 USING_WC_NAMESPACE
 
-IMDEngine::IMDEngine(short source): IEngine(source)
+IMDEngine::IMDEngine(short source)
+    : IEngine(source)
 {
     subs_tickers.clear();
     subs_markets.clear();
@@ -152,7 +153,7 @@ void IMDEngine::pre_run()
 
 void IMDEngine::subscribeHistorySubs()
 {
-    for (auto& iter: history_subs)
+    for (auto& iter : history_subs)
     {
         if (iter.second.size() == 0)
             continue;
@@ -162,7 +163,7 @@ void IMDEngine::subscribeHistorySubs()
         vector<string> tickers;
         vector<string> markets;
 
-        for (auto& tickerIter: iter.second)
+        for (auto& tickerIter : iter.second)
         {
             const string& ticker = tickerIter.first;
             size_t found = ticker.find(TICKER_MARKET_DELIMITER);
@@ -201,7 +202,7 @@ void IMDEngine::on_market_data(const LFMarketDataField* data)
 {
     if (isRunning)
     {
-        writer->write_frame(data, sizeof(LFMarketDataField), source_id, MSG_TYPE_LF_MD, 1/*islast*/, -1/*invalidRid*/);
+        writer->write_frame(data, sizeof(LFMarketDataField), source_id, MSG_TYPE_LF_MD, 1 /*islast*/, -1 /*invalidRid*/);
         KF_LOG_DEBUG_FMT(logger, "%-10s[%7.1f, %4d | %7.1f, %4d]",
                          data->InstrumentID,
                          data->BidPrice1,

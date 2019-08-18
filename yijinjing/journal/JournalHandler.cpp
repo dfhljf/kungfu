@@ -49,7 +49,7 @@ size_t JournalHandler::addJournal(const string& _dir, const string& jname)
     }
     else
     {
-        utils::OS::makedirs(_dir+"/");
+        utils::OS::makedirs(_dir + "/");
         dir = _dir;
     }
     // register this journal

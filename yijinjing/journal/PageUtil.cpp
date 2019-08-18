@@ -35,7 +35,7 @@
 
 USING_YJJ_NAMESPACE
 
-string PageUtil::GenPageFileName(const string &jname, short pageNum)
+string PageUtil::GenPageFileName(const string& jname, short pageNum)
 {
     return JOURNAL_PREFIX + "." + jname + "." + std::to_string(pageNum) + "." + JOURNAL_SUFFIX;
 }
@@ -47,15 +47,15 @@ string PageUtil::GenPageFullPath(const string& dir, const string& jname, short p
     return ss.str();
 }
 
-string PageUtil::GetPageFileNamePattern(const string &jname)
+string PageUtil::GetPageFileNamePattern(const string& jname)
 {
     return JOURNAL_PREFIX + "\\." + jname + "\\.[0-9]+\\." + JOURNAL_SUFFIX;
 }
 
-short PageUtil::ExtractPageNum(const string &filename, const string &jname)
+short PageUtil::ExtractPageNum(const string& filename, const string& jname)
 {
     string numStr = filename.substr(JOURNAL_PREFIX.length() + jname.length() + 2, filename.length() - JOURNAL_SUFFIX.length());
-    return (short) atoi(numStr.c_str());
+    return (short)atoi(numStr.c_str());
 }
 
 vector<short> PageUtil::GetPageNums(const string& dir, const string& jname)
@@ -66,7 +66,7 @@ vector<short> PageUtil::GetPageNums(const string& dir, const string& jname)
     vector<short> res;
     boost::filesystem::directory_iterator end_iter;
     //for (auto &file : boost::filesystem::directory_iterator(p)) {
-    for(boost::filesystem::directory_iterator iter(p);iter!=end_iter;++iter)
+    for (boost::filesystem::directory_iterator iter(p); iter != end_iter; ++iter)
     {
         string filename = iter->path().filename().string();
         if (boost::regex_match(filename.begin(), filename.end(), pattern))
@@ -88,7 +88,7 @@ short PageUtil::GetPageNumWithTime(const string& dir, const string& jname, long 
     return 1;
 }
 
-PageHeader PageUtil::GetPageHeader(const string &dir, const string &jname, short pageNum)
+PageHeader PageUtil::GetPageHeader(const string& dir, const string& jname, short pageNum)
 {
     PageHeader header;
     string path = PageUtil::GenPageFullPath(dir, jname, pageNum);
@@ -120,7 +120,7 @@ void* PageUtil::LoadPageBuffer(const string& path, int size, bool isWriting, boo
 
     if (/*!quickMode &&*/ isWriting)
     {
-        if (lseek(fd, size-1, SEEK_SET) == -1)
+        if (lseek(fd, size - 1, SEEK_SET) == -1)
         {
             close(fd);
             perror("Error calling lseek() to 'stretch' the file");
@@ -155,7 +155,7 @@ void* PageUtil::LoadPageBuffer(const string& path, int size, bool isWriting, boo
     return buffer;
 }
 
-void PageUtil::ReleasePageBuffer(void *buffer, int size, bool quickMode)
+void PageUtil::ReleasePageBuffer(void* buffer, int size, bool quickMode)
 {
     //unlock and unmap
     if (!quickMode && munlock(buffer, size) != 0)
@@ -164,7 +164,7 @@ void PageUtil::ReleasePageBuffer(void *buffer, int size, bool quickMode)
         exit(EXIT_FAILURE);
     }
 
-    if(munmap(buffer, size)!=0)
+    if (munmap(buffer, size) != 0)
     {
         perror("ERROR in munmap");
         exit(EXIT_FAILURE);

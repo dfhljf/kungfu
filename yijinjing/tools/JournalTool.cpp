@@ -43,20 +43,7 @@ int main(int argc, const char* argv[])
 {
     options_description desc{"Options"};
     string format("%Y%m%d-%H:%M:%S");
-    desc.add_options()
-            ("help,h", "Help screen")
-            ("name,n", value<string>(), "Journal Name")
-            ("page,p", "Just Page Header")
-            ("verify,v", "Verify hash code")
-            ("keep,k", "keep listening")
-            ("time,t", "time visualized")
-            ("detail,d", "data details")
-            ("current,c", "start from current")
-            ("length,l", value<int>()->default_value(20), "Char num of frame data to print")
-            ("msgtype,m", value<string>()->default_value(""), "Message type printed, -eg: -m 10,11")
-            ("rmsgtype,r", value<string>()->default_value(""), "Message type not printed, -eg: -r 10,11")
-            ("start_time,s", value<string>()->default_value("20000101-13:30:00"), "start time (%Y%m%d-%H:%M:%S)")
-            ("end_time,e", value<string>()->default_value("20200101-00:00:00"), "end time (%Y%m%d-%H:%M:%S)");
+    desc.add_options()("help,h", "Help screen")("name,n", value<string>(), "Journal Name")("page,p", "Just Page Header")("verify,v", "Verify hash code")("keep,k", "keep listening")("time,t", "time visualized")("detail,d", "data details")("current,c", "start from current")("length,l", value<int>()->default_value(20), "Char num of frame data to print")("msgtype,m", value<string>()->default_value(""), "Message type printed, -eg: -m 10,11")("rmsgtype,r", value<string>()->default_value(""), "Message type not printed, -eg: -r 10,11")("start_time,s", value<string>()->default_value("20000101-13:30:00"), "start time (%Y%m%d-%H:%M:%S)")("end_time,e", value<string>()->default_value("20200101-00:00:00"), "end time (%Y%m%d-%H:%M:%S)");
 
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -114,7 +101,8 @@ int main(int argc, const char* argv[])
         vector<std::string> available_journal_names = finder.getAvailableJournalNames();
         std::cout << "usage: kungfu journal -n [--name] journal_name <options>" << std::endl;
         std::cout << "available journal names:" << std::endl;
-        for (vector<std::string>::iterator it = available_journal_names.begin(); it != available_journal_names.end(); it++) {
+        for (vector<std::string>::iterator it = available_journal_names.begin(); it != available_journal_names.end(); it++)
+        {
             std::cout << '\t' << *it << std::endl;
         }
         return -1;
@@ -165,7 +153,7 @@ int main(int argc, const char* argv[])
                     ss.ignore();
             }
             std::cout << "MsgType to Print:";
-            for (auto& item: doMsgTypes)
+            for (auto& item : doMsgTypes)
             {
                 std::cout << " " << item.first;
             }
@@ -186,7 +174,7 @@ int main(int argc, const char* argv[])
                 }
             }
             std::cout << "MsgType to Skip:";
-            for (auto& item: nonMsgTypes)
+            for (auto& item : nonMsgTypes)
             {
                 std::cout << " " << item.first;
             }
@@ -257,8 +245,7 @@ int main(int argc, const char* argv[])
                 }
                 frame = reader->getNextFrame();
             }
-        }
-        while (vm.count("keep"));
+        } while (vm.count("keep"));
     }
     return 0;
 }

@@ -48,10 +48,12 @@ protected:
     /** journals */
     vector<JournalPtr> journals;
     /** current journal */
-    JournalPtr  curJournal;
+    JournalPtr curJournal;
+
 public:
     /** default constructor with outside page provider */
-    JournalHandler(PageProviderPtr ptr): page_provider(ptr) {};
+    JournalHandler(PageProviderPtr ptr)
+        : page_provider(ptr) {};
     /** default destructor */
     virtual ~JournalHandler();
     /** return the journal's index in the vector */

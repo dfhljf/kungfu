@@ -48,20 +48,24 @@ protected:
     KfLog(string name);
 
 public:
-
-    inline log4cplus::Logger& getLogger(){
+    inline log4cplus::Logger& getLogger()
+    {
         return logger;
     }
-    inline void fatal(const char* content){
+    inline void fatal(const char* content)
+    {
         LOG4CPLUS_FATAL(logger, content);
     }
-    inline void error(const char* content){
+    inline void error(const char* content)
+    {
         LOG4CPLUS_ERROR(logger, content);
     }
-    inline void info(const char* content){
+    inline void info(const char* content)
+    {
         LOG4CPLUS_INFO(logger, content);
     }
-    inline void debug(const char* content){
+    inline void debug(const char* content)
+    {
         LOG4CPLUS_DEBUG(logger, content);
     }
 

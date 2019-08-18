@@ -41,38 +41,39 @@ private:
     /** page provider for further page acquire / release */
     IPageProviderPtr pageProvider;
     /** service index is allocated by provider, and will be utilized when asking page provider */
-    int     serviceIdx;
+    int serviceIdx;
     /** basic information, directory path */
-    string  directory;
+    string directory;
     /** basic information, journal short name */
-    string  shortName;
+    string shortName;
     /** !!for performance only, cache pageProvider->isWriter() */
-    bool    isWriting;
+    bool isWriting;
     /** flag to determine whether read its frame */
-    bool    expired;
+    bool expired;
     /** current page in use */
     PagePtr curPage;
     /** private constructor, make create the only builder */
-    Journal(): expired(false){};
+    Journal()
+        : expired(false) {};
 
 public:
     /** the only entrance of creating a Journal */
     static JournalPtr create(const string& dir, const string& jname, int serviceIdx, IPageProviderPtr provider);
 
     /** expire this journal, won't get any frame until reset by seekTime */
-    void    expire();
+    void expire();
     /** seek to time in nanoseconds-timestamp */
-    void    seekTime(long time);
+    void seekTime(long time);
     /** get frame address return nullptr if no available */
-    void*   locateFrame();
+    void* locateFrame();
     /** move forward to next frame */
-    void    passFrame();
+    void passFrame();
     /** load next page, current page will be released if not empty */
-    void    loadNextPage();
+    void loadNextPage();
     /** get current page number */
-    short   getCurPageNum() const;
+    short getCurPageNum() const;
     /** get journal short name */
-    string  getShortName() const;
+    string getShortName() const;
 };
 
 inline void* Journal::locateFrame()
@@ -102,7 +103,7 @@ inline void* Journal::locateFrame()
 }
 
 inline void Journal::passFrame()
-{   // only called after frame is taken, so current frame is applicable for sure; just skip
+{ // only called after frame is taken, so current frame is applicable for sure; just skip
     curPage->passFrame();
 }
 

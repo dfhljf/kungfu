@@ -48,7 +48,15 @@ void signal_callback(int signum)
     //exit(signum);
 }
 
-bool PageEngine::write(string content, byte msg_type, bool is_last, short source)
+bool PageEngine::write(const void* data, FH_TYPE_LENGTH length, FH_TYPE_SOURCE source, FH_TYPE_MSG_TP msgType, FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId)
+{
+    if (writer.get() == nullptr)
+        return false;
+    writer->write_frame(data, length, source, msgType, lastFlag, requestId);
+    return true;
+}
+
+bool PageEngine::write(string content, short msg_type, bool is_last, short source)
 {
     if (writer.get() == nullptr)
         return false;
@@ -66,17 +74,22 @@ void PageEngine::release_mutex() const
     paged_mtx.unlock();
 }
 
-PageEngine::PageEngine(): commBuffer(nullptr), commFile(KUNGFU_JOURNAL_FOLDER+commFileName), maxIdx(0),
-                          microsecFreq(INTERVAL_IN_MILLISEC),
-                          task_running(false), last_switch_nano(0), comm_running(false)
+PageEngine::PageEngine()
+    : commBuffer(nullptr)
+    , commFile(KUNGFU_JOURNAL_FOLDER + commFileName)
+    , maxIdx(0)
+    , microsecFreq(INTERVAL_IN_MILLISEC)
+    , task_running(false)
+    //  , last_switch_nano(0)
+    , comm_running(false)
 {
     // setup logger
     logger = KfLog::getLogger("PageEngine");
 
     // setup signal related static issue
     static_logger = logger;
-//    for (int s = 1; s < 32; s++)
-//        signal(s, signal_callback);
+    //    for (int s = 1; s < 32; s++)
+    //        signal(s, signal_callback);
 
     // setup basic tasks
     tasks.clear();
@@ -85,8 +98,8 @@ PageEngine::PageEngine(): commBuffer(nullptr), commFile(KUNGFU_JOURNAL_FOLDER+co
 
 PageEngine::~PageEngine()
 {
-  //  KF_LOG_INFO(logger, "page engine dector " );
-//    Py_Finalize();
+    //  KF_LOG_INFO(logger, "page engine dector " );
+    //    Py_Finalize();
 }
 
 void PageEngine::start()
@@ -114,9 +127,13 @@ void PageEngine::start()
 
     if (microsecFreq <= 0)
         throw std::runtime_error("unaccepted task time interval");
+    write("", MSG_TYPE_PAGED_START);
+}
+
+void PageEngine::startTask()
+{
     task_running = true;
     taskThread = ThreadPtr(new std::thread(std::bind(&PageEngine::start_task, this)));
-    write("", MSG_TYPE_PAGED_START);
 }
 
 void PageEngine::set_freq(double secondFreq)
@@ -170,7 +187,7 @@ void PageEngine::start_task()
     while (task_running)
     {
         acquire_mutex();
-        for (auto item: tasks)
+        for (auto item : tasks)
         {
             item.second->go();
         }
@@ -239,7 +256,7 @@ int PageEngine::reg_journal(const string& clientName)
         return -1;
     }
     it->second.user_index_vec.push_back(idx);
-    KF_LOG_INFO(logger, "[RegJournal] (client)"<< clientName << " (idx)" << idx);
+    KF_LOG_INFO(logger, "[RegJournal] (client)" << clientName << " (idx)" << idx);
     return idx;
 }
 
@@ -249,7 +266,7 @@ bool PageEngine::reg_client(string& _commFile, int& fileSize, int& hashCode, con
     if (clientJournals.find(clientName) != clientJournals.end())
         return false;
 
-    map<int, vector<string> >::iterator it = pidClient.find(pid);
+    map<int, vector<string>>::iterator it = pidClient.find(pid);
     if (it == pidClient.end())
         pidClient[pid] = {clientName};
     else
@@ -295,7 +312,7 @@ void PageEngine::release_page(const PageCommMsg& msg)
             return;
         }
     }
-    count_it->second --;
+    count_it->second--;
     if (count_it->second == 0)
     {
         bool otherSideEmpty = false;
@@ -333,7 +350,7 @@ byte PageEngine::initiate_page(const PageCommMsg& msg)
     {
         void* buffer = nullptr;
         if (!PageUtil::FileExists(path))
-        {   // this file is not exist....
+        { // this file is not exist....
             if (!msg.is_writer)
                 return PAGED_COMM_NON_EXIST;
             else
@@ -359,7 +376,7 @@ byte PageEngine::initiate_page(const PageCommMsg& msg)
             }
         }
         else
-        {   // exist file but not loaded, map and lock immediately.
+        { // exist file but not loaded, map and lock immediately.
             buffer = PageUtil::LoadPageBuffer(path, JOURNAL_PAGE_SIZE, false, true);
         }
 
@@ -381,41 +398,41 @@ byte PageEngine::initiate_page(const PageCommMsg& msg)
         if (count_it == fileReaderCounts.end())
             fileReaderCounts[msg] = 1;
         else
-            count_it->second ++;
+            count_it->second++;
     }
     return PAGED_COMM_ALLOCATED;
 }
 
-bool PageEngine::login_td(const string& clientName, short source)
-{
-    KF_LOG_INFO(logger, "[TELogin] (name)" << clientName << " (source)" << source);
+//bool PageEngine::login_td(const string& clientName, short source)
+//{
+//    KF_LOG_INFO(logger, "[TELogin] (name)" << clientName << " (source)" << source);
+//
+//    map<string, PageClientInfo>::iterator it = clientJournals.find(clientName);
+//    if (it == clientJournals.end())
+//    {
+//        KF_LOG_ERROR(logger, "[ERROR][TELogin] this client does not exist! (name)" << clientName);
+//        return false;
+//    }
+//    PageClientInfo& info = it->second;
+//    if (info.user_index_vec.size() != 1)
+//    {
+//        KF_LOG_ERROR(logger, "[ERROR][TELogin] this client suppose to have only one journal! (name)" << clientName);
+//        return false;
+//    }
+//    PageCommMsg* msg = GET_COMM_MSG(commBuffer, info.user_index_vec[0]);
+//    json j_request;
+//    j_request["name"] = clientName;
+//    j_request["folder"] = msg->folder;
+//    j_request["rid_s"] = info.rid_start;
+//    j_request["rid_e"] = info.rid_end;
+//    j_request["pid"] = info.pid;
+//    j_request["last_switch_nano"] = last_switch_nano;
+//    write(j_request.dump(), MSG_TYPE_TRADE_ENGINE_LOGIN, true, source);
+//    info.trade_engine_vec.push_back(source);
+//    return true;
+//}
 
-    map<string, PageClientInfo>::iterator it = clientJournals.find(clientName);
-    if (it == clientJournals.end())
-    {
-        KF_LOG_ERROR(logger, "[ERROR][TELogin] this client does not exist! (name)" << clientName);
-        return false;
-    }
-    PageClientInfo& info = it->second;
-    if (info.user_index_vec.size() != 1)
-    {
-        KF_LOG_ERROR(logger, "[ERROR][TELogin] this client suppose to have only one journal! (name)" << clientName);
-        return false;
-    }
-    PageCommMsg* msg = GET_COMM_MSG(commBuffer, info.user_index_vec[0]);
-    json j_request;
-    j_request["name"] = clientName;
-    j_request["folder"] = msg->folder;
-    j_request["rid_s"] = info.rid_start;
-    j_request["rid_e"] = info.rid_end;
-    j_request["pid"] = info.pid;
-    j_request["last_switch_nano"] = last_switch_nano;
-    write(j_request.dump(), MSG_TYPE_TRADE_ENGINE_LOGIN, true, source);
-    info.trade_engine_vec.push_back(source);
-    return true;
-}
-
-void  PageEngine::exit_client(const string& clientName, int hashCode, bool needHashCheck)
+void PageEngine::exit_client(const string& clientName, int hashCode, bool needHashCheck)
 {
     map<string, PageClientInfo>::iterator it = clientJournals.find(clientName);
     if (it == clientJournals.end())
@@ -436,11 +453,11 @@ void  PageEngine::exit_client(const string& clientName, int hashCode, bool needH
         j_request["rid_s"] = info.rid_start;
         j_request["rid_e"] = info.rid_end;
         j_request["pid"] = info.pid;
-        j_request["last_switch_nano"] = last_switch_nano;
+        //        j_request["last_switch_nano"] = last_switch_nano;
         write(j_request.dump(), MSG_TYPE_STRATEGY_END);
     }
 
-    for (auto idx: info.user_index_vec)
+    for (auto idx : info.user_index_vec)
     {
         PageCommMsg* msg = GET_COMM_MSG(commBuffer, idx);
         if (msg->status == PAGED_COMM_ALLOCATED)
@@ -455,43 +472,43 @@ void  PageEngine::exit_client(const string& clientName, int hashCode, bool needH
     clientJournals.erase(it);
 }
 
-IntPair PageEngine::register_strategy(const string& strategyName)
-{
-    map<string, PageClientInfo>::iterator it = clientJournals.find(strategyName);
-    if (it == clientJournals.end())
-    {
-        KF_LOG_ERROR(logger, "[ERROR] cannot find client " << strategyName << " in register_strategy");
-        return std::make_pair(-1, -1);
-    }
+//IntPair PageEngine::register_strategy(const string& strategyName)
+//{
+//    map<string, PageClientInfo>::iterator it = clientJournals.find(strategyName);
+//    if (it == clientJournals.end())
+//    {
+//        KF_LOG_ERROR(logger, "[ERROR] cannot find client " << strategyName << " in register_strategy");
+//        return std::make_pair(-1, -1);
+//    }
+//
+//    PageClientInfo& info = it->second;
+//    int idx = info.user_index_vec[0]; // strategy must be a writer, therefore only one user
+//    info.is_strategy = true;
+//    // make sure this rid start from REQUEST_ID_RANGE,
+//    // [0, REQUEST_ID_RANGE - 1] belongs to trade engine themselves.
+//    info.rid_start = (idx + 1) * REQUEST_ID_RANGE;
+//    info.rid_end = (idx + 2) * REQUEST_ID_RANGE - 1;
+//    PageCommMsg* msg = GET_COMM_MSG(commBuffer, idx);
+//    json j_request;
+//    j_request["name"] = strategyName;
+//    j_request["folder"] = msg->folder;
+//    j_request["rid_s"] = info.rid_start;
+//    j_request["rid_e"] = info.rid_end;
+//    j_request["pid"] = info.pid;
+//    //   j_request["last_switch_nano"] = last_switch_nano;
+//    write(j_request.dump(), MSG_TYPE_STRATEGY_START);
+//    KF_LOG_INFO(logger, "[RegStrategy] (name)" << strategyName << " (rid)" << info.rid_start << "-" << info.rid_end);
+//    return std::make_pair(info.rid_start, info.rid_end);
+//}
 
-    PageClientInfo& info = it->second;
-    int idx = info.user_index_vec[0]; // strategy must be a writer, therefore only one user
-    info.is_strategy = true;
-    // make sure this rid start from REQUEST_ID_RANGE,
-    // [0, REQUEST_ID_RANGE - 1] belongs to trade engine themselves.
-    info.rid_start = (idx + 1) * REQUEST_ID_RANGE;
-    info.rid_end = (idx + 2) * REQUEST_ID_RANGE - 1;
-    PageCommMsg* msg = GET_COMM_MSG(commBuffer, idx);
-    json j_request;
-    j_request["name"] = strategyName;
-    j_request["folder"] = msg->folder;
-    j_request["rid_s"] = info.rid_start;
-    j_request["rid_e"] = info.rid_end;
-    j_request["pid"] = info.pid;
-    j_request["last_switch_nano"] = last_switch_nano;
-    write(j_request.dump(), MSG_TYPE_STRATEGY_START);
-    KF_LOG_INFO(logger, "[RegStrategy] (name)" << strategyName << " (rid)" << info.rid_start << "-" << info.rid_end);
-    return std::make_pair(info.rid_start, info.rid_end);
-}
-
-bool PageEngine::sub_md(const vector<string>& tickers, short source, short msg_type, bool isLast)
-{
-    KF_LOG_INFO(logger, "(subscribe) (source)" << source << " (msg)" << msg_type << " (num)" << tickers.size() << " (last)" << isLast);
-    bool written = true;
-    for (size_t i = 0; i < tickers.size(); i++)
-        written &= write(tickers[i], msg_type, isLast && (i == tickers.size() - 1), source);
-    return written;
-}
+//bool PageEngine::sub_md(const vector<string>& tickers, short source, short msg_type, bool isLast)
+//{
+//    KF_LOG_INFO(logger, "(subscribe) (source)" << source << " (msg)" << msg_type << " (num)" << tickers.size() << " (last)" << isLast);
+//    bool written = true;
+//    for (size_t i = 0; i < tickers.size(); i++)
+//        written &= write(tickers[i], msg_type, isLast && (i == tickers.size() - 1), source);
+//    return written;
+//}
 
 void PageEngine::start_comm()
 {
@@ -517,10 +534,10 @@ void PageEngine::start_comm()
     }
 }
 
-bool PageEngine::switch_trading_day()
-{
-    return write("", MSG_TYPE_SWITCH_TRADING_DAY);
-}
+//bool PageEngine::switch_trading_day()
+//{
+//    return write("", MSG_TYPE_SWITCH_TRADING_DAY);
+//}
 
 //py::dict PageEngine::getStatus() const
 //{

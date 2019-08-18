@@ -33,9 +33,9 @@ struct StrategyUnit
 {
     string name;
     string folder;
-    long   last_switch_nano;
-    int    rid_start;
-    int    rid_end;
+    long last_switch_nano;
+    int rid_start;
+    int rid_end;
     yijinjing::PosHandlerPtr pos_handler;
 };
 
@@ -62,6 +62,7 @@ protected:
     virtual void on_order_send(LFInputOrderField* order, short source, int order_id, long after_nano, long before_nano) {};
     virtual void on_rtn_order(LFRtnOrderField* order, short source, int order_id, long rcv_time) {};
     virtual void on_rtn_trade(LFRtnTradeField* trade, short source, int order_id, long rcv_time) {};
+
 public:
     DataConsumer();
     void init(long start_nano, long end_nano);
@@ -71,6 +72,5 @@ public:
 DECLARE_PTR(DataConsumer);
 
 WC_NAMESPACE_END
-
 
 #endif //WINGCHUN_DATACONSUMER_H

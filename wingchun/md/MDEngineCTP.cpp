@@ -27,7 +27,12 @@
 
 USING_WC_NAMESPACE
 
-MDEngineCTP::MDEngineCTP(): IMDEngine(SOURCE_CTP), api(nullptr), connected(false), logged_in(false), reqId(0)
+MDEngineCTP::MDEngineCTP()
+    : IMDEngine(SOURCE_CTP)
+    , api(nullptr)
+    , connected(false)
+    , logged_in(false)
+    , reqId(0)
 {
     logger = yijinjing::KfLog::getLogger("MdEngine.CTP");
 }
@@ -57,7 +62,8 @@ void MDEngineCTP::connect(long timeout_nsec)
         api->Init();
         long start_time = yijinjing::getNanoTime();
         while (!connected && yijinjing::getNanoTime() - start_time < timeout_nsec)
-        {}
+        {
+        }
     }
 }
 
@@ -71,12 +77,14 @@ void MDEngineCTP::login(long timeout_nsec)
         strcpy(req.Password, password.c_str());
         if (api->ReqUserLogin(&req, reqId++))
         {
-            KF_LOG_ERROR(logger, "[request] login failed!" << " (Bid)" << req.BrokerID
-                                                           << " (Uid)" << req.UserID);
+            KF_LOG_ERROR(logger, "[request] login failed!"
+                                 << " (Bid)" << req.BrokerID
+                                 << " (Uid)" << req.UserID);
         }
         long start_time = yijinjing::getNanoTime();
         while (!logged_in && yijinjing::getNanoTime() - start_time < timeout_nsec)
-        {}
+        {
+        }
     }
 }
 
@@ -89,8 +97,9 @@ void MDEngineCTP::logout()
         strcpy(req.UserID, user_id.c_str());
         if (api->ReqUserLogout(&req, reqId++))
         {
-            KF_LOG_ERROR(logger, "[request] logout failed!" << " (Bid)" << req.BrokerID
-                                                            << " (Uid)" << req.UserID);
+            KF_LOG_ERROR(logger, "[request] logout failed!"
+                                 << " (Bid)" << req.BrokerID
+                                 << " (Uid)" << req.UserID);
         }
     }
     connected = false;
@@ -133,49 +142,53 @@ void MDEngineCTP::OnFrontDisconnected(int nReason)
 
 #define GBK2UTF8(msg) kungfu::yijinjing::gbk2utf8(string(msg))
 
-void MDEngineCTP::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void MDEngineCTP::OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspUserLogin]" << " (errID)" << pRspInfo->ErrorID
-                                                << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspUserLogin]"
+                             << " (errID)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspUserLogin]" << " (Bid)" << pRspUserLogin->BrokerID
-                                               << " (Uid)" << pRspUserLogin->UserID
-                                               << " (SName)" << pRspUserLogin->SystemName);
+        KF_LOG_INFO(logger, "[OnRspUserLogin]"
+                            << " (Bid)" << pRspUserLogin->BrokerID
+                            << " (Uid)" << pRspUserLogin->UserID
+                            << " (SName)" << pRspUserLogin->SystemName);
         logged_in = true;
     }
 }
 
-void MDEngineCTP::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void MDEngineCTP::OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspUserLogout]" << " (errID)" << pRspInfo->ErrorID
-                                                 << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspUserLogout]"
+                             << " (errID)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspUserLogout]" << " (Bid)" << pUserLogout->BrokerID
-                                                << " (Uid)" << pUserLogout->UserID);
+        KF_LOG_INFO(logger, "[OnRspUserLogout]"
+                            << " (Bid)" << pUserLogout->BrokerID
+                            << " (Uid)" << pUserLogout->UserID);
         logged_in = false;
     }
 }
 
-void MDEngineCTP::OnRspSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void MDEngineCTP::OnRspSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspSubMarketData]" << " (errID)" << pRspInfo->ErrorID
-                                                    << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg)
-                                                    << " (Tid)" << ((pSpecificInstrument != nullptr) ?
-                                                                    pSpecificInstrument->InstrumentID : "null"));
+        KF_LOG_ERROR(logger, "[OnRspSubMarketData]"
+                             << " (errID)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg)
+                             << " (Tid)" << ((pSpecificInstrument != nullptr) ? pSpecificInstrument->InstrumentID : "null"));
     }
 }
 
-void MDEngineCTP::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData)
+void MDEngineCTP::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
     auto data = parseFrom(*pDepthMarketData);
     on_market_data(&data);
@@ -185,13 +198,13 @@ void MDEngineCTP::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 }
 
 namespace py = pybind11;
-PYBIND11_MODULE(libctpmd,m)
+PYBIND11_MODULE(libctpmd, m)
 {
-    py::class_<MDEngineCTP, boost::shared_ptr<MDEngineCTP> >(m, "Engine")
-    .def(py::init<>())
-    .def("init", &MDEngineCTP::initialize)
-    .def("start", &MDEngineCTP::start)
-    .def("stop", &MDEngineCTP::stop)
-    .def("logout", &MDEngineCTP::logout)
-    .def("wait_for_stop", &MDEngineCTP::wait_for_stop);
+    py::class_<MDEngineCTP, boost::shared_ptr<MDEngineCTP>>(m, "Engine")
+        .def(py::init<>())
+        .def("init", &MDEngineCTP::initialize)
+        .def("start", &MDEngineCTP::start)
+        .def("stop", &MDEngineCTP::stop)
+        .def("logout", &MDEngineCTP::logout)
+        .def("wait_for_stop", &MDEngineCTP::wait_for_stop);
 }

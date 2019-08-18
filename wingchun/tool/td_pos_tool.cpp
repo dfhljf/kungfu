@@ -36,25 +36,25 @@ WC_NAMESPACE_START
 
 #define TIME_FORMAT "%Y%m%d-%H:%M:%S"
 
-        vector<string> split_text(string line)
+vector<string> split_text(string line)
 {
-string buff {""};
-vector<string> v;
-for (auto n: line)
-{
-if (n != ',' && n != ' ')
-{
-buff += n;
-}
-else if ((n == ',' || n == ' ') && buff != "")
-{
-v.push_back(buff);
-buff = "";
-}
-}
-if (buff.length() > 0)
-v.push_back(buff);
-return v;
+    string buff{""};
+    vector<string> v;
+    for (auto n : line)
+    {
+        if (n != ',' && n != ' ')
+        {
+            buff += n;
+        }
+        else if ((n == ',' || n == ' ') && buff != "")
+        {
+            v.push_back(buff);
+            buff = "";
+        }
+    }
+    if (buff.length() > 0)
+        v.push_back(buff);
+    return v;
 }
 
 void fill_data(PosHandlerPtr pos, vector<string>& data, int indice[])
@@ -98,12 +98,12 @@ bool set_pos_tool(const string& user_name, short source, const string& file_name
         string line;
         vector<string> data;
         bool started = false;
-        int number_idx[] = { -1/*net_tot*/, -1/*net_yd*/,
-                             -1/*long_tot*/, -1/*long_yd*/,
-                             -1/*short_tot*/, -1/*short_yd*/,
-                             -1/*net_amt*/, -1/*net_fee*/,
-                             -1/*long_amt*/, -1/*long_fee*/,
-                             -1/*short_amt*/, -1/*short_fee*/};
+        int number_idx[] = {-1 /*net_tot*/, -1 /*net_yd*/,
+                            -1 /*long_tot*/, -1 /*long_yd*/,
+                            -1 /*short_tot*/, -1 /*short_yd*/,
+                            -1 /*net_amt*/, -1 /*net_fee*/,
+                            -1 /*long_amt*/, -1 /*long_fee*/,
+                            -1 /*short_amt*/, -1 /*short_fee*/};
         while (std::getline(my_file, line))
         {
             data = split_text(line);
@@ -117,7 +117,7 @@ bool set_pos_tool(const string& user_name, short source, const string& file_name
                     {
                         for (int i = 0; i < 6; i++)
                         {
-                            number_idx[i] = i+1;
+                            number_idx[i] = i + 1;
                         }
                         fill_data(pos, data, number_idx);
                     }
@@ -245,7 +245,7 @@ bool get_pos_tool(const string& user_name, short source, bool print_raw, bool ne
         std::cout << "ok:\tNone" << std::endl;
     }
     std::cout << "-------" << std::endl;
-    for (auto ticker: tickers)
+    for (auto ticker : tickers)
     {
         std::cout << ticker;
         std::cout << "\t(net)" << pos->get_net_total(ticker) << "," << pos->get_net_yestd(ticker)
@@ -267,7 +267,7 @@ bool get_pos_tool(const string& user_name, short source, bool print_raw, bool ne
             if (is_csv)
             {
                 of << "ticker, net_tot, net_yd, long_tot, long_yd, short_tot, short_yd, net_amt, net_fee, long_amt, long_fee, short_amt, short_fee\n";
-                for (auto ticker: tickers)
+                for (auto ticker : tickers)
                 {
                     of << ticker << ", " << pos->get_net_total(ticker) << ", " << pos->get_net_yestd(ticker)
                        << ", " << pos->get_long_total(ticker) << ", " << pos->get_long_yestd(ticker)
@@ -312,9 +312,9 @@ void list_user_folder()
         std::cout << "+----------------+--------------+" << std::endl;
         std::cout << "| strategy_name  | source       |" << std::endl;
         std::cout << "+----------------+--------------+" << std::endl;
-        for ( boost::filesystem::directory_iterator itr( TD_USER_INFO_FOLDER );
-              itr != end_itr;
-              ++itr )
+        for (boost::filesystem::directory_iterator itr(TD_USER_INFO_FOLDER);
+             itr != end_itr;
+             ++itr)
         {
             if (boost::filesystem::is_regular_file(itr->status()))
             {
@@ -338,18 +338,17 @@ void list_user_folder()
                             unrelated_files.push_back(filename);
                         }
                     }
-                    catch(...)
+                    catch (...)
                     {
                         unrelated_files.push_back(filename);
                     }
-
                 }
             }
         }
         if (unrelated_files.size() > 0)
         {
             std::cout << "Unexpected files in folder " << TD_USER_INFO_FOLDER << ":\n";
-            for (auto fn: unrelated_files)
+            for (auto fn : unrelated_files)
                 std::cout << "\t" << fn << std::endl;
         }
     }
@@ -362,17 +361,7 @@ USING_WC_NAMESPACE
 int main(int argc, const char* argv[])
 {
     options_description desc{"Options"};
-    desc.add_options()
-            ("help,h", "Help screen")
-            ("type,t", value<string>(), "type (\"set\"/\"get\")")
-            ("source,s", value<int>(), "source index (eg CTP=1)")
-            ("name,n", value<string>(), "strategy name")
-            ("output,o", "output to file")
-            ("raw,r", "print raw data")
-            ("detail,d", "print user info details")
-            ("list,l", "list all files")
-            ("json,j", value<string>(), "json_file")
-            ("csv,c", value<string>(), "csv_file format:\nticker, net_tot, net_yd, long_tot, long_yd, short_tot, short_yd");
+    desc.add_options()("help,h", "Help screen")("type,t", value<string>(), "type (\"set\"/\"get\")")("source,s", value<int>(), "source index (eg CTP=1)")("name,n", value<string>(), "strategy name")("output,o", "output to file")("raw,r", "print raw data")("detail,d", "print user info details")("list,l", "list all files")("json,j", value<string>(), "json_file")("csv,c", value<string>(), "csv_file format:\nticker, net_tot, net_yd, long_tot, long_yd, short_tot, short_yd");
 
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -482,7 +471,6 @@ int main(int argc, const char* argv[])
                 {
                     get_pos_tool(name, source, vm.count("raw") > 0, vm.count("detail") > 0, true, false, json_file);
                 }
-
             }
             // get mode
             get_pos_tool(name, source, vm.count("raw") > 0, vm.count("detail") > 0, false, false, "");

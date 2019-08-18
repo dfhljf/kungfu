@@ -39,8 +39,8 @@ const short MSG_TYPE_MD_ENGINE_OPEN = 32;
 const short MSG_TYPE_MD_ENGINE_CLOSE = 33;
 const short MSG_TYPE_SWITCH_TRADING_DAY = 34;
 const short MSG_TYPE_STRING_COMMAND = 35;
-const short MSG_TYPE_START_DAY=36;
-const short MSG_TYPE_END_DAY=37;
+const short MSG_TYPE_START_DAY = 36;
+const short MSG_TYPE_END_DAY = 37;
 // 50 - 89 utilities
 const short MSG_TYPE_TIME_TICK = 50;
 const short MSG_TYPE_SUBSCRIBE_MARKET_DATA = 51;

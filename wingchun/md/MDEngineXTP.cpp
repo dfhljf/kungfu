@@ -30,9 +30,17 @@ USING_WC_NAMESPACE
 
 #define GBK2UTF8(msg) kungfu::yijinjing::gbk2utf8(string(msg))
 
-MDEngineXTP::MDEngineXTP(): IMDEngine(SOURCE_XTP),
-    api(nullptr), client_id(1), front_port(-1), udp_buffer_size(0), gateway_log_level(0),
-    connected(false), logged_in(false), reqId(0), to_dump_static_info(false)
+MDEngineXTP::MDEngineXTP()
+    : IMDEngine(SOURCE_XTP)
+    , api(nullptr)
+    , client_id(1)
+    , front_port(-1)
+    , udp_buffer_size(0)
+    , gateway_log_level(0)
+    , connected(false)
+    , logged_in(false)
+    , reqId(0)
+    , to_dump_static_info(false)
 {
     logger = yijinjing::KfLog::getLogger("MdEngine.XTP");
 }
@@ -45,7 +53,7 @@ void MDEngineXTP::load(const json& j_config)
     front_ip = j_config["Ip"].get<string>();
     front_port = j_config["Port"].get<int>();
     udp_buffer_size = j_config.value("UdpBufferSize", 0);
-    if(udp_buffer_size > 0)
+    if (udp_buffer_size > 0)
     {
         KF_LOG_INFO(logger, "[Protocol] UDP (buffer_size)" << udp_buffer_size);
     }
@@ -108,9 +116,9 @@ void MDEngineXTP::connect(long timeout_nsec)
     if (!connected)
     {
         XTP_PROTOCOL_TYPE protocol_type = udp_buffer_size > 0 ? XTP_PROTOCOL_UDP : XTP_PROTOCOL_TCP;
-        if(XTP_PROTOCOL_UDP == protocol_type)
+        if (XTP_PROTOCOL_UDP == protocol_type)
         {
-            api->SetUDPBufferSize(udp_buffer_size);//设置UDP接收缓冲区大小，单位为MB
+            api->SetUDPBufferSize(udp_buffer_size); //设置UDP接收缓冲区大小，单位为MB
         }
         int res = api->Login(front_ip.c_str(), front_port, user_id.c_str(), password.c_str(), protocol_type);
         if (res != 0)
@@ -165,8 +173,9 @@ void MDEngineXTP::logout()
         if (res != 0)
         {
             XTPRI* error_info = api->GetApiLastError();
-            KF_LOG_ERROR(logger, "[request] logout failed!" << " (errId)" << error_info->error_id
-                                                            << " (errMsg)" << GBK2UTF8(error_info->error_msg));
+            KF_LOG_ERROR(logger, "[request] logout failed!"
+                                 << " (errId)" << error_info->error_id
+                                 << " (errMsg)" << GBK2UTF8(error_info->error_msg));
         }
         else
         {
@@ -188,7 +197,7 @@ void MDEngineXTP::release_api()
 
 void MDEngineXTP::subscribeMarketData(const vector<string>& instruments, const vector<string>& markets)
 {
-    map<byte, vector<string> > ticker_map;
+    map<byte, vector<string>> ticker_map;
     for (size_t i = 0; i < markets.size(); i++)
     {
         const string& market = markets[i];
@@ -210,11 +219,11 @@ void MDEngineXTP::subscribeMarketData(const vector<string>& instruments, const v
             ticker_map[exId].push_back(instruments[i]);
         }
     }
-    for (auto iter: ticker_map)
+    for (auto iter : ticker_map)
     {
         vector<string>& tickers = iter.second;
         int nCount = tickers.size();
-        char* *insts = new char*[nCount];
+        char** insts = new char* [nCount];
         for (size_t i = 0; i < tickers.size(); i++)
         {
             insts[i] = (char*)tickers[i].c_str();
@@ -234,28 +243,29 @@ void MDEngineXTP::OnDisconnected(int reason)
     logged_in = false;
 }
 
-void MDEngineXTP::OnSubMarketData(XTPST *ticker, XTPRI *error_info, bool is_last)
+void MDEngineXTP::OnSubMarketData(XTPST* ticker, XTPRI* error_info, bool is_last)
 {
     if (error_info != nullptr && error_info->error_id != 0)
     {
-        KF_LOG_ERROR(logger, "[OnSubMarketData]" << " (errID)" << error_info->error_id
-                                                 << " (errMsg)" << GBK2UTF8(error_info->error_msg)
-                                                 << " (Tid)" << ((ticker != nullptr) ?
-                                                                 ticker->ticker : "null"));
+        KF_LOG_ERROR(logger, "[OnSubMarketData]"
+                             << " (errID)" << error_info->error_id
+                             << " (errMsg)" << GBK2UTF8(error_info->error_msg)
+                             << " (Tid)" << ((ticker != nullptr) ? ticker->ticker : "null"));
     }
 }
 
-void MDEngineXTP::OnError(XTPRI *error_info,bool is_last)
+void MDEngineXTP::OnError(XTPRI* error_info, bool is_last)
 {
     if (error_info != nullptr && error_info->error_id != 0)
     {
-        KF_LOG_ERROR(logger, "[OnError]" << " (errID)" << error_info->error_id
-                                         << " (errMsg)" << GBK2UTF8(error_info->error_msg)
-                                         << " (isLast)" << is_last);
+        KF_LOG_ERROR(logger, "[OnError]"
+                             << " (errID)" << error_info->error_id
+                             << " (errMsg)" << GBK2UTF8(error_info->error_msg)
+                             << " (isLast)" << is_last);
     }
 }
 
-void MDEngineXTP::OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int32_t bid1_count, int32_t max_bid1_count, int64_t ask1_qty[], int32_t ask1_count, int32_t max_ask1_count)
+void MDEngineXTP::OnDepthMarketData(XTPMD* market_data, int64_t bid1_qty[], int32_t bid1_count, int32_t max_bid1_count, int64_t ask1_qty[], int32_t ask1_count, int32_t max_ask1_count)
 {
     auto data = parseFrom(*market_data);
     on_market_data(&data);
@@ -264,25 +274,26 @@ void MDEngineXTP::OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int3
     //                         source_id, MSG_TYPE_LF_MD_CTP, 1/*islast*/, -1/*invalidRid*/);
 }
 
-void MDEngineXTP::OnQueryAllTickers(XTPQSI* ticker_info, XTPRI *error_info, bool is_last)
+void MDEngineXTP::OnQueryAllTickers(XTPQSI* ticker_info, XTPRI* error_info, bool is_last)
 {
     if (error_info != nullptr && error_info->error_id != 0)
     {
-        KF_LOG_ERROR(logger, "[OnQueryAllTickers] FAILED" << " (errID)" << error_info->error_id
-                                                          << " (errMsg)" << GBK2UTF8(error_info->error_msg)
-                                                          << " (isLast)" << is_last);
+        KF_LOG_ERROR(logger, "[OnQueryAllTickers] FAILED"
+                             << " (errID)" << error_info->error_id
+                             << " (errMsg)" << GBK2UTF8(error_info->error_msg)
+                             << " (isLast)" << is_last);
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnQueryAllTickers] (exchange_id)"<<ticker_info->exchange_id
-                                                               << " (ticker)" <<ticker_info->ticker
-                                                               << " (ticker_name)" <<ticker_info->ticker_name
-                                                               << " (ticker_type)" <<ticker_info->ticker_type
-                                                               << " (pre_close_price)" <<ticker_info->pre_close_price
-                                                               << " (upper_limit_price)" <<ticker_info->upper_limit_price
-                                                               << " (lower_limit_price)" <<ticker_info->lower_limit_price
-                                                               << " (buy_qty_unit)" <<ticker_info->buy_qty_unit
-                                                               << " (sell_qty_unit)" <<ticker_info->sell_qty_unit);
+        KF_LOG_INFO(logger, "[OnQueryAllTickers] (exchange_id)" << ticker_info->exchange_id
+                                                                << " (ticker)" << ticker_info->ticker
+                                                                << " (ticker_name)" << ticker_info->ticker_name
+                                                                << " (ticker_type)" << ticker_info->ticker_type
+                                                                << " (pre_close_price)" << ticker_info->pre_close_price
+                                                                << " (upper_limit_price)" << ticker_info->upper_limit_price
+                                                                << " (lower_limit_price)" << ticker_info->lower_limit_price
+                                                                << " (buy_qty_unit)" << ticker_info->buy_qty_unit
+                                                                << " (sell_qty_unit)" << ticker_info->sell_qty_unit);
     }
 }
 
@@ -290,11 +301,11 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(libxtpmd, m)
 {
-    py::class_<MDEngineXTP, boost::shared_ptr<MDEngineXTP> >(m, "Engine")
-    .def(py::init<>())
-    .def("init", &MDEngineXTP::initialize)
-    .def("start", &MDEngineXTP::start)
-    .def("stop", &MDEngineXTP::stop)
-    .def("logout", &MDEngineXTP::logout)
-    .def("wait_for_stop", &MDEngineXTP::wait_for_stop);
+    py::class_<MDEngineXTP, boost::shared_ptr<MDEngineXTP>>(m, "Engine")
+        .def(py::init<>())
+        .def("init", &MDEngineXTP::initialize)
+        .def("start", &MDEngineXTP::start)
+        .def("stop", &MDEngineXTP::stop)
+        .def("logout", &MDEngineXTP::logout)
+        .def("wait_for_stop", &MDEngineXTP::wait_for_stop);
 }

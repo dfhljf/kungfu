@@ -29,61 +29,64 @@ WC_NAMESPACE_START
 
 struct OrderLatencyUnit
 {
-    int     order_id;
-    string  ticker;
-    double  price;
-    int     volume;
-    char    direction;
-    char    offset;
+    int order_id;
+    string ticker;
+    double price;
+    int volume;
+    char direction;
+    char offset;
     // to update
-    char    order_status;
+    char order_status;
     // proceeding
-    int     number_rtn_order;
-    int     number_rtn_trade;
+    int number_rtn_order;
+    int number_rtn_trade;
     // time
-    long    md_time;
-    long    oe_time;
-    long    send_before_time;
-    long    send_after_time;
-    long    rsp_time;
-    long    first_rtn_order_time;
-    long    first_rtn_trade_time;
+    long md_time;
+    long oe_time;
+    long send_before_time;
+    long send_after_time;
+    long rsp_time;
+    long first_rtn_order_time;
+    long first_rtn_trade_time;
 
-    OrderLatencyUnit(): order_id(0),
-                        price(0.0),
-                        volume(0),
-                        number_rtn_order(0),
-                        number_rtn_trade(0),
-                        md_time(-1),
-                        oe_time(-1),
-                        send_before_time(-1),
-                        send_after_time(-1),
-                        rsp_time(-1),
-                        first_rtn_order_time(-1),
-                        first_rtn_trade_time(-1){};
+    OrderLatencyUnit()
+        : order_id(0)
+        , price(0.0)
+        , volume(0)
+        , number_rtn_order(0)
+        , number_rtn_trade(0)
+        , md_time(-1)
+        , oe_time(-1)
+        , send_before_time(-1)
+        , send_after_time(-1)
+        , rsp_time(-1)
+        , first_rtn_order_time(-1)
+        , first_rtn_trade_time(-1) {};
 };
 
-class StrategyBasicDataConsumer: public DataConsumer
+class StrategyBasicDataConsumer : public DataConsumer
 {
 protected:
     StrategyUnit unit;
     int cur_session;
     int tar_session;
     string strategy_name;
+
 protected:
     virtual void on_strategy_start(json& j_start, long rcv_time, const string& name);
     virtual void on_strategy_end(json& j_end, long rcv_time, const string& name);
+
 public:
-    StrategyBasicDataConsumer(const string& strategy_name, int target_session_id=-1);
+    StrategyBasicDataConsumer(const string& strategy_name, int target_session_id = -1);
 };
 
-class StrategyDataConsumer: public StrategyBasicDataConsumer
+class StrategyDataConsumer : public StrategyBasicDataConsumer
 {
 protected:
     /** order latency information map */
     map<int, OrderLatencyUnit> order_map;
     /** map[order_id-> map[rcv_time-> RTN_TRADE] ] */
-    map<int, map<long, LFRtnTradeField> > rtn_trade_map;
+    map<int, map<long, LFRtnTradeField>> rtn_trade_map;
 
 protected:
     virtual void on_pos_set(json& j_pos, short source, long rcv_time, const string& name);

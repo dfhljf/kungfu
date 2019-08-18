@@ -28,7 +28,7 @@
 
 WC_NAMESPACE_START
 
-class MDEngineCTP: public IMDEngine, public CThostFtdcMdSpi
+class MDEngineCTP : public IMDEngine, public CThostFtdcMdSpi
 {
 public:
     /** load internal information from config json */
@@ -38,9 +38,18 @@ public:
     virtual void logout();
     virtual void release_api();
     virtual void subscribeMarketData(const vector<string>& instruments, const vector<string>& markets);
-    virtual bool is_connected() const { return connected; };
-    virtual bool is_logged_in() const { return logged_in; };
-    virtual string name() const { return "MDEngineCTP"; };
+    virtual bool is_connected() const
+    {
+        return connected;
+    };
+    virtual bool is_logged_in() const
+    {
+        return logged_in;
+    };
+    virtual string name() const
+    {
+        return "MDEngineCTP";
+    };
 
 public:
     MDEngineCTP();
@@ -56,7 +65,7 @@ private:
     // internal flags
     bool connected;
     bool logged_in;
-    int  reqId;
+    int reqId;
 
 public:
     // SPI
@@ -73,16 +82,16 @@ public:
     virtual void OnFrontDisconnected(int nReason);
 
     ///登录请求响应
-    virtual void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///登出请求响应
-    virtual void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///订阅行情应答
-    virtual void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///深度行情通知
-    virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData);
+    virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData);
 };
 
 DECLARE_PTR(MDEngineCTP);

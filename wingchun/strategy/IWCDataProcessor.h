@@ -47,7 +47,7 @@ public:
     /* trade data */
     virtual void on_rtn_order(const LFRtnOrderField* data, int request_id, short source, long rcv_time) = 0;
     virtual void on_rtn_trade(const LFRtnTradeField* data, int request_id, short source, long rcv_time) = 0;
-    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId=0, const char* errorMsg=nullptr) = 0;
+    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId = 0, const char* errorMsg = nullptr) = 0;
     virtual void on_rsp_position(const PosHandlerPtr posMap, int request_id, short source, long rcv_time) = 0;
     /* system utilities */
     virtual void on_switch_day(long rcv_time) = 0;
@@ -60,7 +60,10 @@ public:
     /* signal received */
     static volatile int signal_received;
     /* signal handler */
-    static void signal_handler(int signum) { signal_received = signum; }
+    static void signal_handler(int signum)
+    {
+        signal_received = signum;
+    }
 };
 
 WC_NAMESPACE_END

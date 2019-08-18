@@ -36,54 +36,54 @@ YJJ_NAMESPACE_START
 
 // data types of all fields in frame header
 // which need to be fully controlled for data length.
-typedef byte    FH_TYPE_STATUS;
-typedef short   FH_TYPE_SOURCE;
-typedef long    FH_TYPE_NANOTM;
-typedef int     FH_TYPE_LENGTH;
-typedef uint    FH_TYPE_HASHNM;
-typedef short   FH_TYPE_MSG_TP;
-typedef byte    FH_TYPE_LASTFG;
-typedef int     FH_TYPE_REQ_ID;
-typedef int     FH_TYPE_ERR_ID;
+typedef byte FH_TYPE_STATUS;
+typedef short FH_TYPE_SOURCE;
+typedef long FH_TYPE_NANOTM;
+typedef int FH_TYPE_LENGTH;
+typedef uint FH_TYPE_HASHNM;
+typedef short FH_TYPE_MSG_TP;
+typedef byte FH_TYPE_LASTFG;
+typedef int FH_TYPE_REQ_ID;
+typedef int FH_TYPE_ERR_ID;
 
 //////////////////////////////////////////
 /// (byte) JournalFrameStatus
 //////////////////////////////////////////
-#define JOURNAL_FRAME_STATUS_RAW        0
-#define JOURNAL_FRAME_STATUS_WRITTEN    1
-#define JOURNAL_FRAME_STATUS_PAGE_END   2
+#define JOURNAL_FRAME_STATUS_RAW 0
+#define JOURNAL_FRAME_STATUS_WRITTEN 1
+#define JOURNAL_FRAME_STATUS_PAGE_END 2
 
 //////////////////////////////////////////
 /// (byte) JournalFrameLastFlag
 //////////////////////////////////////////
-#define JOURNAL_FRAME_NOT_LAST          0 /**< false */
-#define JOURNAL_FRAME_IS_LAST           1 /**< true */
+#define JOURNAL_FRAME_NOT_LAST 0 /**< false */
+#define JOURNAL_FRAME_IS_LAST 1 /**< true */
 
 struct FrameHeader
 {
     /** JournalFrameStatus */
-    volatile FH_TYPE_STATUS      status;
+    volatile FH_TYPE_STATUS status;
     /** source (system id) of this frame */
-    FH_TYPE_SOURCE      source;
+    FH_TYPE_SOURCE source;
     /** nano time of the frame data */
-    FH_TYPE_NANOTM      nano;
+    FH_TYPE_NANOTM nano;
     /** total frame length (including header and errorMsg) */
-    FH_TYPE_LENGTH      length;
+    FH_TYPE_LENGTH length;
     /** hash code of data part (not whole frame) */
-    FH_TYPE_HASHNM      hash;
+    FH_TYPE_HASHNM hash;
     /** msg type of the data in frame */
-    FH_TYPE_MSG_TP      msg_type;
+    FH_TYPE_MSG_TP msg_type;
     /** JournalFrameLastFlag */
-    FH_TYPE_LASTFG      last_flag;
+    FH_TYPE_LASTFG last_flag;
     /** request id of this frame data */
-    FH_TYPE_REQ_ID      req_id;
+    FH_TYPE_REQ_ID req_id;
     /** extra nano time for usage.
      * example: reference md_nano for order / exanic net nano */
-    FH_TYPE_NANOTM      extra_nano;
+    FH_TYPE_NANOTM extra_nano;
     /** error id
      * =0 if not error and no errorMsg,
      * !=0 means some info in errorMsg */
-    FH_TYPE_ERR_ID      err_id;
+    FH_TYPE_ERR_ID err_id;
 } __attribute__((packed));
 
 /** length of frame header */

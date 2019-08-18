@@ -27,7 +27,7 @@
 
 USING_YJJ_NAMESPACE
 
-        JournalPtr Journal::create(const string &dir, const string &jname, int serviceIdx, IPageProviderPtr provider)
+JournalPtr Journal::create(const string& dir, const string& jname, int serviceIdx, IPageProviderPtr provider)
 {
     JournalPtr jp = JournalPtr(new Journal());
     jp->pageProvider = provider;
@@ -78,7 +78,7 @@ void Journal::loadNextPage()
         curPage = pageProvider->getPage(directory, shortName, serviceIdx, 1);
     }
     else
-    {   // allocate new page
+    { // allocate new page
         PagePtr newPage = pageProvider->getPage(directory, shortName, serviceIdx, curPage->getPageNum() + 1);
         // stop current page
         if (isWriting)

@@ -34,70 +34,89 @@ class PstBase
 {
 public:
     virtual void go() {};
-    virtual string getName() const { return "Base"; };
+    virtual string getName() const
+    {
+        return "Base";
+    };
     //virtual pybind11::dict getInfo() const { return pybind11::dict(); }
     virtual ~PstBase() {};
 };
 DECLARE_PTR(PstBase)
 
-class PstPidCheck: public PstBase
+class PstPidCheck : public PstBase
 {
 public:
     PstPidCheck(PageEngine* pe);
     void go();
-    string getName() const { return "PidCheck"; }
+    string getName() const
+    {
+        return "PidCheck";
+    }
+
 private:
     PageEngine* engine;
 };
 DECLARE_PTR(PstPidCheck)
 
-class PstTimeTick: public PstBase
+class PstTimeTick : public PstBase
 {
 public:
     PstTimeTick(PageEngine* pe);
     void go();
-    string getName() const { return "TimeTick"; }
+    string getName() const
+    {
+        return "TimeTick";
+    }
+
 private:
     PageEngine* engine;
 };
 DECLARE_PTR(PstTimeTick)
 
-class PstTempPage: public PstBase
+class PstTempPage : public PstBase
 {
 public:
     static const string PageFullPath;
     PstTempPage(PageEngine* pe);
     void go();
-    string getName() const { return "TempPage"; }
+    string getName() const
+    {
+        return "TempPage";
+    }
+
 private:
     PageEngine* engine;
 };
 DECLARE_PTR(PstTempPage)
 
-#define CONTROLLER_SWITCH_DAY   1
-#define CONTROLLER_ENGINE_STARTS    2
-#define CONTROLLER_ENGINE_ENDS      3
-#define CONTROLLER_START_DAY       4
-#define CONTROLLER_END_DAY          5
-
-class PstKfController: public PstBase
-{
-public:
-    PstKfController(PageEngine* pe);
-    void go();
-    string getName() const { return "KfController"; }
-    //pybind11::dict getInfo() const;
-    void setDaySwitch(long time);
-    void setStartDay(long time);
-    void setEndDay(long time);
-    void addEngineStart(long time);
-    void addEngineEnd(long time);
-private:
-    PageEngine* engine;
-    vector<long> next_nanos;
-    vector<short> nano_types;
-};
-DECLARE_PTR(PstKfController)
+//#define CONTROLLER_SWITCH_DAY 1
+//#define CONTROLLER_ENGINE_STARTS 2
+//#define CONTROLLER_ENGINE_ENDS 3
+//#define CONTROLLER_START_DAY 4
+//#define CONTROLLER_END_DAY 5
+//
+//class PstKfController : public PstBase
+//{
+//public:
+//    PstKfController(PageEngine* pe);
+//    void go();
+//    string getName() const
+//    {
+//        return "KfController";
+//    }
+//    //pybind11::dict getInfo() const;
+//    void setDaySwitch(long time);
+//    void setStartDay(long time);
+//    void setEndDay(long time);
+//    void addEngineStart(long time);
+//    void addEngineEnd(long time);
+//
+//private:
+//    PageEngine* engine;
+//    vector<long> next_nanos;
+//    vector<short> nano_types;
+//};
+//DECLARE_PTR(PstKfController)
 
 YJJ_NAMESPACE_END
 

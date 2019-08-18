@@ -32,17 +32,18 @@ USING_YJJ_NAMESPACE
 //    return {PAGED_JOURNAL_FOLDER, PAGED_JOURNAL_NAME};
 //}
 
-void JournalFinder::addJournalInfo(const std::string & name, const std::string & folder) {
+void JournalFinder::addJournalInfo(const std::string& name, const std::string& folder)
+{
     all_journal[name] = folder;
     all_journal_names.push_back(name);
 
     vector<short> pageNums = PageUtil::GetPageNums(folder, name);
-    if (!pageNums.empty()) {
+    if (!pageNums.empty())
+    {
         avaliable_journal_names.push_back(name);
         avaliable_journal_folders.push_back(folder);
     }
 }
-
 
 //void JournalFinder::loadJournalInfo(short source, JournalPair (*getJournalPair)(short)) {
 //    JournalPair pair = getJournalPair(source);
@@ -58,34 +59,37 @@ void JournalFinder::addJournalInfo(const std::string & name, const std::string &
 //    }
 //}
 
-void JournalFinder::loadJournalInfo(config::ApiType source) {
-    
-    auto name=config::to_string(source);
-    addJournalInfo("MD_"+name,KUNGFU_JOURNAL_FOLDER+"MD/"+name+"/");
-    addJournalInfo("TD_"+name,KUNGFU_JOURNAL_FOLDER+"TD/"+name+"/");
+void JournalFinder::loadJournalInfo(config::ApiType source)
+{
+
+    auto name = config::to_string(source);
+    addJournalInfo("MD_" + name, KUNGFU_JOURNAL_FOLDER + "MD/" + name + "/");
+    addJournalInfo("TD_" + name, KUNGFU_JOURNAL_FOLDER + "TD/" + name + "/");
 }
 
-JournalFinder::JournalFinder() {
+JournalFinder::JournalFinder()
+{
     //loadJournalInfo(config::ApiType::CTP);
     //loadJournalInfo(SOURCE_XTP);
 
-    addJournalInfo("SYSTEM",KUNGFU_JOURNAL_FOLDER+"system/");
-    
+    addJournalInfo("SYSTEM", KUNGFU_JOURNAL_FOLDER + "system/");
 
     boost::filesystem::path bl_journal_folder(BL_BASE_FOLDER);
     boost::regex pattern(JOURNAL_NAME_PATTERN);
     vector<short> res;
     boost::unordered_set<string> strategy_names;
     //for (auto &file : boost::filesystem::directory_iterator(bl_journal_folder)) {
-        boost::filesystem::directory_iterator end_iter;
-    
-    for(boost::filesystem::directory_iterator iter(bl_journal_folder);iter!=end_iter;++iter)
+    boost::filesystem::directory_iterator end_iter;
+
+    for (boost::filesystem::directory_iterator iter(bl_journal_folder); iter != end_iter; ++iter)
     {
         std::string filename = iter->path().filename().string();
         boost::smatch result;
-        if (boost::regex_match(filename, result, pattern)) {
+        if (boost::regex_match(filename, result, pattern))
+        {
             std::string journal_name(result[1].first, result[1].second);
-            if (strategy_names.find(journal_name) == strategy_names.end()) {
+            if (strategy_names.find(journal_name) == strategy_names.end())
+            {
                 addJournalInfo(journal_name, BL_BASE_FOLDER);
                 strategy_names.insert(journal_name);
             }

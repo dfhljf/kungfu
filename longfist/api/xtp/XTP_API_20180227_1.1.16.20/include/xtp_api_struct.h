@@ -12,4 +12,3 @@
 #include "xoms_api_fund_struct.h"
 
 #endif // !_XTP_API_STRUCT_H_
-

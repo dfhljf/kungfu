@@ -31,13 +31,14 @@ WC_NAMESPACE_START
 
 using yijinjing::KfLogPtr;
 
-class IWCStrategy: public IWCDataProcessor
+class IWCStrategy : public IWCDataProcessor
 {
 protected:
     bool td_is_ready(short source) const;
     bool td_is_connected(short source) const;
+
 public:
-    /** IWCDataProcessor functions *//* market data */
+    /** IWCDataProcessor functions */ /* market data */
     virtual void on_market_data(const LFMarketDataField* data, short source, long rcv_time);
     virtual void on_market_data_level2(const LFL2MarketDataField* data, short source, long rcv_time);
     virtual void on_l2_index(const LFL2IndexField* data, short source, long rcv_time);
@@ -47,16 +48,22 @@ public:
     /* trade data */
     virtual void on_rtn_order(const LFRtnOrderField* data, int request_id, short source, long rcv_time);
     virtual void on_rtn_trade(const LFRtnTradeField* data, int request_id, short source, long rcv_time);
-    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId=0, const char* errorMsg=nullptr);
+    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId = 0, const char* errorMsg = nullptr);
     virtual void on_rsp_position(const PosHandlerPtr posMap, int request_id, short source, long rcv_time);
     /* system utilities */
     virtual void on_switch_day(long rcv_time);
     virtual void on_time(long cur_time);
     virtual void on_td_login(bool ready, const json& js, short source);
     /* on log */
-    virtual void debug(const char* msg) { KF_LOG_DEBUG(logger, msg); };
+    virtual void debug(const char* msg)
+    {
+        KF_LOG_DEBUG(logger, msg);
+    };
     /* get name */
-    virtual string get_name() const { return name; };
+    virtual string get_name() const
+    {
+        return name;
+    };
 
     /**
      * setup data wrapper

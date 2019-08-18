@@ -35,17 +35,17 @@ using kungfu::yijinjing::FeeHandler;
 class WCStrategyUtil;
 
 /** unknown, as default value */
-#define CONNECT_TD_STATUS_UNKNOWN   0
+#define CONNECT_TD_STATUS_UNKNOWN 0
 /** td connect just added */
-#define CONNECT_TD_STATUS_ADDED     1
+#define CONNECT_TD_STATUS_ADDED 1
 /** td connect requested */
 #define CONNECT_TD_STATUS_REQUESTED 2
 /** got td ack msg, with valid pos */
-#define CONNECT_TD_STATUS_ACK_POS   3
+#define CONNECT_TD_STATUS_ACK_POS 3
 /** got td ack msg, no valid pos */
-#define CONNECT_TD_STATUS_ACK_NONE  4
+#define CONNECT_TD_STATUS_ACK_NONE 4
 /** got td ack msg, set back */
-#define CONNECT_TD_STATUS_SET_BACK  5
+#define CONNECT_TD_STATUS_SET_BACK 5
 
 /** BarIntervalMaps: from min_interval -> BarMdMap */
 typedef map<int, BarMdMap> BarIntervalMaps;
@@ -77,7 +77,10 @@ public:
     WCDataWrapper(IWCDataProcessor* processor,
                   WCStrategyUtil* util);
 
-    void disable_auto_sub_mode() { auto_sub_mode_enabled = false; };
+    void disable_auto_sub_mode()
+    {
+        auto_sub_mode_enabled = false;
+    };
     /** add market data */
     void add_market_data(short source);
     /** register td */
@@ -101,7 +104,7 @@ public:
     /** get td status */
     byte get_td_status(short source) const;
     /** get ticker status */
-    double get_ticker_pnl(short source, string ticker, bool include_fee=true) const;
+    double get_ticker_pnl(short source, string ticker, bool include_fee = true) const;
     /** get effective orders */
     vector<int> get_effective_orders() const;
 
@@ -117,13 +120,13 @@ protected:
     /** fee handler from td */
     map<short, FeeHandlerPtr> fee_handlers;
 
-    BarMdManager        bars;
-    vector<string>      folders;
-    vector<string>      names;
-    map<short, byte>    tds;
-    JournalReaderPtr    reader;
-    IWCDataProcessor*   processor;
-    WCStrategyUtil*     util;
+    BarMdManager bars;
+    vector<string> folders;
+    vector<string> names;
+    map<short, byte> tds;
+    JournalReaderPtr reader;
+    IWCDataProcessor* processor;
+    WCStrategyUtil* util;
     int rid_start;
     int rid_end;
     bool force_stop;

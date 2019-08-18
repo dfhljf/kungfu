@@ -52,35 +52,36 @@ struct PageClientInfo
     /** the index of each user linked by this client */
     vector<int> user_index_vec;
     /** register nano time */
-    long  reg_nano;
+    long reg_nano;
     /** process id */
-    int   pid;
+    int pid;
     /** hash code for the client */
-    int   hash_code;
+    int hash_code;
     /** true if this client is a writer */
-    bool  is_writing;
+    bool is_writing;
     /** true if this writer is associated with a strategy */
-    bool  is_strategy;
+    bool is_strategy;
     /** start rid of the strategy (strategy only) */
-    int   rid_start;
+    int rid_start;
     /** end rid of the strategy (strategy only) */
-    int   rid_end;
+    int rid_end;
     /** all sources of trade engine that registered (strategy only) */
     vector<short> trade_engine_vec;
 };
 
-class PageEngine: public IPageSocketUtil
+class PageEngine : public IPageSocketUtil
 {
     friend class PstPidCheck;
     friend class PstTimeTick;
     friend class PstTempPage;
-    friend class PstKfController;
+    //    friend class PstKfController;
+
 private:
     // internal data structures. be careful on its thread-safety
     /** map: client -> all info (all journal usage) */
     map<string, PageClientInfo> clientJournals;
     /** map: pid -> client */
-    map<int, vector<string> > pidClient;
+    map<int, vector<string>> pidClient;
     /** map: file attached with number of writers */
     map<PageCommMsg, int> fileWriterCounts;
     /** map: file attached with number of readers */
@@ -98,6 +99,7 @@ public:
 
     /** start paged service, mainly start tasks */
     void start();
+    void startTask();
     /** sync stop paged service */
     void stop();
 
@@ -111,35 +113,42 @@ public:
     bool remove_task_by_name(string taskName);
 
     /** write string content to system journal */
-    bool write(string content, byte msg_type, bool is_last=true, short source=0);
+    bool write(const void* data, FH_TYPE_LENGTH length, FH_TYPE_SOURCE source, FH_TYPE_MSG_TP msgType, FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId);
+    bool write(string content, short msg_type, bool is_last = true, short source = 0);
     /** return true if msg is written in system journal */
-    bool switch_trading_day();
+    //  bool switch_trading_day();
     /** get status in python dictionary */
- //   py::dict  getStatus() const;
+    //   py::dict  getStatus() const;
 
 public:
     // functions required by IPageSocketUtil
-    KfLogPtr get_logger() const { return logger; }
-    int     reg_journal(const string& clientName);
-    IntPair register_strategy(const string& strategyName);
-    bool    reg_client(string& commFile, int& fileSize, int& hashCode, const string& clientName, int pid, bool isWriter);
-    void    exit_client(const string& clientName, int hashCode, bool needHashCheck);
-    bool    sub_md(const vector<string>& tickers, short source, short msgType, bool isLast);
-    bool    login_td(const string& clientName, short source);
-    void    acquire_mutex() const;
-    void    release_mutex() const;
-    void    set_last_switch_nano(long nano) { last_switch_nano = nano; }
+    KfLogPtr get_logger() const
+    {
+        return logger;
+    }
+    int reg_journal(const string& clientName);
+    //IntPair register_strategy(const string& strategyName);
+    bool reg_client(string& commFile, int& fileSize, int& hashCode, const string& clientName, int pid, bool isWriter);
+    void exit_client(const string& clientName, int hashCode, bool needHashCheck);
+    //bool sub_md(const vector<string>& tickers, short source, short msgType, bool isLast);
+    //bool login_td(const string& clientName, short source);
+    void acquire_mutex() const;
+    void release_mutex() const;
+    //void set_last_switch_nano(long nano)
+    //{
+    //    last_switch_nano = nano;
+    //}
 
 private:
     JournalWriterPtr writer; /**< writer for system journal */
-    KfLogPtr logger;    /**< logger */
-    void*   commBuffer; /**< comm memory */
-    string  commFile;   /**< comm file linked to memory */
-    size_t  maxIdx;     /**< max index of current assigned comm block */
-    int     microsecFreq;  /**< task frequency in microseconds */
-    bool    task_running;  /**< task thread is running */
-    long    last_switch_nano; /**< last switch day nano time */
-    volatile bool    comm_running;  /**< comm buffer checking thread is running */
+    KfLogPtr logger; /**< logger */
+    void* commBuffer; /**< comm memory */
+    string commFile; /**< comm file linked to memory */
+    size_t maxIdx; /**< max index of current assigned comm block */
+    int microsecFreq; /**< task frequency in microseconds */
+    bool task_running; /**< task thread is running */
+    //long last_switch_nano; /**< last switch day nano time */
+    volatile bool comm_running; /**< comm buffer checking thread is running */
 
     /** thread for task running */
     ThreadPtr taskThread;
@@ -163,14 +172,14 @@ private:
     /** initialize the page assigned in comm msg */
     byte initiate_page(const PageCommMsg& msg);
 
-//    /** helper functions for getStatus */
-//    py::dict  getClientInfo() const;
-//    py::dict  getPidInfo() const;
-//    py::dict  getUserInfo() const;
-//    py::dict  getFileReaderInfo() const;
-//    py::dict  getFileWriterInfo() const;
-//    py::list  getLockingFiles() const;
-//    py::tuple getTaskInfo() const;
+    //    /** helper functions for getStatus */
+    //    py::dict  getClientInfo() const;
+    //    py::dict  getPidInfo() const;
+    //    py::dict  getUserInfo() const;
+    //    py::dict  getFileReaderInfo() const;
+    //    py::dict  getFileWriterInfo() const;
+    //    py::list  getLockingFiles() const;
+    //    py::tuple getTaskInfo() const;
 };
 
 YJJ_NAMESPACE_END

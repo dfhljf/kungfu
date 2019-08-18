@@ -34,6 +34,7 @@ class RidClientManager
 private:
     /** rid, strategy_name map */
     map<int, string> rid2client;
+
 public:
     inline void set(int rid_start, string name)
     {
@@ -52,8 +53,13 @@ public:
 /** manage rid and client_name matching */
 RidClientManager rid_manager;
 
-ITDEngine::ITDEngine(short source): IEngine(source), default_account_index(-1), request_id(1), local_id(1)
-{}
+ITDEngine::ITDEngine(short source)
+    : IEngine(source)
+    , default_account_index(-1)
+    , request_id(1)
+    , local_id(1)
+{
+}
 
 void ITDEngine::set_reader_thread()
 {
@@ -124,7 +130,7 @@ void ITDEngine::listening()
                         KF_LOG_ERROR(logger, "error in parsing STRATEGY_END: " << (char*)frame->getData());
                     }
                 }
-                else if(msg_type == MSG_TYPE_STRATEGY_POS_SET && msg_source == source_id)
+                else if (msg_type == MSG_TYPE_STRATEGY_POS_SET && msg_source == source_id)
                 {
                     try
                     {
@@ -158,7 +164,7 @@ void ITDEngine::listening()
                 else if (msg_type == MSG_TYPE_SWITCH_TRADING_DAY)
                 {
                     user_helper->switch_day();
-                    for (auto iter: clients)
+                    for (auto iter : clients)
                     {
                         if (iter.second.pos_handler.get() != nullptr)
                             iter.second.pos_handler->switch_day();
@@ -198,12 +204,12 @@ void ITDEngine::listening()
                         string order_ref = std::to_string(local_id);
                         td_helper->record_order(local_id, requestId);
                         user_helper->record_order(name, local_id, requestId, order->InstrumentID);
-                        local_id ++;
+                        local_id++;
                         strcpy(order->OrderRef, order_ref.c_str());
                         long before_nano = kungfu::yijinjing::getNanoTime();
                         req_order_insert(order, idx, requestId, cur_time);
                         // insert order, we need to track in send
-                        send_writer->write_frame_extra(order, sizeof(LFInputOrderField), source_id, MSG_TYPE_LF_ORDER, 1/*ISLAST*/, requestId, before_nano);
+                        send_writer->write_frame_extra(order, sizeof(LFInputOrderField), source_id, MSG_TYPE_LF_ORDER, 1 /*ISLAST*/, requestId, before_nano);
                         KF_LOG_DEBUG(logger, "[insert_order] (rid)" << requestId << " (ticker)" << order->InstrumentID << " (ref)" << order_ref);
                         break;
                     }
@@ -257,17 +263,19 @@ void ITDEngine::on_rsp_position(const LFRspPositionField* pos, bool isLast, int 
     if (errorId == 0)
     {
         writer->write_frame(pos, sizeof(LFRspPositionField), source_id, MSG_TYPE_LF_RSP_POS, isLast, requestId);
-        KF_LOG_DEBUG(logger, "[RspPosition]" << " (rid)" << requestId
-                                             << " (ticker)" << pos->InstrumentID
-                                             << " (dir)" << pos->PosiDirection
-                                             << " (cost)" << pos->PositionCost
-                                             << " (pos)" << pos->Position
-                                             << " (yd)" << pos->YdPosition);
+        KF_LOG_DEBUG(logger, "[RspPosition]"
+                             << " (rid)" << requestId
+                             << " (ticker)" << pos->InstrumentID
+                             << " (dir)" << pos->PosiDirection
+                             << " (cost)" << pos->PositionCost
+                             << " (pos)" << pos->Position
+                             << " (yd)" << pos->YdPosition);
     }
     else
     {
         writer->write_error_frame(pos, sizeof(LFRspPositionField), source_id, MSG_TYPE_LF_RSP_POS, isLast, requestId, errorId, errorMsg);
-        KF_LOG_ERROR(logger, "[RspPosition] fail! " << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
+        KF_LOG_ERROR(logger, "[RspPosition] fail! "
+                             << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
     }
 }
 /** on rsp order insert, engine (on_data) */
@@ -276,30 +284,34 @@ void ITDEngine::on_rsp_order_insert(const LFInputOrderField* order, int requestI
     if (errorId == 0)
     {
         writer->write_frame(order, sizeof(LFInputOrderField), source_id, MSG_TYPE_LF_ORDER, true, requestId);
-        KF_LOG_DEBUG(logger, "[RspOrder]" << " (rid)" << requestId
-                                          << " (ticker)" << order->InstrumentID);
+        KF_LOG_DEBUG(logger, "[RspOrder]"
+                             << " (rid)" << requestId
+                             << " (ticker)" << order->InstrumentID);
     }
     else
     {
         string name = rid_manager.get(requestId);
         user_helper->set_order_status(name, requestId, LF_CHAR_Error);
         writer->write_error_frame(order, sizeof(LFInputOrderField), source_id, MSG_TYPE_LF_ORDER, true, requestId, errorId, errorMsg);
-        KF_LOG_ERROR(logger, "[RspOrder] fail!" << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
+        KF_LOG_ERROR(logger, "[RspOrder] fail!"
+                             << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
     }
 }
 /** on rsp order action, engine (on_data) */
-void ITDEngine::on_rsp_order_action(const LFOrderActionField *action, int requestId, int errorId, const char *errorMsg)
+void ITDEngine::on_rsp_order_action(const LFOrderActionField* action, int requestId, int errorId, const char* errorMsg)
 {
     if (errorId == 0)
     {
         writer->write_frame(action, sizeof(LFOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION, true, requestId);
-        KF_LOG_DEBUG(logger, "[RspAction]" << " (rid)" << requestId
-                                           << " (ticker)" << action->InstrumentID);
+        KF_LOG_DEBUG(logger, "[RspAction]"
+                             << " (rid)" << requestId
+                             << " (ticker)" << action->InstrumentID);
     }
     else
     {
         writer->write_error_frame(action, sizeof(LFOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION, true, requestId, errorId, errorMsg);
-        KF_LOG_ERROR(logger, "[RspAction] fail!" << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
+        KF_LOG_ERROR(logger, "[RspAction] fail!"
+                             << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
     }
 }
 /** on rsp account info, engine (on_data) */
@@ -308,15 +320,17 @@ void ITDEngine::on_rsp_account(const LFRspAccountField* account, bool isLast, in
     if (errorId == 0)
     {
         writer->write_frame(account, sizeof(LFRspAccountField), source_id, MSG_TYPE_LF_RSP_ACCOUNT, isLast, requestId);
-        KF_LOG_DEBUG(logger, "[RspAccount]" << " (rid)" << requestId
-                                            << " (investor)" << account->InvestorID
-                                            << " (balance)" << account->Balance
-                                            << " (value)" << account->MarketValue);
+        KF_LOG_DEBUG(logger, "[RspAccount]"
+                             << " (rid)" << requestId
+                             << " (investor)" << account->InvestorID
+                             << " (balance)" << account->Balance
+                             << " (value)" << account->MarketValue);
     }
     else
     {
         writer->write_error_frame(account, sizeof(LFRspAccountField), source_id, MSG_TYPE_LF_RSP_ACCOUNT, isLast, requestId, errorId, errorMsg);
-        KF_LOG_ERROR(logger, "[RspAccount] fail!" << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
+        KF_LOG_ERROR(logger, "[RspAccount] fail!"
+                             << " (rid)" << requestId << " (errorId)" << errorId << " (errorMsg)" << errorMsg);
     }
 }
 /** on rtn order, engine (on_data) */
@@ -324,7 +338,7 @@ void ITDEngine::on_rtn_order(const LFRtnOrderField* rtn_order)
 {
     int local_id = std::stoi(string(rtn_order->OrderRef));
     int rid = td_helper->get_order_id(local_id);
-    writer->write_frame(rtn_order, sizeof(LFRtnOrderField), source_id, MSG_TYPE_LF_RTN_ORDER, 1/*islast*/, rid);
+    writer->write_frame(rtn_order, sizeof(LFRtnOrderField), source_id, MSG_TYPE_LF_RTN_ORDER, 1 /*islast*/, rid);
     KF_LOG_DEBUG_FMT(logger, "[o] (id)%d (ref)%s (ticker)%s (Vsum)%d (Vtrd)%d (Vrmn)%d (St)%c",
                      rid,
                      rtn_order->OrderRef,
@@ -342,7 +356,7 @@ void ITDEngine::on_rtn_trade(const LFRtnTradeField* rtn_trade)
 {
     int local_id = std::stoi(string(rtn_trade->OrderRef));
     int rid = td_helper->get_order_id(local_id);
-    writer->write_frame(rtn_trade, sizeof(LFRtnTradeField), source_id, MSG_TYPE_LF_RTN_TRADE, 1/*islast*/, rid);
+    writer->write_frame(rtn_trade, sizeof(LFRtnTradeField), source_id, MSG_TYPE_LF_RTN_TRADE, 1 /*islast*/, rid);
     KF_LOG_DEBUG_FMT(logger, "[t] (id)%d (ref)%s (ticker)%s (V)%d (P)%f (D)%c",
                      rid,
                      rtn_trade->OrderRef,
@@ -356,11 +370,10 @@ void ITDEngine::on_rtn_trade(const LFRtnTradeField* rtn_trade)
     {
         iter->second.pos_handler->update(rtn_trade);
         KF_LOG_DEBUG(logger, "[cost]"
-                << " (long_amt)" << iter->second.pos_handler->get_long_balance(rtn_trade->InstrumentID)
-                << " (long_fee)" << iter->second.pos_handler->get_long_fee(rtn_trade->InstrumentID)
-                << " (short_amt)" << iter->second.pos_handler->get_short_balance(rtn_trade->InstrumentID)
-                << " (short_fee)" << iter->second.pos_handler->get_short_fee(rtn_trade->InstrumentID)
-        );
+                             << " (long_amt)" << iter->second.pos_handler->get_long_balance(rtn_trade->InstrumentID)
+                             << " (long_fee)" << iter->second.pos_handler->get_long_fee(rtn_trade->InstrumentID)
+                             << " (short_amt)" << iter->second.pos_handler->get_short_balance(rtn_trade->InstrumentID)
+                             << " (short_fee)" << iter->second.pos_handler->get_short_fee(rtn_trade->InstrumentID));
     }
 }
 
@@ -426,7 +439,7 @@ bool ITDEngine::add_client(const string& client_name, const json& j_request)
     return true;
 }
 
-bool ITDEngine::remove_client(const string &client_name, const json &j_request)
+bool ITDEngine::remove_client(const string& client_name, const json& j_request)
 {
     auto iter = clients.find(client_name);
     if (iter == clients.end())
@@ -444,7 +457,7 @@ bool ITDEngine::remove_client(const string &client_name, const json &j_request)
         // cancel all pending orders, and clear the memory
         auto orders = user_helper->get_existing_orders(client_name);
         int idx = iter->second.account_index;
-        for (int order_id: orders)
+        for (int order_id : orders)
         {
             LFOrderActionField action = {};
             action.ActionFlag = LF_CHAR_Delete;
@@ -483,11 +496,11 @@ void ITDEngine::load(const json& j_config)
         // base class resize account info structures.
         resize_accounts(account_num);
         int account_idx = 0;
-        for (auto& j_account: iter.value())
+        for (auto& j_account : iter.value())
         {
             const json& j_info = j_account["info"];
             accounts[account_idx] = load_account(account_idx, j_info);
-            auto &fee_handler = accounts[account_idx].fee_handler;
+            auto& fee_handler = accounts[account_idx].fee_handler;
             if (fee_handler.get() == nullptr)
             {
                 if (j_info.find(PH_FEE_SETUP_KEY) != j_info.end())
@@ -509,7 +522,7 @@ void ITDEngine::load(const json& j_config)
             }
             /** parse client */
             const json& j_clients = j_account["clients"];
-            for (auto& j_client: j_clients)
+            for (auto& j_client : j_clients)
             {
                 string client_name = j_client.get<string>();
                 ClientInfoUnit& client_status = clients[client_name];
@@ -522,7 +535,7 @@ void ITDEngine::load(const json& j_config)
             if (j_account["is_default"].get<bool>())
                 default_account_index = account_idx;
             // add
-            account_idx ++;
+            account_idx++;
         }
     }
 }

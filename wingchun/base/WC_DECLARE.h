@@ -32,21 +32,30 @@
 
 typedef boost::shared_ptr<std::thread> ThreadPtr;
 
-#define WC_NAMESPACE_START namespace kungfu { namespace wingchun {
-#define WC_NAMESPACE_END }};
+#define WC_NAMESPACE_START \
+    namespace kungfu       \
+    {                      \
+        namespace wingchun \
+        {
+#define WC_NAMESPACE_END \
+    }                    \
+    }                    \
+    ;
 #define USING_WC_NAMESPACE using namespace kungfu::wingchun;
 
 #define TICKER_MARKET_DELIMITER '@'
 
-#define START_PYTHON_FUNC_CALLING \
-        py::gil_scoped_acquire acquire;\
-        try{
-#define END_PYTHON_FUNC_CALLING \
-        } catch(pybind11::error_already_set& e) \
-        {\
-            e.restore();\
-            PyErr_Print();\
-            throw std::runtime_error(__func__); \
-        }
+#define START_PYTHON_FUNC_CALLING   \
+    py::gil_scoped_acquire acquire; \
+    try                             \
+    {
+#define END_PYTHON_FUNC_CALLING             \
+    }                                       \
+    catch (pybind11::error_already_set& e)  \
+    {                                       \
+        e.restore();                        \
+        PyErr_Print();                      \
+        throw std::runtime_error(__func__); \
+    }
 
 #endif //WINGCHUN_DECLARE_H

@@ -34,29 +34,39 @@ WC_NAMESPACE_START
 
 using kungfu::yijinjing::StrategyUtil;
 
-typedef boost::function<void ()> BLCallback;
+typedef boost::function<void()> BLCallback;
 
 struct BLCallbackUnit
 {
     long nano;
     BLCallback func;
-    BLCallbackUnit(): nano() {}
-    BLCallbackUnit(long nano, const BLCallback& func): nano(nano), func(func) {}
-    bool operator() (BLCallbackUnit& i, BLCallbackUnit& j) { return i.nano > j.nano; }
+    BLCallbackUnit()
+        : nano()
+    {
+    }
+    BLCallbackUnit(long nano, const BLCallback& func)
+        : nano(nano)
+        , func(func)
+    {
+    }
+    bool operator()(BLCallbackUnit& i, BLCallbackUnit& j)
+    {
+        return i.nano > j.nano;
+    }
 };
 
 typedef std::priority_queue<BLCallbackUnit, vector<BLCallbackUnit>, BLCallbackUnit> BLCallbackMinHeap;
 
-#define WC_STRATEGY_TD_FAILED       0
-#define WC_STRATEGY_TD_ACK          1
-#define WC_STRATEGY_TD_READY        2
+#define WC_STRATEGY_TD_FAILED 0
+#define WC_STRATEGY_TD_ACK 1
+#define WC_STRATEGY_TD_READY 2
 /**
  * utilities includes:
  *  1. all journal writing (insert order, req pos, etc)
  *  2. request id related
  *  3. call back insert / process
  */
-class WCStrategyUtil: public StrategyUtil
+class WCStrategyUtil : public StrategyUtil
 {
 private:
     long md_nano;
@@ -87,17 +97,20 @@ public:
     /** insert python callback functions */
     bool insert_callback_py(long nano, pybind11::object func);
     /** set md nano time */
-    void set_md_nano(long cur_time) { md_nano = cur_time; };
+    void set_md_nano(long cur_time)
+    {
+        md_nano = cur_time;
+    };
     /** set pos back */
     void set_pos_back(short source, const char* pos_str);
 
     /** basic utilities */
     /** nano time */
-    long   get_nano();
+    long get_nano();
     /** get string time with format "%Y-%m-%d %H:%M:%S" */
     string get_time();
     /** parse time */
-    long   parse_time(string time_str);
+    long parse_time(string time_str);
     /** parse nano */
     string parse_nano(long nano);
 };

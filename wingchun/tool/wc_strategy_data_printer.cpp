@@ -55,17 +55,7 @@ int main(int argc, const char* argv[])
 {
     options_description desc{"Options"};
     string format("%Y%m%d-%H:%M:%S");
-    desc.add_options()
-            ("help,h", "Help screen")
-            ("name,n", value<string>(), "strategy name")
-            ("list,l", "list all sessions with index")
-            ("order,o", "show orders")
-            ("trade,t", "show trades")
-            ("aggregate,a", "show aggregated latency stat")
-            ("detail,d", "list order detail nanos")
-            ("index,i", value<int>()->default_value(-1), "session index")
-            ("start_time,s", value<string>()->default_value("20000101-13:30:00"), "start time (%Y%m%d-%H:%M:%S)")
-            ("end_time,e", value<string>()->default_value("20200101-00:00:00"), "end time (%Y%m%d-%H:%M:%S)");
+    desc.add_options()("help,h", "Help screen")("name,n", value<string>(), "strategy name")("list,l", "list all sessions with index")("order,o", "show orders")("trade,t", "show trades")("aggregate,a", "show aggregated latency stat")("detail,d", "list order detail nanos")("index,i", value<int>()->default_value(-1), "session index")("start_time,s", value<string>()->default_value("20000101-13:30:00"), "start time (%Y%m%d-%H:%M:%S)")("end_time,e", value<string>()->default_value("20200101-00:00:00"), "end time (%Y%m%d-%H:%M:%S)");
 
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);

@@ -26,8 +26,9 @@
 
 USING_WC_NAMESPACE
 
-WCStrategyUtil::WCStrategyUtil(const string& strategyName):
-    StrategyUtil(strategyName, false), strategy_name(strategyName)
+WCStrategyUtil::WCStrategyUtil(const string& strategyName)
+    : StrategyUtil(strategyName, false)
+    , strategy_name(strategyName)
 {
     cur_nano = 0;
     md_nano = 0;
@@ -55,7 +56,7 @@ int WCStrategyUtil::process_callback(long cur_time)
                 END_PYTHON_FUNC_CALLING
             }
             callback_heap.pop();
-            count ++;
+            count++;
         }
         else
         {
@@ -128,7 +129,7 @@ int WCStrategyUtil::insert_market_order(short source,
     order.IsAutoSuspend = true;
     order.ContingentCondition = LF_CHAR_Immediately;
     strcpy(order.MiscInfo, strategy_name.c_str());
-    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1/*lastflag*/, rid, md_nano);
+    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1 /*lastflag*/, rid, md_nano);
     return rid;
 }
 
@@ -152,7 +153,7 @@ int WCStrategyUtil::insert_limit_order(short source, string instrument_id, strin
     order.IsAutoSuspend = true;
     order.ContingentCondition = LF_CHAR_Immediately;
     strcpy(order.MiscInfo, strategy_name.c_str());
-    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1/*lastflag*/, rid, md_nano);
+    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1 /*lastflag*/, rid, md_nano);
     return rid;
 }
 
@@ -176,7 +177,7 @@ int WCStrategyUtil::insert_fok_order(short source, string instrument_id, string 
     order.IsAutoSuspend = true;
     order.ContingentCondition = LF_CHAR_Immediately;
     strcpy(order.MiscInfo, strategy_name.c_str());
-    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1/*lastflag*/, rid, md_nano);
+    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1 /*lastflag*/, rid, md_nano);
     return rid;
 }
 
@@ -200,7 +201,7 @@ int WCStrategyUtil::insert_fak_order(short source, string instrument_id, string 
     order.IsAutoSuspend = true;
     order.ContingentCondition = LF_CHAR_Immediately;
     strcpy(order.MiscInfo, strategy_name.c_str());
-    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1/*lastflag*/, rid, md_nano);
+    write_frame_extra(&order, sizeof(LFInputOrderField), source, MSG_TYPE_LF_ORDER, 1 /*lastflag*/, rid, md_nano);
     return rid;
 }
 
@@ -208,7 +209,7 @@ int WCStrategyUtil::req_position(short source)
 {
     int rid = get_rid();
     LFQryPositionField req = {};
-    write_frame(&req, sizeof(LFQryPositionField), source, MSG_TYPE_LF_QRY_POS, 1/*lastflag*/, rid);
+    write_frame(&req, sizeof(LFQryPositionField), source, MSG_TYPE_LF_QRY_POS, 1 /*lastflag*/, rid);
     return rid;
 }
 
@@ -223,7 +224,7 @@ int WCStrategyUtil::cancel_order(short source, int order_id)
     req.LimitPrice = 0;
     req.VolumeChange = 0;
     req.RequestID = rid;
-    write_frame(&req, sizeof(LFOrderActionField), source, MSG_TYPE_LF_ORDER_ACTION, 1/*lastflag*/, rid);
+    write_frame(&req, sizeof(LFOrderActionField), source, MSG_TYPE_LF_ORDER_ACTION, 1 /*lastflag*/, rid);
     return rid;
 }
 

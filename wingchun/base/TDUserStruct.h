@@ -30,15 +30,15 @@ using json = nlohmann::json;
 
 WC_NAMESPACE_START
 
-#define ORDER_INFO_RAW  '\0'
+#define ORDER_INFO_RAW '\0'
 #define ORDER_INFO_TICKER_LIMIT 15
 
 struct TDOrderInfo
 {
     /** request id of the order */
-    int  order_id;
+    int order_id;
     /** assigned by TradeEngine */
-    int  local_id;
+    int local_id;
     /** LfOrderStatusType, ORDER_INFO_RAW means nothing */
     char status;
     /** InstrumentID name */
@@ -48,17 +48,17 @@ struct TDOrderInfo
 /** for one single strategy,
  * how many available orders can be supported.
  * available order */
-#define AVAILABLE_ORDER_LIMIT  10000
+#define AVAILABLE_ORDER_LIMIT 10000
 /** enough space to store json for pos map */
-#define POS_JSON_STR_LENGTH  100000
+#define POS_JSON_STR_LENGTH 100000
 
 /**
  * Trade engine user info
  * will contain info for risk management.
  */
-#define TD_INFO_NORMAL        'n'
-#define TD_INFO_WRITING       'w'
-#define TD_INFO_FORCE_QUIT    'e'
+#define TD_INFO_NORMAL 'n'
+#define TD_INFO_WRITING 'w'
+#define TD_INFO_FORCE_QUIT 'e'
 
 struct TDUserInfo
 {
@@ -69,7 +69,7 @@ struct TDUserInfo
     /** last end time */
     long end_time;
     /** last order request id (located order index)*/
-    int  last_order_index;
+    int last_order_index;
     /** strategy name */
     char name[JOURNAL_SHORT_NAME_MAX_LENGTH];
     /** folder name */
@@ -108,7 +108,7 @@ protected:
     /** constructor with "write" authority */
     TDUserInfoHelper(short source);
     /** load user info of user_name */
-    void load(const string& user_name, bool need_write=true);
+    void load(const string& user_name, bool need_write = true);
     /** remove user from list, detach memory */
     void remove(const string& user_name);
     /** necessary cleanup when to a trading day is over */
@@ -136,7 +136,7 @@ public:
     /** default destructor */
     ~TDUserInfoHelper();
     /** get order info, return true if local_id and ticker are set properly */
-    bool get_order(const string& user_name, int order_id, int &local_id, char* ticker) const;
+    bool get_order(const string& user_name, int order_id, int& local_id, char* ticker) const;
     /** set order status when updated by return-order */
     void set_order_status(const string& user_name, int order_id, char status);
     /** get position json */
@@ -150,14 +150,14 @@ DECLARE_PTR(TDUserInfoHelper);
 /** for whole td engine,
  * how many orders can be supported.
  * available order */
-#define TD_AVAILABLE_ORDER_LIMIT  100000
+#define TD_AVAILABLE_ORDER_LIMIT 100000
 
 struct TDBasicOrderInfo
 {
     /** request id of the order */
-    int  order_id;
+    int order_id;
     /** assigned by TradeEngine */
-    int  local_id;
+    int local_id;
     /** LfOrderStatusType, ORDER_INFO_RAW means nothing */
     char status;
 } __attribute__((packed));
@@ -176,7 +176,7 @@ struct TDEngineInfo
     /** last end time */
     long end_time;
     /** last order local id */
-    int  last_local_index;
+    int last_local_index;
     /** source id name */
     short source;
     /** orders by local_id */

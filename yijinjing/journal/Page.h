@@ -41,7 +41,7 @@ private:
     /** current frame */
     Frame frame;
     /** address of mmap-file associated with this page */
-    void * const buffer;
+    void* const buffer;
     /** current position in page */
     int position;
     /** number index of current frame in the page */
@@ -50,7 +50,7 @@ private:
     short pageNum;
 
     /** private constructor */
-    Page(void *buffer);
+    Page(void* buffer);
 
 private:
     /** internal usage */
@@ -61,17 +61,23 @@ private:
 
 public:
     /** get page buffer */
-    inline void* getBuffer() { return buffer; }
+    inline void* getBuffer()
+    {
+        return buffer;
+    }
     /** get current page number */
-    inline short getPageNum() const { return pageNum; };
+    inline short getPageNum() const
+    {
+        return pageNum;
+    };
 
     /** setup the page when finished */
     void finishPage();
     /** get writable frame address (enough space & clean)*/
-    void *locateWritableFrame();
+    void* locateWritableFrame();
     /** get wrote frame address
      * return nullptr if no more frame */
-    void *locateReadableFrame();
+    void* locateReadableFrame();
     /** current page is end */
     bool isAtPageEnd() const;
     /** move forward to next frame */
@@ -84,9 +90,8 @@ public:
 public:
     /** load page, should be called by PageProvider
      * will not lock memory if in quickMode (locked by page engine service)*/
-    static  PagePtr load(const string& dir, const string& jname, short pageNum, bool isWriting, bool quickMode);
+    static PagePtr load(const string& dir, const string& jname, short pageNum, bool isWriting, bool quickMode);
 };
-
 
 inline bool Page::isAtPageEnd() const
 {
@@ -116,13 +121,15 @@ inline void* Page::locateWritableFrame()
     passWrittenFrame();
     return (getCurStatus() == JOURNAL_FRAME_STATUS_RAW
             && (position + PAGE_MIN_HEADROOM < JOURNAL_PAGE_SIZE))
-           ? frame.get_address(): nullptr;
+               ? frame.get_address()
+               : nullptr;
 }
 
 inline void* Page::locateReadableFrame()
 {
     return (getCurStatus() == JOURNAL_FRAME_STATUS_WRITTEN)
-           ? frame.get_address(): nullptr;
+               ? frame.get_address()
+               : nullptr;
 }
 
 YJJ_NAMESPACE_END

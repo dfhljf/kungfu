@@ -25,7 +25,11 @@
 
 USING_WC_NAMESPACE
 
-TDEngineCTP::TDEngineCTP(): ITDEngine(SOURCE_CTP),need_settleConfirm(true), need_authenticate(false), curAccountIdx(-1)
+TDEngineCTP::TDEngineCTP()
+    : ITDEngine(SOURCE_CTP)
+    , need_settleConfirm(true)
+    , need_authenticate(false)
+    , curAccountIdx(-1)
 {
     logger = yijinjing::KfLog::getLogger("TradeEngine.CTP");
     KF_LOG_INFO(logger, "[ATTENTION] default to confirm settlement and no authentication!");
@@ -91,7 +95,7 @@ TradeAccount TDEngineCTP::load_account(int idx, const json& j_config)
 
 void TDEngineCTP::connect(long timeout_nsec)
 {
-    for (size_t idx = 0; idx < account_units.size(); idx ++)
+    for (size_t idx = 0; idx < account_units.size(); idx++)
     {
         AccountUnitCTP& unit = account_units[idx];
         if (unit.api == nullptr)
@@ -117,14 +121,15 @@ void TDEngineCTP::connect(long timeout_nsec)
             }
             long start_time = yijinjing::getNanoTime();
             while (!unit.connected && yijinjing::getNanoTime() - start_time < timeout_nsec)
-            {}
+            {
+            }
         }
     }
 }
 
 void TDEngineCTP::login(long timeout_nsec)
 {
-    for (size_t idx = 0; idx < account_units.size(); idx ++)
+    for (size_t idx = 0; idx < account_units.size(); idx++)
     {
         AccountUnitCTP& unit = account_units[idx];
         TradeAccount& account = accounts[idx];
@@ -138,13 +143,15 @@ void TDEngineCTP::login(long timeout_nsec)
             unit.auth_rid = request_id;
             if (unit.api->ReqAuthenticate(&req, request_id++))
             {
-                KF_LOG_ERROR(logger, "[request] auth failed!" << " (Bid)" << req.BrokerID
-                                                              << " (Uid)" << req.UserID
-                                                              << " (Auth)" << req.AuthCode);
+                KF_LOG_ERROR(logger, "[request] auth failed!"
+                                     << " (Bid)" << req.BrokerID
+                                     << " (Uid)" << req.UserID
+                                     << " (Auth)" << req.AuthCode);
             }
             long start_time = yijinjing::getNanoTime();
             while (!unit.authenticated && yijinjing::getNanoTime() - start_time < timeout_nsec)
-            {}
+            {
+            }
         }
         // login
         if (!unit.logged_in)
@@ -157,12 +164,14 @@ void TDEngineCTP::login(long timeout_nsec)
             unit.login_rid = request_id;
             if (unit.api->ReqUserLogin(&req, request_id++))
             {
-                KF_LOG_ERROR(logger, "[request] login failed!" << " (Bid)" << req.BrokerID
-                                                               << " (Uid)" << req.UserID);
+                KF_LOG_ERROR(logger, "[request] login failed!"
+                                     << " (Bid)" << req.BrokerID
+                                     << " (Uid)" << req.UserID);
             }
             long start_time = yijinjing::getNanoTime();
             while (!unit.logged_in && yijinjing::getNanoTime() - start_time < timeout_nsec)
-            {}
+            {
+            }
         }
         // confirm settlement
         if (need_settleConfirm && !unit.settle_confirmed)
@@ -173,12 +182,14 @@ void TDEngineCTP::login(long timeout_nsec)
             unit.settle_rid = request_id;
             if (unit.api->ReqSettlementInfoConfirm(&req, request_id++))
             {
-                KF_LOG_ERROR(logger, "[request] settlement info failed!" << " (Bid)" << req.BrokerID
-                                                                         << " (Iid)" << req.InvestorID);
+                KF_LOG_ERROR(logger, "[request] settlement info failed!"
+                                     << " (Bid)" << req.BrokerID
+                                     << " (Iid)" << req.InvestorID);
             }
             long start_time = yijinjing::getNanoTime();
             while (!unit.settle_confirmed && yijinjing::getNanoTime() - start_time < timeout_nsec)
-            {}
+            {
+            }
         }
     }
 }
@@ -197,8 +208,9 @@ void TDEngineCTP::logout()
             unit.login_rid = request_id;
             if (unit.api->ReqUserLogout(&req, request_id++))
             {
-                KF_LOG_ERROR(logger, "[request] logout failed!" << " (Bid)" << req.BrokerID
-                                                                << " (Uid)" << req.UserID);
+                KF_LOG_ERROR(logger, "[request] logout failed!"
+                                     << " (Bid)" << req.BrokerID
+                                     << " (Uid)" << req.UserID);
             }
         }
         unit.authenticated = false;
@@ -209,7 +221,7 @@ void TDEngineCTP::logout()
 
 void TDEngineCTP::release_api()
 {
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         if (unit.api != nullptr)
         {
@@ -227,7 +239,7 @@ void TDEngineCTP::release_api()
 
 bool TDEngineCTP::is_logged_in() const
 {
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         if (!unit.logged_in || (need_settleConfirm && !unit.settle_confirmed))
             return false;
@@ -237,7 +249,7 @@ bool TDEngineCTP::is_logged_in() const
 
 bool TDEngineCTP::is_connected() const
 {
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         if (!unit.connected)
             return false;
@@ -251,30 +263,34 @@ bool TDEngineCTP::is_connected() const
 void TDEngineCTP::req_investor_position(const LFQryPositionField* data, int account_index, int requestId)
 {
     struct CThostFtdcQryInvestorPositionField req = parseTo(*data);
-    KF_LOG_DEBUG(logger, "[req_pos]" << " (Bid)" << req.BrokerID
-                                     << " (Iid)" << req.InvestorID
-                                     << " (Tid)" << req.InstrumentID);
+    KF_LOG_DEBUG(logger, "[req_pos]"
+                         << " (Bid)" << req.BrokerID
+                         << " (Iid)" << req.InvestorID
+                         << " (Tid)" << req.InstrumentID);
 
     if (account_units[account_index].api->ReqQryInvestorPosition(&req, requestId))
     {
-        KF_LOG_ERROR(logger, "[request] investor position failed!" << " (rid)" << requestId
-                                                                   << " (idx)" << account_index);
+        KF_LOG_ERROR(logger, "[request] investor position failed!"
+                             << " (rid)" << requestId
+                             << " (idx)" << account_index);
     }
-    send_writer->write_frame(&req, sizeof(CThostFtdcQryInvestorPositionField), source_id, MSG_TYPE_LF_QRY_POS_CTP, 1/*ISLAST*/, requestId);
+    send_writer->write_frame(&req, sizeof(CThostFtdcQryInvestorPositionField), source_id, MSG_TYPE_LF_QRY_POS_CTP, 1 /*ISLAST*/, requestId);
 }
 
-void TDEngineCTP::req_qry_account(const LFQryAccountField *data, int account_index, int requestId)
+void TDEngineCTP::req_qry_account(const LFQryAccountField* data, int account_index, int requestId)
 {
     struct CThostFtdcQryTradingAccountField req = parseTo(*data);
-    KF_LOG_DEBUG(logger, "[req_account]" << " (Bid)" << req.BrokerID
-                                         << " (Iid)" << req.InvestorID);
+    KF_LOG_DEBUG(logger, "[req_account]"
+                         << " (Bid)" << req.BrokerID
+                         << " (Iid)" << req.InvestorID);
 
     if (account_units[account_index].api->ReqQryTradingAccount(&req, requestId))
     {
-        KF_LOG_ERROR(logger, "[request] account info failed!" << " (rid)" << requestId
-                                                              << " (idx)" << account_index);
+        KF_LOG_ERROR(logger, "[request] account info failed!"
+                             << " (rid)" << requestId
+                             << " (idx)" << account_index);
     }
-    send_writer->write_frame(&req, sizeof(CThostFtdcQryTradingAccountField), source_id, MSG_TYPE_LF_QRY_ACCOUNT_CTP, 1/*ISLAST*/, requestId);
+    send_writer->write_frame(&req, sizeof(CThostFtdcQryTradingAccountField), source_id, MSG_TYPE_LF_QRY_ACCOUNT_CTP, 1 /*ISLAST*/, requestId);
 }
 
 void TDEngineCTP::req_order_insert(const LFInputOrderField* data, int account_index, int requestId, long rcv_time)
@@ -283,36 +299,40 @@ void TDEngineCTP::req_order_insert(const LFInputOrderField* data, int account_in
     req.RequestID = requestId;
     req.IsAutoSuspend = 0;
     req.UserForceClose = 0;
-    KF_LOG_DEBUG(logger, "[req_order_insert]" << " (rid)" << requestId
-                                              << " (Iid)" << req.InvestorID
-                                              << " (Tid)" << req.InstrumentID
-                                              << " (OrderRef)" << req.OrderRef);
+    KF_LOG_DEBUG(logger, "[req_order_insert]"
+                         << " (rid)" << requestId
+                         << " (Iid)" << req.InvestorID
+                         << " (Tid)" << req.InstrumentID
+                         << " (OrderRef)" << req.OrderRef);
 
     if (account_units[account_index].api->ReqOrderInsert(&req, requestId))
     {
-        KF_LOG_ERROR(logger, "[request] order insert failed!" << " (rid)" << requestId);
+        KF_LOG_ERROR(logger, "[request] order insert failed!"
+                             << " (rid)" << requestId);
     }
-    send_writer->write_frame(&req, sizeof(CThostFtdcInputOrderField), source_id, MSG_TYPE_LF_ORDER_CTP, 1/*ISLAST*/, requestId);
+    send_writer->write_frame(&req, sizeof(CThostFtdcInputOrderField), source_id, MSG_TYPE_LF_ORDER_CTP, 1 /*ISLAST*/, requestId);
 }
 
 void TDEngineCTP::req_order_action(const LFOrderActionField* data, int account_index, int requestId, long rcv_time)
 {
     struct CThostFtdcInputOrderActionField req = parseTo(*data);
-    req.OrderActionRef = local_id ++;
+    req.OrderActionRef = local_id++;
     auto& unit = account_units[account_index];
     req.FrontID = unit.front_id;
     req.SessionID = unit.session_id;
-    KF_LOG_DEBUG(logger, "[req_order_action]" << " (rid)" << requestId
-                                              << " (Iid)" << req.InvestorID
-                                              << " (OrderRef)" << req.OrderRef
-                                              << " (OrderActionRef)" << req.OrderActionRef);
+    KF_LOG_DEBUG(logger, "[req_order_action]"
+                         << " (rid)" << requestId
+                         << " (Iid)" << req.InvestorID
+                         << " (OrderRef)" << req.OrderRef
+                         << " (OrderActionRef)" << req.OrderActionRef);
 
     if (unit.api->ReqOrderAction(&req, requestId))
     {
-        KF_LOG_ERROR(logger, "[request] order action failed!" << " (rid)" << requestId);
+        KF_LOG_ERROR(logger, "[request] order action failed!"
+                             << " (rid)" << requestId);
     }
 
-    send_writer->write_frame(&req, sizeof(CThostFtdcInputOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION_CTP, 1/*ISLAST*/, requestId);
+    send_writer->write_frame(&req, sizeof(CThostFtdcInputOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION_CTP, 1 /*ISLAST*/, requestId);
 }
 
 /*
@@ -327,7 +347,7 @@ void TDEngineCTP::OnFrontConnected()
 void TDEngineCTP::OnFrontDisconnected(int nReason)
 {
     KF_LOG_INFO(logger, "[OnFrontDisconnected] reason=" << nReason);
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         unit.connected = false;
         unit.authenticated = false;
@@ -338,21 +358,23 @@ void TDEngineCTP::OnFrontDisconnected(int nReason)
 
 #define GBK2UTF8(msg) kungfu::yijinjing::gbk2utf8(string(msg))
 
-void TDEngineCTP::OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField,
-                                    CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspAuthenticate(CThostFtdcRspAuthenticateField* pRspAuthenticateField,
+                                    CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspAuthenticate]" << " (errId)" << pRspInfo->ErrorID
-                                                   << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspAuthenticate]"
+                             << " (errId)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspAuthenticate]" << " (userId)" <<  pRspAuthenticateField->UserID
-                                                  << " (brokerId)" << pRspAuthenticateField->BrokerID
-                                                  << " (product)" << pRspAuthenticateField->UserProductInfo
-                                                  << " (rid)" << nRequestID);
-        for (auto& unit: account_units)
+        KF_LOG_INFO(logger, "[OnRspAuthenticate]"
+                            << " (userId)" << pRspAuthenticateField->UserID
+                            << " (brokerId)" << pRspAuthenticateField->BrokerID
+                            << " (product)" << pRspAuthenticateField->UserProductInfo
+                            << " (rid)" << nRequestID);
+        for (auto& unit : account_units)
         {
             if (unit.auth_rid == nRequestID)
                 unit.authenticated = true;
@@ -360,22 +382,24 @@ void TDEngineCTP::OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenti
     }
 }
 
-void TDEngineCTP::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo,
+void TDEngineCTP::OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo,
                                  int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspUserLogin]" << " (errId)" << pRspInfo->ErrorID
-                                                << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspUserLogin]"
+                             << " (errId)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspUserLogin]" << " (Bid)" << pRspUserLogin->BrokerID
-                                               << " (Uid)" << pRspUserLogin->UserID
-                                               << " (maxRef)" << pRspUserLogin->MaxOrderRef
-                                               << " (Fid)" << pRspUserLogin->FrontID
-                                               << " (Sid)" << pRspUserLogin->SessionID);
-        for (auto& unit: account_units)
+        KF_LOG_INFO(logger, "[OnRspUserLogin]"
+                            << " (Bid)" << pRspUserLogin->BrokerID
+                            << " (Uid)" << pRspUserLogin->UserID
+                            << " (maxRef)" << pRspUserLogin->MaxOrderRef
+                            << " (Fid)" << pRspUserLogin->FrontID
+                            << " (Sid)" << pRspUserLogin->SessionID);
+        for (auto& unit : account_units)
         {
             if (unit.login_rid == nRequestID)
             {
@@ -385,25 +409,27 @@ void TDEngineCTP::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CTh
             }
         }
         int max_ref = atoi(pRspUserLogin->MaxOrderRef) + 1;
-        local_id = (max_ref > local_id) ? max_ref: local_id;
+        local_id = (max_ref > local_id) ? max_ref : local_id;
     }
 }
 
-void TDEngineCTP::OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm,
-                                             CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField* pSettlementInfoConfirm,
+                                             CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID != 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspSettlementInfoConfirm]" << " (errId)" << pRspInfo->ErrorID
-                                                            << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspSettlementInfoConfirm]"
+                             << " (errId)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspSettlementInfoConfirm]" << " (brokerID)" << pSettlementInfoConfirm->BrokerID
-                                                           << " (investorID)" << pSettlementInfoConfirm->InvestorID
-                                                           << " (confirmDate)" << pSettlementInfoConfirm->ConfirmDate
-                                                           << " (confirmTime)" << pSettlementInfoConfirm->ConfirmTime);
-        for (auto& unit: account_units)
+        KF_LOG_INFO(logger, "[OnRspSettlementInfoConfirm]"
+                            << " (brokerID)" << pSettlementInfoConfirm->BrokerID
+                            << " (investorID)" << pSettlementInfoConfirm->InvestorID
+                            << " (confirmDate)" << pSettlementInfoConfirm->ConfirmDate
+                            << " (confirmTime)" << pSettlementInfoConfirm->ConfirmTime);
+        for (auto& unit : account_units)
         {
             if (unit.settle_rid == nRequestID)
             {
@@ -413,19 +439,21 @@ void TDEngineCTP::OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmFiel
     }
 }
 
-void TDEngineCTP::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo,
+void TDEngineCTP::OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo,
                                   int nRequestID, bool bIsLast)
 {
     if (pRspInfo != nullptr && pRspInfo->ErrorID == 0)
     {
-        KF_LOG_ERROR(logger, "[OnRspUserLogout]" << " (errId)" << pRspInfo->ErrorID
-                                                 << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
+        KF_LOG_ERROR(logger, "[OnRspUserLogout]"
+                             << " (errId)" << pRspInfo->ErrorID
+                             << " (errMsg)" << GBK2UTF8(pRspInfo->ErrorMsg));
     }
     else
     {
-        KF_LOG_INFO(logger, "[OnRspUserLogout]" << " (brokerId)" << pUserLogout->BrokerID
-                                                << " (userId)" << pUserLogout->UserID);
-        for (auto& unit: account_units)
+        KF_LOG_INFO(logger, "[OnRspUserLogout]"
+                            << " (brokerId)" << pUserLogout->BrokerID
+                            << " (userId)" << pUserLogout->UserID);
+        for (auto& unit : account_units)
         {
             if (unit.login_rid == nRequestID)
             {
@@ -437,8 +465,8 @@ void TDEngineCTP::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThost
     }
 }
 
-void TDEngineCTP::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo,
-                                    int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspOrderInsert(CThostFtdcInputOrderField* pInputOrder, CThostFtdcRspInfoField* pRspInfo,
+                                   int nRequestID, bool bIsLast)
 {
     int errorId = (pRspInfo == nullptr) ? 0 : pRspInfo->ErrorID;
     const char* errorMsg = (pRspInfo == nullptr) ? nullptr : EngineUtil::gbkErrorMsg2utf8(pRspInfo->ErrorMsg);
@@ -447,8 +475,8 @@ void TDEngineCTP::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThos
     raw_writer->write_error_frame(pInputOrder, sizeof(CThostFtdcInputOrderField), source_id, MSG_TYPE_LF_ORDER_CTP, bIsLast, nRequestID, errorId, errorMsg);
 }
 
-void TDEngineCTP::OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderAction,
-                                   CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspOrderAction(CThostFtdcInputOrderActionField* pInputOrderAction,
+                                   CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     int errorId = (pRspInfo == nullptr) ? 0 : pRspInfo->ErrorID;
     const char* errorMsg = (pRspInfo == nullptr) ? nullptr : EngineUtil::gbkErrorMsg2utf8(pRspInfo->ErrorMsg);
@@ -457,8 +485,8 @@ void TDEngineCTP::OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderA
     raw_writer->write_error_frame(pInputOrderAction, sizeof(CThostFtdcInputOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION_CTP, bIsLast, nRequestID, errorId, errorMsg);
 }
 
-void TDEngineCTP::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition, CThostFtdcRspInfoField *pRspInfo,
-                                     int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField* pInvestorPosition, CThostFtdcRspInfoField* pRspInfo,
+                                           int nRequestID, bool bIsLast)
 {
     int errorId = (pRspInfo == nullptr) ? 0 : pRspInfo->ErrorID;
     const char* errorMsg = (pRspInfo == nullptr) ? nullptr : EngineUtil::gbkErrorMsg2utf8(pRspInfo->ErrorMsg);
@@ -470,25 +498,25 @@ void TDEngineCTP::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInv
     raw_writer->write_error_frame(pInvestorPosition, sizeof(CThostFtdcInvestorPositionField), source_id, MSG_TYPE_LF_RSP_POS_CTP, bIsLast, nRequestID, errorId, errorMsg);
 }
 
-void TDEngineCTP::OnRtnOrder(CThostFtdcOrderField *pOrder)
+void TDEngineCTP::OnRtnOrder(CThostFtdcOrderField* pOrder)
 {
     auto rtn_order = parseFrom(*pOrder);
     on_rtn_order(&rtn_order);
     raw_writer->write_frame(pOrder, sizeof(CThostFtdcOrderField),
                             source_id, MSG_TYPE_LF_RTN_ORDER_CTP,
-                            1/*islast*/, (pOrder->RequestID > 0) ? pOrder->RequestID: -1);
+                            1 /*islast*/, (pOrder->RequestID > 0) ? pOrder->RequestID : -1);
 }
 
-void TDEngineCTP::OnRtnTrade(CThostFtdcTradeField *pTrade)
+void TDEngineCTP::OnRtnTrade(CThostFtdcTradeField* pTrade)
 {
     auto rtn_trade = parseFrom(*pTrade);
     on_rtn_trade(&rtn_trade);
     raw_writer->write_frame(pTrade, sizeof(CThostFtdcTradeField),
-                            source_id, MSG_TYPE_LF_RTN_TRADE_CTP, 1/*islast*/, -1/*invalidRid*/);
+                            source_id, MSG_TYPE_LF_RTN_TRADE_CTP, 1 /*islast*/, -1 /*invalidRid*/);
 }
 
-void TDEngineCTP::OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount,
-                                         CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
+void TDEngineCTP::OnRspQryTradingAccount(CThostFtdcTradingAccountField* pTradingAccount,
+                                         CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     int errorId = (pRspInfo == nullptr) ? 0 : pRspInfo->ErrorID;
     const char* errorMsg = (pRspInfo == nullptr) ? nullptr : EngineUtil::gbkErrorMsg2utf8(pRspInfo->ErrorMsg);
@@ -503,11 +531,11 @@ void TDEngineCTP::OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTrading
 namespace py = pybind11;
 PYBIND11_MODULE(libctptd, m)
 {
-    py::class_<TDEngineCTP, boost::shared_ptr<TDEngineCTP> >(m,"Engine")
-    .def(py::init<>())
-    .def("init", &TDEngineCTP::initialize)
-    .def("start", &TDEngineCTP::start)
-    .def("stop", &TDEngineCTP::stop)
-    .def("logout", &TDEngineCTP::logout)
-    .def("wait_for_stop", &TDEngineCTP::wait_for_stop);
+    py::class_<TDEngineCTP, boost::shared_ptr<TDEngineCTP>>(m, "Engine")
+        .def(py::init<>())
+        .def("init", &TDEngineCTP::initialize)
+        .def("start", &TDEngineCTP::start)
+        .def("stop", &TDEngineCTP::stop)
+        .def("logout", &TDEngineCTP::logout)
+        .def("wait_for_stop", &TDEngineCTP::wait_for_stop);
 }

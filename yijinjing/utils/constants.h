@@ -29,8 +29,8 @@ YJJ_NAMESPACE_START
 /** seed of hash function */
 const uint HASH_SEED = 97;
 
-#define JOURNAL_SHORT_NAME_MAX_LENGTH   30
-#define JOURNAL_FOLDER_MAX_LENGTH       100
+#define JOURNAL_SHORT_NAME_MAX_LENGTH 30
+#define JOURNAL_FOLDER_MAX_LENGTH 100
 
 /** seed of hash function */
 const long TIME_FROM_FIRST = 0;

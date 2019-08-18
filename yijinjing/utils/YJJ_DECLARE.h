@@ -42,30 +42,38 @@
 
 using std::string; /**< default using string */
 using std::vector; /**< default using vector */
-using std::map;    /**< default using map */
+using std::map; /**< default using map */
 
-template<class Key, class T>
+template <class Key, class T>
 using umap = std::unordered_map<Key, T>; /** unordered_map usage, will merge more */
 
 typedef unsigned char byte;
 typedef unsigned int uint;
 typedef std::pair<int, int> IntPair;
 
-#define KUNGFU_FOLDER config::ConfigManager::instance().getBaseFolder()                /**< base folder of kungfu system */
-#define KUNGFU_JOURNAL_FOLDER config::ConfigManager::instance().getJournalFolder()//KUNGFU_FOLDER "journal/"  /**< where we put journal files */
-#define KUNGFU_SOCKET_FOLDER KUNGFU_FOLDER+"socket/"    /**< where we put socket files */
-#define KUNGFU_LOG_FOLDER KUNGFU_FOLDER+"log/"          /**< where we put log files */
-#define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER+"system/" /**< paged system journal folder */
-#define PAGED_JOURNAL_NAME "SYSTEM"                     /**< paged system journal name */
+#define KUNGFU_FOLDER config::ConfigManager::instance().getBaseFolder() /**< base folder of kungfu system */
+#define KUNGFU_JOURNAL_FOLDER config::ConfigManager::instance().getJournalFolder() //KUNGFU_FOLDER "journal/"  /**< where we put journal files */
+#define KUNGFU_SOCKET_FOLDER KUNGFU_FOLDER + "socket/" /**< where we put socket files */
+#define KUNGFU_LOG_FOLDER KUNGFU_FOLDER + "log/" /**< where we put log files */
+#define PAGED_JOURNAL_FOLDER KUNGFU_JOURNAL_FOLDER + "system/" /**< paged system journal folder */
+#define PAGED_JOURNAL_NAME "SYSTEM" /**< paged system journal name */
 
 #define DECLARE_PTR(X) typedef std::shared_ptr<X> X##Ptr; /**< define smart ptr */
-#define FORWARD_DECLARE_PTR(X) class X; DECLARE_PTR(X)      /**< forward defile smart ptr */
-#define YJJ_NAMESPACE_START namespace kungfu { namespace yijinjing { /**< start of yjj namespace */
-#define YJJ_NAMESPACE_END }}                             /**< end of yjj namespace */
+#define FORWARD_DECLARE_PTR(X) \
+    class X;                   \
+    DECLARE_PTR(X) /**< forward defile smart ptr */
+#define YJJ_NAMESPACE_START \
+    namespace kungfu        \
+    {                       \
+        namespace yijinjing \
+        {/**< start of yjj namespace */
+#define YJJ_NAMESPACE_END \
+    }                     \
+    } /**< end of yjj namespace */
 #define USING_YJJ_NAMESPACE using namespace kungfu::yijinjing;
 
-#define JOURNAL_PREFIX string("yjj")        /**< journal file prefix */
-#define JOURNAL_SUFFIX string("journal")    /**< journal file suffix */
+#define JOURNAL_PREFIX string("yjj") /**< journal file prefix */
+#define JOURNAL_SUFFIX string("journal") /**< journal file suffix */
 
 /** fast type convert for moving address forward */
 #define ADDRESS_ADD(x, delta) (void*)((uintptr_t)x + delta)

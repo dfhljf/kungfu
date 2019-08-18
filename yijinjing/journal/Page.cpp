@@ -27,7 +27,14 @@ USING_YJJ_NAMESPACE
 
 #define PAGE_INIT_POSITION sizeof(PageHeader)
 
-Page::Page(void *buffer) : frame(ADDRESS_ADD(buffer, PAGE_INIT_POSITION)), buffer(buffer), position(PAGE_INIT_POSITION), frameNum(0), pageNum(-1) {}
+Page::Page(void* buffer)
+    : frame(ADDRESS_ADD(buffer, PAGE_INIT_POSITION))
+    , buffer(buffer)
+    , position(PAGE_INIT_POSITION)
+    , frameNum(0)
+    , pageNum(-1)
+{
+}
 
 void Page::finishPage()
 {
@@ -38,7 +45,7 @@ void Page::finishPage()
     frame.setStatusPageClosed();
 }
 
-PagePtr Page::load(const string &dir, const string &jname, short pageNum, bool isWriting, bool quickMode)
+PagePtr Page::load(const string& dir, const string& jname, short pageNum, bool isWriting, bool quickMode)
 {
     string path = PageUtil::GenPageFullPath(dir, jname, pageNum);
     void* buffer = PageUtil::LoadPageBuffer(path, JOURNAL_PAGE_SIZE, isWriting, quickMode /*from local then we need to do mlock manually*/);
@@ -60,7 +67,7 @@ PagePtr Page::load(const string &dir, const string &jname, short pageNum, bool i
         // write current frame header version inside.
         header->frame_version = __FRAME_HEADER_VERSION__;
     }
-    else if (header->frame_version > 0 && header->frame_version!= __FRAME_HEADER_VERSION__)
+    else if (header->frame_version > 0 && header->frame_version != __FRAME_HEADER_VERSION__)
     {
         // if this is an existing page (status!=JOURNAL_PAGE_STATUS_RAW)
         // and frame_version is set

@@ -51,14 +51,14 @@ long JournalWriter::writeStr(const string& str)
 }
 
 long JournalWriter::writePyData(uintptr_t data, FH_TYPE_LENGTH length, FH_TYPE_SOURCE source,
-                               FH_TYPE_MSG_TP msgType, FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId)
+                                FH_TYPE_MSG_TP msgType, FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId)
 {
     return write_frame((void*)data, length, source, msgType, lastFlag, requestId);
 }
 
 long JournalWriter::write_frame_full(const void* data, FH_TYPE_LENGTH length, FH_TYPE_SOURCE source, FH_TYPE_MSG_TP msgType,
-                                      FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId, FH_TYPE_NANOTM extraNano,
-                                      FH_TYPE_ERR_ID errorId, const char* errorMsg)
+                                     FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId, FH_TYPE_NANOTM extraNano,
+                                     FH_TYPE_ERR_ID errorId, const char* errorMsg)
 {
     void* buffer = journal->locateFrame();
     Frame frame(buffer);
@@ -109,14 +109,14 @@ long JournalSafeWriter::write_frame_full(const void* data, FH_TYPE_LENGTH length
                                          FH_TYPE_LASTFG lastFlag, FH_TYPE_REQ_ID requestId, FH_TYPE_NANOTM extraNano,
                                          FH_TYPE_ERR_ID errorId, const char* errorMsg)
 {
-    std::lock_guard<std::mutex> lck (safe_writer_mtx);
+    std::lock_guard<std::mutex> lck(safe_writer_mtx);
     return this->JournalWriter::write_frame_full(data, length, source, msgType, lastFlag, requestId, extraNano, errorId, errorMsg);
 }
 
 JournalWriterPtr JournalSafeWriter::create(const string& dir, const string& jname, const string& writerName)
 {
-    //PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(writerName, true));
-    #ifdef USE_PAGED_SERVICE
+//PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(writerName, true));
+#ifdef USE_PAGED_SERVICE
     PageProviderPtr provider = PageProviderPtr(new ClientPageProvider(writerName, true));
 #else
     PageProviderPtr provider = PageProviderPtr(new LocalPageProvider(true));

@@ -30,17 +30,19 @@
 
 USING_WC_NAMESPACE
 
-#define WRITE_ENGINE_STATUS(name) \
-    if (writer.get() != nullptr) \
-    {\
-        writer->write_frame(name, sizeof(name), source_id, MSG_TYPE_ENGINE_STATUS, 1, getpid());\
+#define WRITE_ENGINE_STATUS(name)                                                                \
+    if (writer.get() != nullptr)                                                                 \
+    {                                                                                            \
+        writer->write_frame(name, sizeof(name), source_id, MSG_TYPE_ENGINE_STATUS, 1, getpid()); \
     }
-
 
 volatile int IEngine::signal_received = -1;
 
-IEngine::IEngine(short source): source_id(source), isRunning(false)
-{}
+IEngine::IEngine(short source)
+    : source_id(source)
+    , isRunning(false)
+{
+}
 
 IEngine::~IEngine()
 {
@@ -90,12 +92,12 @@ bool IEngine::try_login()
     {
         connect(CONNECT_TIMEOUT_NANO_SECONDS);
     }
-    WRITE_ENGINE_STATUS(is_connected() ? WC_ENGINE_STATUS_CONNECTED: WC_ENGINE_STATUS_CONNECT_FAIL);
+    WRITE_ENGINE_STATUS(is_connected() ? WC_ENGINE_STATUS_CONNECTED : WC_ENGINE_STATUS_CONNECT_FAIL);
     if (is_connected() && !is_logged_in())
     {
         login(CONNECT_TIMEOUT_NANO_SECONDS);
     }
-    WRITE_ENGINE_STATUS(is_logged_in() ? WC_ENGINE_STATUS_LOGIN_SUCCESS: WC_ENGINE_STATUS_LOGIN_FAIL);
+    WRITE_ENGINE_STATUS(is_logged_in() ? WC_ENGINE_STATUS_LOGIN_SUCCESS : WC_ENGINE_STATUS_LOGIN_FAIL);
     return is_logged_in();
 }
 

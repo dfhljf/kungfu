@@ -25,7 +25,10 @@ using namespace kungfu::yijinjing;
 #define PARSE_NANO(nano) parseNano(nano, "%Y%m%d-%H:%M:%S")
 
 StrategyBasicDataConsumer::StrategyBasicDataConsumer(const string& strategy_name, int target_session_id)
-        : DataConsumer(), cur_session(0), tar_session(target_session_id), strategy_name(strategy_name)
+    : DataConsumer()
+    , cur_session(0)
+    , tar_session(target_session_id)
+    , strategy_name(strategy_name)
 {
 }
 
@@ -33,7 +36,7 @@ void StrategyBasicDataConsumer::on_strategy_start(json& j_start, long rcv_time, 
 {
     if (name.compare(strategy_name) == 0) // equal
     {
-        cur_session ++;
+        cur_session++;
         unit.name = name;
         unit.folder = j_start["folder"].get<string>();
         unit.last_switch_nano = j_start["last_switch_nano"].get<long>();
@@ -42,7 +45,8 @@ void StrategyBasicDataConsumer::on_strategy_start(json& j_start, long rcv_time, 
         if (tar_session <= 0 || tar_session == cur_session)
         {
             cout << cur_session << ":" << endl;
-            cout << "\tStart:" << " (name)" << name
+            cout << "\tStart:"
+                 << " (name)" << name
                  << " (rid)" << unit.rid_start << "-" << unit.rid_end
                  << " (nano)" << rcv_time << " (time)" << PARSE_NANO(rcv_time)
                  << endl;
@@ -62,7 +66,8 @@ void StrategyBasicDataConsumer::on_strategy_end(json& j_end, long rcv_time, cons
                  << " (content)" << unit.pos_handler->to_string()
                  << " (time)" << PARSE_NANO(rcv_time) << endl;
         }
-        cout << "\tEnd:  " << " (name)" << name
+        cout << "\tEnd:  "
+             << " (name)" << name
              << " (rid)" << unit.rid_start << "-" << unit.rid_end
              << " (nano)" << rcv_time << " (time)" << PARSE_NANO(rcv_time) << endl;
     }
@@ -70,7 +75,7 @@ void StrategyBasicDataConsumer::on_strategy_end(json& j_end, long rcv_time, cons
 
 StrategyDataConsumer::StrategyDataConsumer(const string& strategy_name,
                                            int target_session_id)
-        : StrategyBasicDataConsumer(strategy_name, target_session_id)
+    : StrategyBasicDataConsumer(strategy_name, target_session_id)
 {
 }
 
@@ -165,11 +170,11 @@ void StrategyDataConsumer::on_rtn_order(LFRtnOrderField* order, short source, in
     {
         if (order_map.find(order_id) != order_map.end())
         {
-            OrderLatencyUnit &order_unit = order_map[order_id];
+            OrderLatencyUnit& order_unit = order_map[order_id];
             order_unit.order_status = order->OrderStatus;
             if (order_unit.number_rtn_order == 0)
                 order_unit.first_rtn_order_time = rcv_time;
-            order_unit.number_rtn_order ++;
+            order_unit.number_rtn_order++;
         }
     }
 }
@@ -180,10 +185,10 @@ void StrategyDataConsumer::on_rtn_trade(LFRtnTradeField* trade, short source, in
     {
         if (order_map.find(order_id) != order_map.end())
         {
-            OrderLatencyUnit &order_unit = order_map[order_id];
+            OrderLatencyUnit& order_unit = order_map[order_id];
             if (order_unit.number_rtn_trade == 0)
                 order_unit.first_rtn_trade_time = rcv_time;
-            order_unit.number_rtn_trade ++;
+            order_unit.number_rtn_trade++;
             rtn_trade_map[order_id][rcv_time] = *trade;
             unit.pos_handler->update(trade);
         }
@@ -198,9 +203,9 @@ void StrategyDataConsumer::print_order() const
     cout << "+-----------+-----------------+--------------+--------------+----------+----------+----------+--------------+-----+" << endl;
     cout << "| order_id  | rcv_time        | TTT-b(ns)    | TTT-a(ns)    | ticker   | price    | volume   | offset       | dir |" << endl;
     cout << "+-----------+-----------------+--------------+--------------+----------+----------+----------+--------------+-----+" << endl;
-    for (auto& iter: order_map)
+    for (auto& iter : order_map)
     {
-        const OrderLatencyUnit &unit = iter.second;
+        const OrderLatencyUnit& unit = iter.second;
         printf("|%11d|%s|%14ld|%14ld|%10s|%10.1f|%10d|%14s|%5s|\n",
                unit.order_id,
                PARSE_NANO(unit.oe_time).c_str(),
@@ -210,8 +215,7 @@ void StrategyDataConsumer::print_order() const
                unit.price,
                unit.volume,
                getLfOffsetFlagType(unit.offset).c_str(),
-               getLfDirectionType(unit.direction).c_str()
-        );
+               getLfDirectionType(unit.direction).c_str());
         cout << "+-----------+-----------------+--------------+--------------+----------+----------+----------+--------------+-----+" << endl;
     }
 }
@@ -224,15 +228,15 @@ void StrategyDataConsumer::print_trade() const
     cout << "+-----------+---+-----------------+--------------+----------+---------+----------+----------+" << endl;
     cout << "| order_id  |idx| rcv_time        | OTR(ns)      | ticker   | t_time  | t_price  | t_volume |" << endl;
     cout << "+-----------+---+-----------------+--------------+----------+---------+----------+----------+" << endl;
-    for (auto& iter: order_map)
+    for (auto& iter : order_map)
     {
         int order_id = iter.first;
-        const OrderLatencyUnit &unit = iter.second;
+        const OrderLatencyUnit& unit = iter.second;
         auto trade_map_iter = rtn_trade_map.find(order_id);
         if (trade_map_iter != rtn_trade_map.end())
         {
             int idx = 1;
-            for (auto& rtn_trade_iter: trade_map_iter->second)
+            for (auto& rtn_trade_iter : trade_map_iter->second)
             {
                 long rcv_time = rtn_trade_iter.first;
                 const LFRtnTradeField& rtn_trade = rtn_trade_iter.second;
@@ -244,10 +248,9 @@ void StrategyDataConsumer::print_trade() const
                        rtn_trade.InstrumentID,
                        rtn_trade.TradeTime,
                        rtn_trade.Price,
-                       rtn_trade.Volume
-                );
+                       rtn_trade.Volume);
                 cout << "+-----------+---+-----------------+--------------+----------+---------+----------+----------+" << endl;
-                idx ++;
+                idx++;
             }
         }
     }
@@ -262,13 +265,22 @@ private:
     long max;
     long sum;
     long square_sum;
+
 public:
-    Calculator(): tot_n(0), n(0), min(-1), max(0), sum(0), square_sum(0) {}
+    Calculator()
+        : tot_n(0)
+        , n(0)
+        , min(-1)
+        , max(0)
+        , sum(0)
+        , square_sum(0)
+    {
+    }
     void update(long d)
     {
         n++;
         sum += d;
-        square_sum += (long)d*d;
+        square_sum += (long)d * d;
         min = (min < 0) ? d : ((d < min) ? d : min);
         max = (d > max) ? d : max;
     };
@@ -276,18 +288,17 @@ public:
     {
         if (a1 > 0 && a2 > 0)
             update(a1 - a2);
-        tot_n ++;
+        tot_n++;
     }
     void print() const
     {
         printf("%14ld|%14.5e|%14ld|%14ld|%7d|%7d|\n",
-               (n == 0)? 0: sum / n,
-               (n == 0)? 0: sqrt((square_sum - (double)sum * sum / n) / n),
-               (min < 0) ? 0: min,
+               (n == 0) ? 0 : sum / n,
+               (n == 0) ? 0 : sqrt((square_sum - (double)sum * sum / n) / n),
+               (min < 0) ? 0 : min,
                max,
                n,
-               tot_n
-        );
+               tot_n);
         cout << "+------+-------------------+--------------+--------------+--------------+--------------+-------+-------+" << endl;
     }
 };
@@ -301,7 +312,7 @@ void StrategyDataConsumer::print_stat() const
     cout << "| type | description       | mean(ns)     | std(ns)      | min(ns)      | max(ns)      | valid | total |" << endl;
     cout << "+------+-------------------+--------------+--------------+--------------+--------------+-------+-------+" << endl;
     Calculator ttt_b, ttt_a, str, otr_rsp, otr_f_order, otr_f_trade, otr_trade;
-    for (auto& iter: order_map)
+    for (auto& iter : order_map)
     {
         int order_id = iter.first;
         const OrderLatencyUnit& unit = iter.second;
@@ -312,8 +323,10 @@ void StrategyDataConsumer::print_stat() const
         otr_f_order.update(unit.first_rtn_order_time, unit.send_after_time);
         otr_f_trade.update(unit.first_rtn_trade_time, unit.send_after_time);
         auto trade_map_iter = rtn_trade_map.find(order_id);
-        if (trade_map_iter != rtn_trade_map.end()) {
-            for (auto &rtn_trade_iter: trade_map_iter->second) {
+        if (trade_map_iter != rtn_trade_map.end())
+        {
+            for (auto& rtn_trade_iter : trade_map_iter->second)
+            {
                 otr_trade.update(rtn_trade_iter.first, unit.send_after_time);
             }
         }
@@ -342,7 +355,7 @@ void StrategyDataConsumer::print_detail() const
 {
     cout << endl;
     int idx = 1;
-    for (auto& iter: order_map)
+    for (auto& iter : order_map)
     {
         int order_id = iter.first;
         const OrderLatencyUnit& unit = iter.second;

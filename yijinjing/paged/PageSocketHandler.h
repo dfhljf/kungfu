@@ -39,27 +39,27 @@ public:
     /** return logger */
     virtual KfLogPtr get_logger() const = 0;
     /** return journal index in comm file */
-    virtual int     reg_journal(const string& clientName) = 0;
+    virtual int reg_journal(const string& clientName) = 0;
     /** return (rid_start, rid_end) */
-    virtual IntPair register_strategy(const string& strategyName) = 0;
+    //    virtual IntPair register_strategy(const string& strategyName) = 0;
     /** return true if this client exists, and fill in commfile, size of commfile, hash code of this client */
-    virtual bool    reg_client(string& commFile, int& fileSize, int& hashCode, const string& clientName, int pid, bool isWriter) = 0;
+    virtual bool reg_client(string& commFile, int& fileSize, int& hashCode, const string& clientName, int pid, bool isWriter) = 0;
     /** exit client */
-    virtual void    exit_client(const string& clientName, int hashCode, bool needHashCheck) = 0;
+    virtual void exit_client(const string& clientName, int hashCode, bool needHashCheck) = 0;
     /** subscribe market data
      * from yjj perspective, ticker's market or even other information should not be considered.
      * thus, these info should be compressed and parsed in other upper layer like wingchun */
-    virtual bool    sub_md(const vector<string>& tickers, short source, short msgType, bool isLast) = 0;
+    //   virtual bool sub_md(const vector<string>& tickers, short source, short msgType, bool isLast) = 0;
     /** login trade engine */
-    virtual bool    login_td(const string& clientName, short source) = 0;
+    //  virtual bool login_td(const string& clientName, short source) = 0;
     /** acquire mutex */
-    virtual void    acquire_mutex() const = 0;
+    virtual void acquire_mutex() const = 0;
     /** release the mutex */
-    virtual void    release_mutex() const = 0;
+    virtual void release_mutex() const = 0;
 };
 
 /** socket handler for page engine */
-class PageSocketHandler: public std::enable_shared_from_this<PageSocketHandler>
+class PageSocketHandler : public std::enable_shared_from_this<PageSocketHandler>
 {
 private:
     /** flag for io running */
@@ -70,6 +70,7 @@ private:
     IPageSocketUtil* util;
     /** singleton */
     static std::shared_ptr<PageSocketHandler> m_ptr;
+
 private:
     /** callback when accept new msg*/
     void handle_accept();
@@ -77,6 +78,7 @@ private:
     void process_msg();
     /** private constructor for singleton */
     PageSocketHandler();
+
 public:
     /** start run with page engine */
     void run(IPageSocketUtil* _util);

@@ -37,8 +37,10 @@ std::shared_ptr<local::stream_protocol::socket> _socket;
 std::shared_ptr<io_service> _io;
 std::shared_ptr<PageSocketHandler> PageSocketHandler::m_ptr = std::shared_ptr<PageSocketHandler>(nullptr);
 
-PageSocketHandler::PageSocketHandler(): io_running(false)
-{}
+PageSocketHandler::PageSocketHandler()
+    : io_running(false)
+{
+}
 
 PageSocketHandler* PageSocketHandler::getInstance()
 {
@@ -120,24 +122,24 @@ void PageSocketHandler::process_msg()
             memcpy(&_data[0], &rsp, sizeof(rsp));
             break;
         }
-        case PAGED_SOCKET_STRATEGY_REGISTER:
-        {
-            IntPair rid_pair = util->register_strategy(req->name);
-            PagedSocketRspStrategy rsp = {};
-            rsp.type = req_type;
-            rsp.success = rid_pair.first < rid_pair.second && rid_pair.first > 0;
-            rsp.rid_start = rid_pair.first;
-            rsp.rid_end = rid_pair.second;
-            memcpy(&_data[0], &rsp, sizeof(rsp));
-            break;
-        }
+        //case PAGED_SOCKET_STRATEGY_REGISTER:
+        //{
+        //    IntPair rid_pair = util->register_strategy(req->name);
+        //    PagedSocketRspStrategy rsp = {};
+        //    rsp.type = req_type;
+        //    rsp.success = rid_pair.first < rid_pair.second && rid_pair.first > 0;
+        //    rsp.rid_start = rid_pair.first;
+        //    rsp.rid_end = rid_pair.second;
+        //    memcpy(&_data[0], &rsp, sizeof(rsp));
+        //    break;
+        //}
         case PAGED_SOCKET_READER_REGISTER:
         case PAGED_SOCKET_WRITER_REGISTER:
         {
             string comm_file;
             int file_size;
             int has_code;
-            bool ret = util->reg_client(comm_file, file_size, has_code, req->name, req->pid, req_type==PAGED_SOCKET_WRITER_REGISTER);
+            bool ret = util->reg_client(comm_file, file_size, has_code, req->name, req->pid, req_type == PAGED_SOCKET_WRITER_REGISTER);
             PagedSocketRspClient rsp = {};
             rsp.type = req_type;
             rsp.success = ret;
@@ -156,41 +158,41 @@ void PageSocketHandler::process_msg()
             memcpy(&_data[0], &rsp, sizeof(rsp));
             break;
         }
-        case PAGED_SOCKET_SUBSCRIBE:
-        case PAGED_SOCKET_SUBSCRIBE_TBC:
-        {
-            short source = _data[1];
-            short msg_type = _data[2];
-            vector<string> tickers;
-            int pos = 3;
-            string cur;
-            while (pos < (int)SOCKET_MESSAGE_MAX_LENGTH - 1)
-            {
-                cur = string(&_data[pos]);
-                if (cur.length() > 0)
-                {
-                    tickers.push_back(cur);
-                    pos += cur.length() + 1;
-                }
-                else
-                    break;
-            }
-            bool ret = util->sub_md(tickers, source, msg_type, req_type == PAGED_SOCKET_SUBSCRIBE);
-            PagedSocketResponse rsp;
-            rsp.type = req_type;
-            rsp.success = ret;
-            memcpy(&_data[0], &rsp, sizeof(rsp));
-            break;
-        }
-        case PAGED_SOCKET_TD_LOGIN:
-        {
-            bool ret = util->login_td(req->name, req->source);
-            PagedSocketResponse rsp;
-            rsp.type = req_type;
-            rsp.success = ret;
-            memcpy(&_data[0], &rsp, sizeof(rsp));
-            break;
-        }
+            // case PAGED_SOCKET_SUBSCRIBE:
+            // case PAGED_SOCKET_SUBSCRIBE_TBC:
+            // {
+            //     short source = _data[1];
+            //     short msg_type = _data[2];
+            //     vector<string> tickers;
+            //     int pos = 3;
+            //     string cur;
+            //     while (pos < (int)SOCKET_MESSAGE_MAX_LENGTH - 1)
+            //     {
+            //         cur = string(&_data[pos]);
+            //         if (cur.length() > 0)
+            //         {
+            //             tickers.push_back(cur);
+            //             pos += cur.length() + 1;
+            //         }
+            //         else
+            //             break;
+            //     }
+            //     bool ret = util->sub_md(tickers, source, msg_type, req_type == PAGED_SOCKET_SUBSCRIBE);
+            //     PagedSocketResponse rsp;
+            //     rsp.type = req_type;
+            //     rsp.success = ret;
+            //     memcpy(&_data[0], &rsp, sizeof(rsp));
+            //     break;
+            // }
+            // case PAGED_SOCKET_TD_LOGIN:
+            // {
+            //     bool ret = util->login_td(req->name, req->source);
+            //     PagedSocketResponse rsp;
+            //     rsp.type = req_type;
+            //     rsp.success = ret;
+            //     memcpy(&_data[0], &rsp, sizeof(rsp));
+            //     break;
+            // }
     }
     write(*_socket, buffer(_data));
 }

@@ -35,7 +35,7 @@ YJJ_NAMESPACE_START
 /**
  * Strategy socket handler
  */
-class StrategySocketHandler: public ClientPageProvider, public IStrategyUtil
+class StrategySocketHandler : public ClientPageProvider, public IStrategyUtil
 {
 public:
     /** default constructor with strategy name */

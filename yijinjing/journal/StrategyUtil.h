@@ -28,8 +28,8 @@
 
 YJJ_NAMESPACE_START
 
-#define BL_BASE_FOLDER KUNGFU_JOURNAL_FOLDER+"strategy/"
-#define BL_REPLAY_FOLDER KUNGFU_JOURNAL_FOLDER+"strategy_replay/"
+#define BL_BASE_FOLDER KUNGFU_JOURNAL_FOLDER + "strategy/"
+#define BL_REPLAY_FOLDER KUNGFU_JOURNAL_FOLDER + "strategy_replay/"
 
 FORWARD_DECLARE_PTR(StrategySocketHandler)
 FORWARD_DECLARE_PTR(JournalWriter)
@@ -38,7 +38,7 @@ FORWARD_DECLARE_PTR(StrategyUtil)
 /**
  * Wrapper of strategy utilities
  */
-class StrategyUtil: public IStrategyUtil
+class StrategyUtil : public IStrategyUtil
 {
 protected:
     /** start rid, allocated by page service */
@@ -96,7 +96,7 @@ public:
     /** get request id range */
     IntPair getRequestIds() const;
     /** get request id (python) */
-//    pybind11::tuple getPyRids() const;
+    //    pybind11::tuple getPyRids() const;
     /** python interface for subscription */
     bool pySubscribe(vector<string> tickers, int source);
 
@@ -104,10 +104,10 @@ public:
     /** destructor */
     ~StrategyUtil();
     /** constructor */
-    StrategyUtil(const string& strategyName, bool isReplay=false);
+    StrategyUtil(const string& strategyName, bool isReplay = false);
     /** create method, only strategy name is enough
      *  folder and journal name is determined */
-    static StrategyUtilPtr create(const string& strategyName, bool isReplay=false);
+    static StrategyUtilPtr create(const string& strategyName, bool isReplay = false);
 };
 
 YJJ_NAMESPACE_END

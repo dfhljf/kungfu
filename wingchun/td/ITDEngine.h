@@ -43,10 +43,10 @@ using kungfu::yijinjing::FeeHandler;
 struct ClientInfoUnit
 {
     bool is_alive;
-    int  journal_index;
-    int  account_index;
-    int  rid_start;
-    int  rid_end;
+    int journal_index;
+    int account_index;
+    int rid_start;
+    int rid_end;
     PosHandlerPtr pos_handler;
 };
 
@@ -67,13 +67,13 @@ struct TradeAccount
 /**
  * Base class of all trade engines
  */
-class ITDEngine: public IEngine
+class ITDEngine : public IEngine
 {
 protected:
     /** writer on td_send records all messages to send */
     yijinjing::JournalWriterPtr send_writer;
     /** information about all existing clients. */
-    map<string, ClientInfoUnit > clients; // clientName: (exist, idx)
+    map<string, ClientInfoUnit> clients; // clientName: (exist, idx)
     /** trade account */
     vector<TradeAccount> accounts;
     /** -1 if do not accept unregistered account, else return index of accounts */
@@ -145,16 +145,16 @@ public:
     virtual void req_order_action(const LFOrderActionField* data, int account_index, int requestId, long rcv_time) = 0;
     /** on investor position, engine (on_data) */
     void on_rsp_position(const LFRspPositionField* pos, bool isLast, int requestId,
-                         int errorId=0, const char* errorMsg=nullptr);
+                         int errorId = 0, const char* errorMsg = nullptr);
     /** on rsp order insert, engine (on_data) */
     void on_rsp_order_insert(const LFInputOrderField* order, int requestId,
-                             int errorId=0, const char* errorMsg=nullptr);
+                             int errorId = 0, const char* errorMsg = nullptr);
     /** on rsp order action, engine (on_data) */
     void on_rsp_order_action(const LFOrderActionField* action, int requestId,
-                             int errorId=0, const char* errorMsg=nullptr);
+                             int errorId = 0, const char* errorMsg = nullptr);
     /** on rsp account info, engine (on_data) */
     void on_rsp_account(const LFRspAccountField* account, bool isLast, int requestId,
-                        int errorId=0, const char* errorMsg=nullptr);
+                        int errorId = 0, const char* errorMsg = nullptr);
     /** on rtn order, engine (on_data) */
     void on_rtn_order(const LFRtnOrderField* rtn_order);
     /** on rtn trade, engine (on_data) */

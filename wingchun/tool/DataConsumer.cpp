@@ -30,7 +30,10 @@ USING_WC_NAMESPACE
 using namespace std;
 using namespace kungfu::yijinjing;
 
-DataConsumer::DataConsumer(): start_nano(-1), end_nano(-1), cur_time(-1)
+DataConsumer::DataConsumer()
+    : start_nano(-1)
+    , end_nano(-1)
+    , cur_time(-1)
 {
 }
 
@@ -70,14 +73,14 @@ void DataConsumer::run()
             {
                 try
                 {
-                    string content((char *) frame->getData());
+                    string content((char*)frame->getData());
                     json j_start = json::parse(content);
                     on_strategy_start(j_start, cur_time, j_start["name"].get<string>());
                 }
                 catch (...)
                 {
                     cout << " --- ERROR: cannot parse MSG_TYPE_STRATEGY_START --- " << endl;
-                    cout << (char *)frame->getData() << endl;
+                    cout << (char*)frame->getData() << endl;
                     cout << " --- " << endl;
                 }
             }
@@ -85,14 +88,14 @@ void DataConsumer::run()
             {
                 try
                 {
-                    string content((char *) frame->getData());
+                    string content((char*)frame->getData());
                     json j_end = json::parse(content);
                     on_strategy_end(j_end, cur_time, j_end["name"].get<string>());
                 }
                 catch (...)
                 {
                     cout << " --- ERROR: cannot parse MSG_TYPE_STRATEGY_END --- " << endl;
-                    cout << (char *)frame->getData() << endl;
+                    cout << (char*)frame->getData() << endl;
                     cout << " --- " << endl;
                 }
             }
@@ -100,14 +103,14 @@ void DataConsumer::run()
             {
                 try
                 {
-                    string content((char *) frame->getData());
+                    string content((char*)frame->getData());
                     json j_request = json::parse(content);
                     on_td_connect(j_request, msg_source, cur_time, j_request["name"].get<string>());
                 }
                 catch (...)
                 {
                     cout << " --- ERROR: cannot parse MSG_TYPE_TRADE_ENGINE_LOGIN --- " << endl;
-                    cout << (char *)frame->getData() << endl;
+                    cout << (char*)frame->getData() << endl;
                     cout << " --- " << endl;
                 }
             }
@@ -115,14 +118,14 @@ void DataConsumer::run()
             {
                 try
                 {
-                    string content((char *) frame->getData());
+                    string content((char*)frame->getData());
                     json j_ack = json::parse(content);
                     on_td_ack(j_ack, msg_source, cur_time, j_ack["name"].get<string>());
                 }
                 catch (...)
                 {
                     cout << " --- ERROR: cannot parse MSG_TYPE_TRADE_ENGINE_LOGIN --- " << endl;
-                    cout << (char *)frame->getData() << endl;
+                    cout << (char*)frame->getData() << endl;
                     cout << " --- " << endl;
                 }
             }
@@ -130,14 +133,14 @@ void DataConsumer::run()
             {
                 try
                 {
-                    string content((char *) frame->getData());
+                    string content((char*)frame->getData());
                     json j_request = json::parse(content);
                     on_pos_set(j_request, msg_source, cur_time, j_request["name"].get<string>());
                 }
                 catch (...)
                 {
                     cout << " --- ERROR: cannot parse MSG_TYPE_STRATEGY_POS_SET --- " << endl;
-                    cout << (char *)frame->getData() << endl;
+                    cout << (char*)frame->getData() << endl;
                     cout << " --- " << endl;
                 }
             }

@@ -42,11 +42,11 @@ public:
      *  whether to write has to be specified in "isWriting"
      *  if quickMode==True, no locking; if quickMode==False, mlock the memory for performance
      * the address of memory is returned */
-    static void*  LoadPageBuffer(const string& path, int size, bool isWriting, bool quickMode);
+    static void* LoadPageBuffer(const string& path, int size, bool isWriting, bool quickMode);
     /** direct memory manipulation without service
      * release page buffer, buffer and size needs to be specified.
      *  if quickMode==True, no unlocking; if quickMode==False, munlock the memory */
-    static void   ReleasePageBuffer(void* buffer, int size, bool quickMode);
+    static void ReleasePageBuffer(void* buffer, int size, bool quickMode);
 
     // name / pattern
     /** generate proper yjj file name by necessary information */
@@ -58,9 +58,9 @@ public:
 
     // page number
     /** extract page number from file name */
-    static short  ExtractPageNum(const string& filename, const string& jname);
+    static short ExtractPageNum(const string& filename, const string& jname);
     /** select page number from existing pages in directory which contains the nano time */
-    static short  GetPageNumWithTime(const string& dir, const string& jname, long time);
+    static short GetPageNumWithTime(const string& dir, const string& jname, long time);
     /** get existing page numbers in directory with jname */
     static vector<short> GetPageNums(const string& dir, const string& jname);
 

@@ -30,7 +30,6 @@
 
 namespace py = pybind11;
 
-
 USING_YJJ_NAMESPACE
 
 JournalReaderPtr createReader(const vector<string>& dirs, const vector<string>& jnames, const string& readerName, long startTime)
@@ -76,7 +75,7 @@ vector<std::string> get_available_journal_folders()
     return finder.getAvailableJournalFolders();
 }
 
-std::string get_journal_folder(const std::string & name)
+std::string get_journal_folder(const std::string& name)
 {
     JournalFinder finder;
     return finder.getJournalFolder(name);
@@ -95,66 +94,66 @@ PYBIND11_MODULE(libjournal, m)
     m.def("createReader", &createReader);
     m.def("createWriter", &createWriter);
     m.def("createBL", &createBL);
-//    m.def("createPosHandler", &createPosHandler, py::arg("source"), py::arg("js_str"));
-//    m.def("createPosHandler0", &createEmptyPosHandler, py::arg("source"));
+    //    m.def("createPosHandler", &createPosHandler, py::arg("source"), py::arg("js_str"));
+    //    m.def("createPosHandler0", &createEmptyPosHandler, py::arg("source"));
 
     // JournalReader
-    py::class_<JournalReader, JournalReaderPtr >(m, "Reader")
-    .def("addJ", &JournalReader::addJournal, py::arg("folder"), py::arg("jname"))
-    .def("expireJ", &JournalReader::expireJournalByName, py::arg("jname"))
-    .def("restartJ", &JournalReader::seekTimeJournalByName, py::arg("jname"), py::arg("nano"))
-    .def("next", &JournalReader::getNextFrame)
-    .def("name", &JournalReader::getFrameName);
+    py::class_<JournalReader, JournalReaderPtr>(m, "Reader")
+        .def("addJ", &JournalReader::addJournal, py::arg("folder"), py::arg("jname"))
+        .def("expireJ", &JournalReader::expireJournalByName, py::arg("jname"))
+        .def("restartJ", &JournalReader::seekTimeJournalByName, py::arg("jname"), py::arg("nano"))
+        .def("next", &JournalReader::getNextFrame)
+        .def("name", &JournalReader::getFrameName);
 
     // JournalWriter
-    py::class_<JournalWriter, JournalWriterPtr >(m, "Writer")
-    .def("write_str", &JournalWriter::writeStr)
-    .def("get_page_num", &JournalWriter::getPageNum)
-    .def("write", &JournalWriter::writePyData);
+    py::class_<JournalWriter, JournalWriterPtr>(m, "Writer")
+        .def("write_str", &JournalWriter::writeStr)
+        .def("get_page_num", &JournalWriter::getPageNum)
+        .def("write", &JournalWriter::writePyData);
 
     // StrategyUtil
-    py::class_<StrategyUtil, StrategyUtilPtr >(m, "StrategyUtil")
-    .def("rids", &StrategyUtil::getPyRids)
-    .def("subscribe", &StrategyUtil::pySubscribe)
-    .def("login_trade", &StrategyUtil::td_connect)
-    .def("write_str", &StrategyUtil::writeStr)
-    .def("write", &StrategyUtil::writePyData);
+    py::class_<StrategyUtil, StrategyUtilPtr>(m, "StrategyUtil")
+        .def("rids", &StrategyUtil::getPyRids)
+        .def("subscribe", &StrategyUtil::pySubscribe)
+        .def("login_trade", &StrategyUtil::td_connect)
+        .def("write_str", &StrategyUtil::writeStr)
+        .def("write", &StrategyUtil::writePyData);
 
     // Frame
-    py::class_<Frame, FramePtr >(m, "Frame")
-    .def("status", &Frame::getStatus)
-    .def("nano", &Frame::getNano)
-    .def("extra_nano", &Frame::getExtraNano)
-    .def("source", &Frame::getSource)
-    .def("msg_type", &Frame::getMsgType)
-    .def("is_last", &Frame::getLastFlag)
-    .def("request_id", &Frame::getRequestId)
-    .def("error_id", &Frame::getErrorId)
-    .def("error_msg", &Frame::getPyErrorMsg)
-    .def("get_str", &Frame::getStr)
-    .def("get_data", &Frame::getPyData);
+    py::class_<Frame, FramePtr>(m, "Frame")
+        .def("status", &Frame::getStatus)
+        .def("nano", &Frame::getNano)
+        .def("extra_nano", &Frame::getExtraNano)
+        .def("source", &Frame::getSource)
+        .def("msg_type", &Frame::getMsgType)
+        .def("is_last", &Frame::getLastFlag)
+        .def("request_id", &Frame::getRequestId)
+        .def("error_id", &Frame::getErrorId)
+        .def("error_msg", &Frame::getPyErrorMsg)
+        .def("get_str", &Frame::getStr)
+        .def("get_data", &Frame::getPyData);
 
-//    // PosMap
-//    py::class_<PosHandler, boost::shared_ptr<PosHandler> >(m, "PosHandler")
-//    .def("update", &PosHandler::update_py, py::arg("ticker"), py::arg("volume"), py::arg("direction"), py::arg("trade_off"))
-//    .def("switch_day", &PosHandler::switch_day)
-//    .def("is_poisoned", &PosHandler::poisoned)
-//    .def("dump", &PosHandler::to_string)
-//    .def("get_long_tot", &PosHandler::get_long_total)
-//    .def("get_long_yd", &PosHandler::get_long_yestd)
-//    .def("get_short_tot", &PosHandler::get_short_total)
-//    .def("get_short_yd", &PosHandler::get_short_yestd)
-//    .def("get_net_tot", &PosHandler::get_net_total)
-//    .def("get_net_yd", &PosHandler::get_net_yestd)
-//    .def("get_net_fee", &PosHandler::get_net_fee)
-//    .def("get_net_balance", &PosHandler::get_net_balance)
-//    .def("get_long_fee", &PosHandler::get_long_fee)
-//    .def("get_long_balance", &PosHandler::get_long_balance)
-//    .def("get_short_fee", &PosHandler::get_short_fee)
-//    .def("get_short_balance", &PosHandler::get_short_balance)
-//    .def("get_tickers", &PosHandler::get_tickers)
-//    .def("set_pos", &PosHandler::set_pos_py, py::arg("ticker"), py::arg("posi_direction"), py::arg("tot")=0, py::arg("yd")=0, py::arg("balance")=0, py::arg("fee")=0)
-//    .def("add_pos", &PosHandler::add_pos_py, py::arg("ticker"), py::arg("posi_direction"), py::arg("tot")=0, py::arg("yd")=0, py::arg("balance")=0, py::arg("fee")=0);
+    //    // PosMap
+    //    py::class_<PosHandler, boost::shared_ptr<PosHandler> >(m, "PosHandler")
+    //    .def("update", &PosHandler::update_py, py::arg("ticker"), py::arg("volume"), py::arg("direction"), py::arg("trade_off"))
+    //    .def("switch_day", &PosHandler::switch_day)
+    //    .def("is_poisoned", &PosHandler::poisoned)
+    //    .def("dump", &PosHandler::to_string)
+    //    .def("get_long_tot", &PosHandler::get_long_total)
+    //    .def("get_long_yd", &PosHandler::get_long_yestd)
+    //    .def("get_short_tot", &PosHandler::get_short_total)
+    //    .def("get_short_yd", &PosHandler::get_short_yestd)
+    //    .def("get_net_tot", &PosHandler::get_net_total)
+    //    .def("get_net_yd", &PosHandler::get_net_yestd)
+    //    .def("get_net_fee", &PosHandler::get_net_fee)
+    //    .def("get_net_balance", &PosHandler::get_net_balance)
+    //    .def("get_long_fee", &PosHandler::get_long_fee)
+    //    .def("get_long_balance", &PosHandler::get_long_balance)
+    //    .def("get_short_fee", &PosHandler::get_short_fee)
+    //    .def("get_short_balance", &PosHandler::get_short_balance)
+    //    .def("get_tickers", &PosHandler::get_tickers)
+    //    .def("set_pos", &PosHandler::set_pos_py, py::arg("ticker"), py::arg("posi_direction"), py::arg("tot")=0, py::arg("yd")=0, py::arg("balance")=0, py::arg("fee")=0)
+    //    .def("add_pos", &PosHandler::add_pos_py, py::arg("ticker"), py::arg("posi_direction"), py::arg("tot")=0, py::arg("yd")=0, py::arg("balance")=0, py::arg("fee")=0);
 
     // JournalFinder
     m.def("get_all_journal_names", &get_all_journal_names);

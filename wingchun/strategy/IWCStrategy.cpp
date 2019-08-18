@@ -34,7 +34,8 @@ void setup_signal_callback()
     std::signal(SIGKILL, IWCDataProcessor::signal_handler);
 }
 
-IWCStrategy::IWCStrategy(const string &name): name(name)
+IWCStrategy::IWCStrategy(const string& name)
+    : name(name)
 {
     logger = yijinjing::KfLog::getStrategyLogger(name, name);
     util = WCStrategyUtilPtr(new WCStrategyUtil(name));
@@ -144,7 +145,7 @@ void IWCStrategy::on_rsp_position(const PosHandlerPtr posMap, int request_id, sh
 
 void IWCStrategy::on_market_bar(const BarMdMap& data, int min_interval, short source, long rcv_time)
 {
-    for (auto &iter: data)
+    for (auto& iter : data)
     {
         const LFBarMarketDataField& bar = iter.second;
         KF_LOG_DEBUG(logger, "[bar] (ticker)" << iter.first << " (o)" << bar.Open << " (h)" << bar.High << " (l)" << bar.Low << " (c)" << bar.Close);
@@ -192,35 +193,40 @@ bool IWCStrategy::td_is_connected(short source) const
     return false;
 }
 
-#define CHECK_TD_READY(source) \
-    if (!td_is_ready(source)) \
-    {\
-        if (!td_is_connected(source))\
-            KF_LOG_ERROR(logger, "td (" << source << ") is not connected. please check TD or yjj status"); \
-        else \
+#define CHECK_TD_READY(source)                                                                                                                    \
+    if (!td_is_ready(source))                                                                                                                     \
+    {                                                                                                                                             \
+        if (!td_is_connected(source))                                                                                                             \
+            KF_LOG_ERROR(logger, "td (" << source << ") is not connected. please check TD or yjj status");                                        \
+        else                                                                                                                                      \
             KF_LOG_ERROR(logger, "td (" << source << ") holds no position here. please init current strategy's position before insert an order"); \
-        return -1;\
+        return -1;                                                                                                                                \
     }
 
-#define CHECK_EXCHANGE_AND_OFFSET(exchange_name, offset) \
-    {\
-        short eid = getExchangeId(exchange_name);\
-        if (eid < 0){\
-            KF_LOG_ERROR(logger, "unrecognized exchange name: " << exchange_name); \
-            return -1;\
-        }\
-        if (eid == EXCHANGE_ID_CFFEX || eid == EXCHANGE_ID_DCE || eid == EXCHANGE_ID_CZCE){\
-            if (offset == LF_CHAR_CloseToday || offset == LF_CHAR_CloseYesterday){\
-                KF_LOG_DEBUG(logger, "CFFEX/DCE/CZCE don't support CloseToday or CloseYesterday, auto revised to default Close");\
-                offset = LF_CHAR_Close;\
-            }\
-        }\
-        if (eid == EXCHANGE_ID_SSE || eid == EXCHANGE_ID_SZE) {\
-            if (offset != LF_CHAR_Open) {\
-                KF_LOG_DEBUG(logger, "stock don't need to specify offset, default is open");\
-                offset = LF_CHAR_Open;\
-            }\
-        }\
+#define CHECK_EXCHANGE_AND_OFFSET(exchange_name, offset)                                                                          \
+    {                                                                                                                             \
+        short eid = getExchangeId(exchange_name);                                                                                 \
+        if (eid < 0)                                                                                                              \
+        {                                                                                                                         \
+            KF_LOG_ERROR(logger, "unrecognized exchange name: " << exchange_name);                                                \
+            return -1;                                                                                                            \
+        }                                                                                                                         \
+        if (eid == EXCHANGE_ID_CFFEX || eid == EXCHANGE_ID_DCE || eid == EXCHANGE_ID_CZCE)                                        \
+        {                                                                                                                         \
+            if (offset == LF_CHAR_CloseToday || offset == LF_CHAR_CloseYesterday)                                                 \
+            {                                                                                                                     \
+                KF_LOG_DEBUG(logger, "CFFEX/DCE/CZCE don't support CloseToday or CloseYesterday, auto revised to default Close"); \
+                offset = LF_CHAR_Close;                                                                                           \
+            }                                                                                                                     \
+        }                                                                                                                         \
+        if (eid == EXCHANGE_ID_SSE || eid == EXCHANGE_ID_SZE)                                                                     \
+        {                                                                                                                         \
+            if (offset != LF_CHAR_Open)                                                                                           \
+            {                                                                                                                     \
+                KF_LOG_DEBUG(logger, "stock don't need to specify offset, default is open");                                      \
+                offset = LF_CHAR_Open;                                                                                            \
+            }                                                                                                                     \
+        }                                                                                                                         \
     }
 
 /** util functions, check before calling WCStrategyUtil */

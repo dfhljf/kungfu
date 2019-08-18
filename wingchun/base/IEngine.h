@@ -68,7 +68,10 @@ protected:
     /* signal received */
     static volatile int signal_received;
     /* signal handler */
-    static void signal_handler(int signum) { signal_received = signum; }
+    static void signal_handler(int signum)
+    {
+        signal_received = signum;
+    }
 
 public:
     /** initialize engine, pass-in parameters as json format

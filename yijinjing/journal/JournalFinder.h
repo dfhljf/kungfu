@@ -37,22 +37,36 @@ YJJ_NAMESPACE_START
 
 #define JOURNAL_NAME_PATTERN JOURNAL_PREFIX + "\\.(\\w+)\\.[0-9]+\\." + JOURNAL_SUFFIX
 
-class JournalFinder {
+class JournalFinder
+{
 private:
-    void addJournalInfo(const std::string & name, const std::string & folder);
+    void addJournalInfo(const std::string& name, const std::string& folder);
     //void loadJournalInfo(short source, JournalPair (*getJournalPair)(short));
-    
+
 protected:
     vector<std::string> all_journal_names;
     vector<std::string> avaliable_journal_names;
     vector<std::string> avaliable_journal_folders;
     map<std::string, std::string> all_journal;
+
 public:
     JournalFinder();
-    vector<std::string> const &getAllJournalNames() const { return all_journal_names; }
-    vector<std::string> const &getAvailableJournalNames() const { return avaliable_journal_names; }
-    vector<std::string> const &getAvailableJournalFolders() const { return avaliable_journal_folders; }
-    std::string const &getJournalFolder(const std::string &name) { return all_journal[name]; }
+    vector<std::string> const& getAllJournalNames() const
+    {
+        return all_journal_names;
+    }
+    vector<std::string> const& getAvailableJournalNames() const
+    {
+        return avaliable_journal_names;
+    }
+    vector<std::string> const& getAvailableJournalFolders() const
+    {
+        return avaliable_journal_folders;
+    }
+    std::string const& getJournalFolder(const std::string& name)
+    {
+        return all_journal[name];
+    }
     void loadJournalInfo(config::ApiType source);
 };
 

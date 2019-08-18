@@ -33,51 +33,60 @@
 
 USING_YJJ_NAMESPACE
 
-#define TEMP_PAGE KUNGFU_JOURNAL_FOLDER+"TEMP_PAGE"
+#define TEMP_PAGE KUNGFU_JOURNAL_FOLDER + "TEMP_PAGE"
 const string PstTempPage::PageFullPath = TEMP_PAGE;
 
-PstPidCheck::PstPidCheck(PageEngine *pe): engine(pe) {}
+PstPidCheck::PstPidCheck(PageEngine* pe)
+    : engine(pe)
+{
+}
 
 void PstPidCheck::go()
 {
     vector<string> clientsToRemove;
     {
-        for (auto const &item: engine->pidClient)
+        for (auto const& item : engine->pidClient)
         {
             struct stat sts;
             std::stringstream ss;
             ss << "/proc/" << item.first;
             if (stat(ss.str().c_str(), &sts) == -1 && errno == ENOENT)
             {
-                for (auto const &name: item.second)
+                for (auto const& name : item.second)
                 {
                     clientsToRemove.push_back(name);
                 }
             }
         }
     }
-    for (auto const &name: clientsToRemove)
+    for (auto const& name : clientsToRemove)
     {
         engine->exit_client(name, 0, false);
     }
 }
 
-PstTimeTick::PstTimeTick(PageEngine *pe): engine(pe) {}
+PstTimeTick::PstTimeTick(PageEngine* pe)
+    : engine(pe)
+{
+}
 
 void PstTimeTick::go()
 {
     engine->write("", MSG_TYPE_TIME_TICK);
 }
 
-PstTempPage::PstTempPage(PageEngine *pe): engine(pe) {}
+PstTempPage::PstTempPage(PageEngine* pe)
+    : engine(pe)
+{
+}
 
 void PstTempPage::go()
 {
-    auto &fileAddrs = engine->fileAddrs;
+    auto& fileAddrs = engine->fileAddrs;
     if (fileAddrs.find(PageFullPath) == fileAddrs.end())
     {
         KF_LOG_INFO(engine->get_logger(), "NEW TEMP PAGE: " << PageFullPath);
-        void *buffer = PageUtil::LoadPageBuffer(PageFullPath, JOURNAL_PAGE_SIZE, true, true);
+        void* buffer = PageUtil::LoadPageBuffer(PageFullPath, JOURNAL_PAGE_SIZE, true, true);
         if (buffer != nullptr)
         {
             fileAddrs[PageFullPath] = buffer;
@@ -85,7 +94,10 @@ void PstTempPage::go()
     }
 }
 
-PstKfController::PstKfController(PageEngine *pe): engine(pe) {}
+//PstKfController::PstKfController(PageEngine* pe)
+//    : engine(pe)
+//{
+//}
 
 //long getFirstNano(string& formatTime)
 //{
@@ -102,74 +114,74 @@ PstKfController::PstKfController(PageEngine *pe): engine(pe) {}
 //    return res;
 //}
 
-void PstKfController::setDaySwitch(long time)
-{
-    //long cur_nano = getFirstNano(formatTime);
-    engine->set_last_switch_nano(time);
-    next_nanos.push_back(time);
-    nano_types.push_back(CONTROLLER_SWITCH_DAY);
-}
-
-void PstKfController::setStartDay(long time)
-{
-    next_nanos.push_back(time);
-    nano_types.push_back(CONTROLLER_START_DAY);
-}
-
-void PstKfController::setEndDay(long time)
-{
-    next_nanos.push_back(time);
-    nano_types.push_back(CONTROLLER_END_DAY);
-}
-
-void PstKfController::addEngineStart(long time)
-{
-    //long cur_nano = getFirstNano(formatTime);
-    next_nanos.push_back(time);
-    nano_types.push_back(CONTROLLER_ENGINE_STARTS);
-}
-
-void PstKfController::addEngineEnd(long time)
-{
-    //long cur_nano = getFirstNano(formatTime);
-    next_nanos.push_back(time);
-    nano_types.push_back(CONTROLLER_ENGINE_ENDS);
-}
-
-void PstKfController::go()
-{
-    long nano = getNanoTime();
-    for (size_t i = 0; i < next_nanos.size(); i++)
-    {
-        long& l = next_nanos[i];
-        if (l < nano)
-        {
-            short tp = nano_types[i];
-            switch(tp)
-            {
-                case CONTROLLER_SWITCH_DAY:
-                    engine->switch_trading_day();
-                    engine->set_last_switch_nano(l);
-                    break;
-                case CONTROLLER_ENGINE_STARTS:
-                    engine->write("", MSG_TYPE_MD_ENGINE_OPEN);
-                    engine->write("", MSG_TYPE_TRADE_ENGINE_OPEN);
-                    break;
-                case CONTROLLER_ENGINE_ENDS:
-                    engine->write("", MSG_TYPE_MD_ENGINE_CLOSE);
-                    engine->write("", MSG_TYPE_TRADE_ENGINE_CLOSE);
-                    break;
-                case CONTROLLER_START_DAY:
-                    engine->write("", MSG_TYPE_START_DAY);
-                    break;
-                case CONTROLLER_END_DAY:
-                    engine->write("",MSG_TYPE_END_DAY);
-                    break;
-            }
-            l += NANOSECONDS_PER_DAY;
-        }
-    }
-}
+//void PstKfController::setDaySwitch(long time)
+//{
+//    //long cur_nano = getFirstNano(formatTime);
+//    engine->set_last_switch_nano(time);
+//    next_nanos.push_back(time);
+//    nano_types.push_back(CONTROLLER_SWITCH_DAY);
+//}
+//
+//void PstKfController::setStartDay(long time)
+//{
+//    next_nanos.push_back(time);
+//    nano_types.push_back(CONTROLLER_START_DAY);
+//}
+//
+//void PstKfController::setEndDay(long time)
+//{
+//    next_nanos.push_back(time);
+//    nano_types.push_back(CONTROLLER_END_DAY);
+//}
+//
+//void PstKfController::addEngineStart(long time)
+//{
+//    //long cur_nano = getFirstNano(formatTime);
+//    next_nanos.push_back(time);
+//    nano_types.push_back(CONTROLLER_ENGINE_STARTS);
+//}
+//
+//void PstKfController::addEngineEnd(long time)
+//{
+//    //long cur_nano = getFirstNano(formatTime);
+//    next_nanos.push_back(time);
+//    nano_types.push_back(CONTROLLER_ENGINE_ENDS);
+//}
+//
+//void PstKfController::go()
+//{
+//    long nano = getNanoTime();
+//    for (size_t i = 0; i < next_nanos.size(); i++)
+//    {
+//        long& l = next_nanos[i];
+//        if (l < nano)
+//        {
+//            short tp = nano_types[i];
+//            switch (tp)
+//            {
+//                case CONTROLLER_SWITCH_DAY:
+//                    engine->switch_trading_day();
+//                    engine->set_last_switch_nano(l);
+//                    break;
+//                case CONTROLLER_ENGINE_STARTS:
+//                    engine->write("", MSG_TYPE_MD_ENGINE_OPEN);
+//                    engine->write("", MSG_TYPE_TRADE_ENGINE_OPEN);
+//                    break;
+//                case CONTROLLER_ENGINE_ENDS:
+//                    engine->write("", MSG_TYPE_MD_ENGINE_CLOSE);
+//                    engine->write("", MSG_TYPE_TRADE_ENGINE_CLOSE);
+//                    break;
+//                case CONTROLLER_START_DAY:
+//                    engine->write("", MSG_TYPE_START_DAY);
+//                    break;
+//                case CONTROLLER_END_DAY:
+//                    engine->write("", MSG_TYPE_END_DAY);
+//                    break;
+//            }
+//            l += NANOSECONDS_PER_DAY;
+//        }
+//    }
+//}
 
 //pybind11::dict PstKfController::getInfo() const
 //{

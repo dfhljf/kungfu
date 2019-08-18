@@ -148,5 +148,5 @@ bool StrategyUtil::subscribeOrderTrade(const vector<string>& tickers, short sour
 
 int StrategyUtil::get_rid()
 {
-    return (cur_rid ++ % REQUEST_ID_RANGE) + rid_start;
+    return (cur_rid++ % REQUEST_ID_RANGE) + rid_start;
 }

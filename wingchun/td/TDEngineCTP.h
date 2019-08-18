@@ -36,25 +36,25 @@ struct AccountUnitCTP
     // api
     CThostFtdcTraderApi* api;
     // extra information
-    string  auth_code;
-    int     front_id;
-    int     session_id;
+    string auth_code;
+    int front_id;
+    int session_id;
     // internal flags
-    bool    initialized;
-    bool    connected;
-    bool    authenticated;
-    bool    settle_confirmed;
-    bool    logged_in;
+    bool initialized;
+    bool connected;
+    bool authenticated;
+    bool settle_confirmed;
+    bool logged_in;
     // some rids
-    int     auth_rid;
-    int     settle_rid;
-    int     login_rid;
+    int auth_rid;
+    int settle_rid;
+    int login_rid;
 };
 
 /**
  * CTP trade engine
  */
-class TDEngineCTP: public ITDEngine, public CThostFtdcTraderSpi
+class TDEngineCTP : public ITDEngine, public CThostFtdcTraderSpi
 {
 public:
     /** init internal journal writer (both raw and send) */
@@ -70,7 +70,10 @@ public:
     virtual void release_api();
     virtual bool is_connected() const;
     virtual bool is_logged_in() const;
-    virtual string name() const { return "TDEngineCTP"; };
+    virtual string name() const
+    {
+        return "TDEngineCTP";
+    };
 
     // req functions
     virtual void req_investor_position(const LFQryPositionField* data, int account_index, int requestId);
@@ -106,41 +109,41 @@ public:
     virtual void OnFrontDisconnected(int nReason);
 
     ///客户端认证响应
-    virtual void OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField,
-                                   CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspAuthenticate(CThostFtdcRspAuthenticateField* pRspAuthenticateField,
+                                   CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///登录请求响应
-    virtual void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo,
+    virtual void OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo,
                                 int nRequestID, bool bIsLast);
 
     ///投资者结算结果确认响应
-    virtual void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm,
-                                            CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField* pSettlementInfoConfirm,
+                                            CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///登出请求响应
-    virtual void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo,
+    virtual void OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo,
                                  int nRequestID, bool bIsLast);
 
     ///报单录入请求响应 (cjiang: this only be called when there is error)
-    virtual void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo,
+    virtual void OnRspOrderInsert(CThostFtdcInputOrderField* pInputOrder, CThostFtdcRspInfoField* pRspInfo,
                                   int nRequestID, bool bIsLast);
 
     ///报单操作请求响应
-    virtual void OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderAction,
-                                  CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspOrderAction(CThostFtdcInputOrderActionField* pInputOrderAction,
+                                  CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///请求查询投资者持仓响应
-    virtual void OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition,
-                                          CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspQryInvestorPosition(CThostFtdcInvestorPositionField* pInvestorPosition,
+                                          CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     ///报单通知
-    virtual void OnRtnOrder(CThostFtdcOrderField *pOrder);
+    virtual void OnRtnOrder(CThostFtdcOrderField* pOrder);
 
     ///成交通知
-    virtual void OnRtnTrade(CThostFtdcTradeField *pTrade);
+    virtual void OnRtnTrade(CThostFtdcTradeField* pTrade);
 
     ///请求查询资金账户响应
-    virtual void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    virtual void OnRspQryTradingAccount(CThostFtdcTradingAccountField* pTradingAccount, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 };
 
 WC_NAMESPACE_END

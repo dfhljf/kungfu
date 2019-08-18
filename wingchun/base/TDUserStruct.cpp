@@ -28,12 +28,14 @@
 USING_WC_NAMESPACE
 USING_YJJ_NAMESPACE
 
-TDUserInfoHelper::TDUserInfoHelper(short source): source(source)
+TDUserInfoHelper::TDUserInfoHelper(short source)
+    : source(source)
 {
     address_book.clear();
 }
 
-TDUserInfoHelper::TDUserInfoHelper(short source, const string& user_name): TDUserInfoHelper(source)
+TDUserInfoHelper::TDUserInfoHelper(short source, const string& user_name)
+    : TDUserInfoHelper(source)
 {
     // force load read-only in this common constructor. only ITDEngine may modify
     load(user_name, false);
@@ -69,10 +71,9 @@ void TDUserInfoHelper::remove(const string& user_name)
     }
 }
 
-
 TDUserInfoHelper::~TDUserInfoHelper()
 {
-    for (auto iter: address_book)
+    for (auto iter : address_book)
     {
         TDUserInfo* address = iter.second;
         address->end_time = getNanoTime();
@@ -83,7 +84,7 @@ TDUserInfoHelper::~TDUserInfoHelper()
 
 void TDUserInfoHelper::switch_day()
 {
-    for (auto iter: address_book)
+    for (auto iter : address_book)
     {
         clean_up(iter.second);
     }
@@ -122,7 +123,7 @@ inline bool order_is_existing(char status)
            && status != LF_CHAR_PartTradedNotQueueing;
 }
 
-TDOrderInfo* TDUserInfoHelper::locate_writable(const string &user_name, int order_id)
+TDOrderInfo* TDUserInfoHelper::locate_writable(const string& user_name, int order_id)
 {
     TDUserInfo* info = get_user_info(user_name);
     if (info == nullptr)
@@ -158,7 +159,7 @@ void TDUserInfoHelper::record_order(const string& user_name, int local_id, int o
     }
 }
 
-bool TDUserInfoHelper::get_order(const string& user_name, int order_id, int &local_id, char* ticker) const
+bool TDUserInfoHelper::get_order(const string& user_name, int order_id, int& local_id, char* ticker) const
 {
     TDOrderInfo* order_info = locate_readable(user_name, order_id);
     if (order_info != nullptr)
@@ -262,7 +263,7 @@ TDBasicOrderInfo* TDEngineInfoHelper::locate_readable(int local_id) const
     while (info->orders[idx].local_id != local_id && count < TD_AVAILABLE_ORDER_LIMIT)
     {
         idx = (idx + 1) % TD_AVAILABLE_ORDER_LIMIT;
-        count ++;
+        count++;
     }
     if (count == TD_AVAILABLE_ORDER_LIMIT)
         return nullptr;
@@ -279,7 +280,7 @@ TDBasicOrderInfo* TDEngineInfoHelper::locate_writable(int local_id)
     {
         idx = (idx + 1) % TD_AVAILABLE_ORDER_LIMIT;
         status = info->orders[idx].status;
-        count ++;
+        count++;
     }
     if (count == TD_AVAILABLE_ORDER_LIMIT)
         return nullptr;

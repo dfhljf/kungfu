@@ -35,10 +35,10 @@ const long MICROSECONDS_PER_SECOND = MICROSECONDS_PER_MILLISECOND * MILLISECONDS
 const long NANOSECONDS_PER_MILLISECOND = NANOSECONDS_PER_MICROSECOND * MICROSECONDS_PER_MILLISECOND;
 const long NANOSECONDS_PER_SECOND = NANOSECONDS_PER_MILLISECOND * MILLISECONDS_PER_SECOND;
 
-const int  SECONDS_PER_MINUTE = 60;
-const int  MINUTES_PER_HOUR = 60;
-const int  HOURS_PER_DAY = 24;
-const int  SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+const int SECONDS_PER_MINUTE = 60;
+const int MINUTES_PER_HOUR = 60;
+const int HOURS_PER_DAY = 24;
+const int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 
 const long MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
 const long NANOSECONDS_PER_MINUTE = NANOSECONDS_PER_SECOND * SECONDS_PER_MINUTE;
@@ -52,9 +52,12 @@ class NanoTimer
 {
 public:
     /** return current nano time: unix-timestamp * 1e9 + nano-part */
-    long   getNano() const;
+    long getNano() const;
     /** return secDiff */
-    inline long getSecDiff() const { return secDiff; }
+    inline long getSecDiff() const
+    {
+        return secDiff;
+    }
     /** singleton */
     static NanoTimer* getInstance();
 
@@ -118,8 +121,8 @@ inline string parseNano(long nano, const char* format)
     if (nano <= 0)
         return string("NULL");
     nano /= NANOSECONDS_PER_SECOND;
-    struct tm * dt;
-    char buffer [30];
+    struct tm* dt;
+    char buffer[30];
     dt = localtime(&nano);
     strftime(buffer, sizeof(buffer), format, dt);
     return string(buffer);

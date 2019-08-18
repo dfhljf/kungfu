@@ -35,7 +35,7 @@ USING_YJJ_NAMESPACE
 typedef std::array<char, SOCKET_MESSAGE_MAX_LENGTH> SocketMArray;
 
 /** get socket response via paged_socket */
-void getSocketRsp(SocketMArray &input, SocketMArray &output)
+void getSocketRsp(SocketMArray& input, SocketMArray& output)
 {
     using namespace boost::asio;
     io_service io_service;
@@ -55,8 +55,9 @@ void getSocketRspOnReq(PagedSocketRequest& req, SocketMArray& data, const string
     getSocketRsp(reqBuf, data);
 }
 
-ClientPageProvider::ClientPageProvider(const string& clientName, bool isWriting, bool reviseAllowed):
-        client_name(clientName), comm_buffer(nullptr)
+ClientPageProvider::ClientPageProvider(const string& clientName, bool isWriting, bool reviseAllowed)
+    : client_name(clientName)
+    , comm_buffer(nullptr)
 {
     is_writer = isWriting;
     revise_allowed = is_writer || reviseAllowed;
@@ -83,7 +84,7 @@ void ClientPageProvider::register_client()
 }
 
 void ClientPageProvider::exit_client()
-{// send message to say good bye
+{ // send message to say good bye
     PagedSocketRequest req;
     req.type = PAGED_SOCKET_CLIENT_EXIT;
     req.hash_code = hash_code;
@@ -118,12 +119,14 @@ int ClientPageProvider::register_journal(const string& dir, const string& jname)
     return comm_idx;
 }
 
-PagePtr ClientPageProvider::getPage(const string &dir, const string &jname, int serviceIdx, short pageNum)
+PagePtr ClientPageProvider::getPage(const string& dir, const string& jname, int serviceIdx, short pageNum)
 {
     PageCommMsg* serverMsg = GET_COMM_MSG(comm_buffer, serviceIdx);
     serverMsg->page_num = pageNum;
     serverMsg->status = PAGED_COMM_REQUESTING;
-    while (serverMsg->status == PAGED_COMM_REQUESTING) {}
+    while (serverMsg->status == PAGED_COMM_REQUESTING)
+    {
+    }
 
     if (serverMsg->status != PAGED_COMM_ALLOCATED)
     {
@@ -146,7 +149,7 @@ LocalPageProvider::LocalPageProvider(bool isWriting, bool reviseAllowed)
     revise_allowed = is_writer || reviseAllowed;
 }
 
-PagePtr LocalPageProvider::getPage(const string &dir, const string &jname, int serviceIdx, short pageNum)
+PagePtr LocalPageProvider::getPage(const string& dir, const string& jname, int serviceIdx, short pageNum)
 {
     return Page::load(dir, jname, pageNum, is_writer, false);
 }
@@ -156,9 +159,10 @@ void LocalPageProvider::releasePage(void* buffer, int size, int serviceIdx)
     PageUtil::ReleasePageBuffer(buffer, size, false);
 }
 
-StrategySocketHandler::StrategySocketHandler(const string& strategyName):
-        ClientPageProvider(strategyName, true)
-{}
+StrategySocketHandler::StrategySocketHandler(const string& strategyName)
+    : ClientPageProvider(strategyName, true)
+{
+}
 
 bool StrategySocketHandler::td_connect(short source)
 {

@@ -26,7 +26,11 @@ USING_WC_NAMESPACE
 
 #define GBK2UTF8(msg) kungfu::yijinjing::gbk2utf8(string(msg))
 
-TDEngineXTP::TDEngineXTP(): ITDEngine(SOURCE_XTP), api(nullptr), front_port(-1), client_id(-1)
+TDEngineXTP::TDEngineXTP()
+    : ITDEngine(SOURCE_XTP)
+    , api(nullptr)
+    , front_port(-1)
+    , client_id(-1)
 {
     logger = yijinjing::KfLog::getLogger("TradeEngine.XTP");
 }
@@ -78,12 +82,12 @@ void TDEngineXTP::connect(long timeout_nsec)
         {
             throw std::runtime_error("XTP_MD failed to create api");
         }
-        api->SubscribePublicTopic(XTP_TERT_QUICK);//只传送登录后公有流（订单响应、成交回报）的内容
+        api->SubscribePublicTopic(XTP_TERT_QUICK); //只传送登录后公有流（订单响应、成交回报）的内容
         api->SetSoftwareVersion("1.1.0");
         api->SetSoftwareKey(account_key.c_str());
         api->RegisterSpi(this);
     }
-    for (size_t idx = 0; idx < account_units.size(); idx ++)
+    for (size_t idx = 0; idx < account_units.size(); idx++)
     {
         if (!account_units[idx].logged_in)
         {
@@ -92,9 +96,10 @@ void TDEngineXTP::connect(long timeout_nsec)
             {
                 account_units[idx].session_id = session_id;
                 account_units[idx].logged_in = true;
-                KF_LOG_INFO(logger, "[Login] login succeed!" << " (user_id)" << accounts[idx].UserID
-                                                             << " (session)" << session_id
-                                                             << " (idx)" << idx);
+                KF_LOG_INFO(logger, "[Login] login succeed!"
+                                    << " (user_id)" << accounts[idx].UserID
+                                    << " (session)" << session_id
+                                    << " (idx)" << idx);
             }
             else
             {
@@ -132,9 +137,10 @@ void TDEngineXTP::logout()
             if (api->Logout(session_id) == 0)
             {
                 account_units[idx].session_id = -1;
-                KF_LOG_INFO(logger, "[Logout] logout succeed!" << " (user_id)" << accounts[idx].UserID
-                                                               << " (session)" << session_id
-                                                               << " (idx)" << idx);
+                KF_LOG_INFO(logger, "[Logout] logout succeed!"
+                                    << " (user_id)" << accounts[idx].UserID
+                                    << " (session)" << session_id
+                                    << " (idx)" << idx);
             }
             else
             {
@@ -159,7 +165,7 @@ void TDEngineXTP::release_api()
 
 bool TDEngineXTP::is_logged_in() const
 {
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         if (!unit.logged_in)
             return false;
@@ -177,32 +183,37 @@ bool TDEngineXTP::is_connected() const
  */
 void TDEngineXTP::req_investor_position(const LFQryPositionField* data, int account_index, int requestId)
 {
-    KF_LOG_DEBUG(logger, "[req_pos]" << " (Iid)" << data->InvestorID);
+    KF_LOG_DEBUG(logger, "[req_pos]"
+                         << " (Iid)" << data->InvestorID);
 
     if (!account_units[account_index].logged_in || api->QueryPosition(nullptr, account_units[account_index].session_id, requestId) != 0)
     {
-        KF_LOG_ERROR(logger, "[request] investor position failed!" << " (rid)" << requestId
-                                                                   << " (idx)" << account_index);
+        KF_LOG_ERROR(logger, "[request] investor position failed!"
+                             << " (rid)" << requestId
+                             << " (idx)" << account_index);
     }
 }
 
-void TDEngineXTP::req_qry_account(const LFQryAccountField *data, int account_index, int requestId)
+void TDEngineXTP::req_qry_account(const LFQryAccountField* data, int account_index, int requestId)
 {
-    KF_LOG_DEBUG(logger, "[req_pos]" << " (Iid)" << data->InvestorID);
+    KF_LOG_DEBUG(logger, "[req_pos]"
+                         << " (Iid)" << data->InvestorID);
 
     if (!account_units[account_index].logged_in || api->QueryAsset(account_units[account_index].session_id, requestId) != 0)
     {
-        KF_LOG_ERROR(logger, "[request] account info failed!" << " (rid)" << requestId
-                                                              << " (idx)" << account_index);
+        KF_LOG_ERROR(logger, "[request] account info failed!"
+                             << " (rid)" << requestId
+                             << " (idx)" << account_index);
     }
 }
 
 void TDEngineXTP::req_order_insert(const LFInputOrderField* data, int account_index, int requestId, long rcv_time)
 {
     struct XTPOrderInsertInfo req = parseTo(*data);
-    KF_LOG_DEBUG(logger, "[req_order_insert]" << " (rid)" << requestId
-                                              << " (Tid)" << req.ticker
-                                              << " (OrderRef)" << req.order_client_id);
+    KF_LOG_DEBUG(logger, "[req_order_insert]"
+                         << " (rid)" << requestId
+                         << " (Tid)" << req.ticker
+                         << " (OrderRef)" << req.order_client_id);
     if (account_units[account_index].logged_in)
     {
         long xtp_id = api->InsertOrder(&req, account_units[account_index].session_id);
@@ -212,12 +223,13 @@ void TDEngineXTP::req_order_insert(const LFInputOrderField* data, int account_in
             int err_id = error_info->error_id;
             char* err_msg = (char*)GBK2UTF8(error_info->error_msg).c_str();
             send_writer->write_error_frame(data, sizeof(LFInputOrderField), source_id, MSG_TYPE_LF_ORDER, 1, requestId, err_id, err_msg);
-            KF_LOG_ERROR(logger, "[request] order insert failed!" << " (rid)" << requestId << " (errId)" << err_id << " (errMsg)" << err_msg);
+            KF_LOG_ERROR(logger, "[request] order insert failed!"
+                                 << " (rid)" << requestId << " (errId)" << err_id << " (errMsg)" << err_msg);
         }
         else
         {
             xtp_ids[requestId] = xtp_id;
-            send_writer->write_frame(&req, sizeof(XTPOrderInsertInfo), source_id, MSG_TYPE_LF_ORDER_XTP, 1/*ISLAST*/, requestId);
+            send_writer->write_frame(&req, sizeof(XTPOrderInsertInfo), source_id, MSG_TYPE_LF_ORDER_XTP, 1 /*ISLAST*/, requestId);
         }
     }
 }
@@ -228,16 +240,18 @@ void TDEngineXTP::req_order_action(const LFOrderActionField* data, int account_i
     if (account_units[account_index].logged_in && xtp_ids.find(order_id) != xtp_ids.end())
     {
         long xtp_order_id = xtp_ids[order_id];
-        KF_LOG_DEBUG(logger, "[req_order_action]" << " (rid)" << requestId
-                                                  << " (Iid)" << order_id
-                                                  << " (xtp_id)" << xtp_order_id);
+        KF_LOG_DEBUG(logger, "[req_order_action]"
+                             << " (rid)" << requestId
+                             << " (Iid)" << order_id
+                             << " (xtp_id)" << xtp_order_id);
         if (api->CancelOrder(xtp_order_id, account_units[account_index].session_id) == 0)
         {
             XTPRI* error_info = api->GetApiLastError();
             int err_id = error_info->error_id;
             char* err_msg = (char*)GBK2UTF8(error_info->error_msg).c_str();
             send_writer->write_error_frame(data, sizeof(LFOrderActionField), source_id, MSG_TYPE_LF_ORDER_ACTION, 1, requestId, err_id, err_msg);
-            KF_LOG_ERROR(logger, "[request] order cancel failed!" << " (rid)" << requestId << " (errId)" << err_id << " (errMsg)" << err_msg);
+            KF_LOG_ERROR(logger, "[request] order cancel failed!"
+                                 << " (rid)" << requestId << " (errId)" << err_id << " (errMsg)" << err_msg);
         }
     }
 }
@@ -248,21 +262,22 @@ void TDEngineXTP::req_order_action(const LFOrderActionField* data, int account_i
 void TDEngineXTP::OnDisconnected(uint64_t session_id, int reason)
 {
     KF_LOG_INFO(logger, "[OnDisconnected] (session_id)" << session_id << " (reason)" << reason);
-    for (auto& unit: account_units)
+    for (auto& unit : account_units)
     {
         if (unit.session_id == session_id)
             unit.logged_in = false;
     }
 }
 
-void TDEngineXTP::OnError(XTPRI *error_info)
+void TDEngineXTP::OnError(XTPRI* error_info)
 {
     int err_id = error_info->error_id;
     char* err_msg = (char*)GBK2UTF8(error_info->error_msg).c_str();
-    KF_LOG_ERROR(logger, "[OnError] " << " (errId)" << err_id << " (errMsg)" << err_msg);
+    KF_LOG_ERROR(logger, "[OnError] "
+                         << " (errId)" << err_id << " (errMsg)" << err_msg);
 }
 
-void TDEngineXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint64_t session_id)
+void TDEngineXTP::OnOrderEvent(XTPOrderInfo* order_info, XTPRI* error_info, uint64_t session_id)
 {
     auto rtn_order = parseFrom(*order_info);
     if (error_info == nullptr || error_info->error_id == 0)
@@ -270,7 +285,7 @@ void TDEngineXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint
         on_rtn_order(&rtn_order);
         raw_writer->write_frame(order_info, sizeof(XTPOrderInfo),
                                 source_id, MSG_TYPE_LF_RTN_ORDER_XTP,
-                                1/*islast*/, -1);
+                                1 /*islast*/, -1);
     }
     else
     {
@@ -282,20 +297,20 @@ void TDEngineXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint
     }
 }
 
-void TDEngineXTP::OnTradeEvent(XTPTradeReport *trade_info, uint64_t session_id)
+void TDEngineXTP::OnTradeEvent(XTPTradeReport* trade_info, uint64_t session_id)
 {
     auto rtn_trade = parseFrom(*trade_info);
     on_rtn_trade(&rtn_trade);
     raw_writer->write_frame(trade_info, sizeof(XTPTradeReport),
-                            source_id, MSG_TYPE_LF_RTN_TRADE_XTP, 1/*islast*/, -1/*invalidRid*/);
+                            source_id, MSG_TYPE_LF_RTN_TRADE_XTP, 1 /*islast*/, -1 /*invalidRid*/);
 }
 
-void TDEngineXTP::OnCancelOrderError(XTPOrderCancelInfo *cancel_info, XTPRI *error_info, uint64_t session_id)
+void TDEngineXTP::OnCancelOrderError(XTPOrderCancelInfo* cancel_info, XTPRI* error_info, uint64_t session_id)
 {
     OnError(error_info);
 }
 
-void TDEngineXTP::OnQueryPosition(XTPQueryStkPositionRsp *position, XTPRI *error_info, int request_id, bool is_last, uint64_t session_id)
+void TDEngineXTP::OnQueryPosition(XTPQueryStkPositionRsp* position, XTPRI* error_info, int request_id, bool is_last, uint64_t session_id)
 {
     if (error_info == nullptr || error_info->error_id == 0)
     {
@@ -311,11 +326,11 @@ void TDEngineXTP::OnQueryPosition(XTPQueryStkPositionRsp *position, XTPRI *error
 namespace py = pybind11;
 PYBIND11_MODULE(libxtptd, m)
 {
-    py::class_<TDEngineXTP, boost::shared_ptr<TDEngineXTP> >(m, "Engine")
-    .def(py::init<>())
-    .def("init", &TDEngineXTP::initialize)
-    .def("start", &TDEngineXTP::start)
-    .def("stop", &TDEngineXTP::stop)
-    .def("logout", &TDEngineXTP::logout)
-    .def("wait_for_stop", &TDEngineXTP::wait_for_stop);
+    py::class_<TDEngineXTP, boost::shared_ptr<TDEngineXTP>>(m, "Engine")
+        .def(py::init<>())
+        .def("init", &TDEngineXTP::initialize)
+        .def("start", &TDEngineXTP::start)
+        .def("stop", &TDEngineXTP::stop)
+        .def("logout", &TDEngineXTP::logout)
+        .def("wait_for_stop", &TDEngineXTP::wait_for_stop);
 }

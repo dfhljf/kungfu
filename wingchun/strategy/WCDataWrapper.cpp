@@ -30,8 +30,11 @@ USING_WC_NAMESPACE
 
 volatile int IWCDataProcessor::signal_received = -1;
 
-WCDataWrapper::WCDataWrapper(IWCDataProcessor *processor, WCStrategyUtil* util):
-    processor(processor), util(util), force_stop(false), auto_sub_mode_enabled(true)
+WCDataWrapper::WCDataWrapper(IWCDataProcessor* processor, WCStrategyUtil* util)
+    : processor(processor)
+    , util(util)
+    , force_stop(false)
+    , auto_sub_mode_enabled(true)
 {
     auto rids = util->getRequestIds();
     rid_start = rids.first;
@@ -40,10 +43,10 @@ WCDataWrapper::WCDataWrapper(IWCDataProcessor *processor, WCStrategyUtil* util):
     processor->on_time(cur_time);
 }
 
-#define ADD_JOURNAL(func, source) \
+#define ADD_JOURNAL(func, source)  \
     JournalPair jp = func(source); \
-    folders.push_back(jp.first); \
-    names.push_back(jp.second); \
+    folders.push_back(jp.first);   \
+    names.push_back(jp.second);
 
 void WCDataWrapper::add_market_data(short source)
 {
@@ -117,13 +120,13 @@ void WCDataWrapper::send_bar(short source, int min_interval)
 void WCDataWrapper::process_bar(const LFMarketDataField* data, short source, long rcv_time)
 {
     BarIntervalMaps& intervalMaps = bars[source];
-    for (auto &interval: intervalMaps)
+    for (auto& interval : intervalMaps)
     {
         BarMdMap& barMap = interval.second;
         string ticker = data->InstrumentID;
         auto iter = barMap.find(ticker);
         if (iter == barMap.end())
-        {   // this is the first bar data
+        { // this is the first bar data
             LFBarMarketDataField& bar = barMap[ticker];
             strncpy(bar.TradingDay, data->TradingDay, 9);
             strncpy(bar.InstrumentID, data->InstrumentID, 31);
@@ -158,7 +161,7 @@ void WCDataWrapper::pre_run()
     /** build up reader now */
     reader = kungfu::yijinjing::JournalReader::createReaderWithSys(folders, names, kungfu::yijinjing::getNanoTime(), processor->get_name());
     /** request td login */
-    for (auto& iter: tds)
+    for (auto& iter : tds)
     {
         short td_source = iter.first;
         util->td_connect(td_source);
@@ -189,10 +192,10 @@ void WCDataWrapper::run()
             int request_id = frame->getRequestId();
 
             if (msg_type < 100)
-            {   // system msgs
+            { // system msgs
                 if (msg_type == MSG_TYPE_SWITCH_TRADING_DAY)
                 {
-                    for (auto iter: internal_pos)
+                    for (auto iter : internal_pos)
                     {
                         if (iter.second.get() != nullptr)
                             iter.second->switch_day();
@@ -210,7 +213,7 @@ void WCDataWrapper::run()
             }
             else
             {
-                void *data = frame->getData();
+                void* data = frame->getData();
                 if (request_id == -1)
                 {
                     util->set_md_nano(cur_time);
@@ -218,7 +221,7 @@ void WCDataWrapper::run()
                     {
                         case MSG_TYPE_LF_MD:
                         {
-                            LFMarketDataField * md = (LFMarketDataField *) data;
+                            LFMarketDataField* md = (LFMarketDataField*)data;
                             last_prices[md->InstrumentID] = md->LastPrice;
                             process_bar(md, msg_source, cur_time);
                             processor->on_market_data(md, msg_source, cur_time);
@@ -226,22 +229,22 @@ void WCDataWrapper::run()
                         }
                         case MSG_TYPE_LF_L2_MD:
                         {
-                            processor->on_market_data_level2((LFL2MarketDataField *)data, msg_source, cur_time);
+                            processor->on_market_data_level2((LFL2MarketDataField*)data, msg_source, cur_time);
                             break;
                         }
                         case MSG_TYPE_LF_L2_INDEX:
                         {
-                            processor->on_l2_index((LFL2IndexField *)data, msg_source, cur_time);
+                            processor->on_l2_index((LFL2IndexField*)data, msg_source, cur_time);
                             break;
                         }
                         case MSG_TYPE_LF_L2_ORDER:
                         {
-                            processor->on_l2_order((LFL2OrderField *)data, msg_source, cur_time);
+                            processor->on_l2_order((LFL2OrderField*)data, msg_source, cur_time);
                             break;
                         }
                         case MSG_TYPE_LF_L2_TRADE:
                         {
-                            processor->on_l2_trade((LFL2TradeField *)data, msg_source, cur_time);
+                            processor->on_l2_trade((LFL2TradeField*)data, msg_source, cur_time);
                             break;
                         }
                     }
@@ -253,26 +256,26 @@ void WCDataWrapper::run()
                     {
                         case MSG_TYPE_LF_RSP_POS:
                         {
-                            process_rsp_position((LFRspPositionField *) data, frame->getLastFlag(), request_id, msg_source, cur_time);
+                            process_rsp_position((LFRspPositionField*)data, frame->getLastFlag(), request_id, msg_source, cur_time);
                             break;
                         }
                         case MSG_TYPE_LF_ORDER:
                         {
-                            processor->on_rsp_order((LFInputOrderField *) data, request_id, msg_source, cur_time,
+                            processor->on_rsp_order((LFInputOrderField*)data, request_id, msg_source, cur_time,
                                                     frame->getErrorId(), frame->getErrorMsg());
                             break;
                         }
                         case MSG_TYPE_LF_RTN_ORDER:
                         {
-                            LFRtnOrderField * rtn_order = (LFRtnOrderField *) data;
+                            LFRtnOrderField* rtn_order = (LFRtnOrderField*)data;
                             order_statuses[request_id] = rtn_order->OrderStatus;
                             processor->on_rtn_order(rtn_order, request_id, msg_source, cur_time);
                             break;
                         }
                         case MSG_TYPE_LF_RTN_TRADE:
                         {
-                            internal_pos[msg_source]->update((LFRtnTradeField *) data);
-                            processor->on_rtn_trade((LFRtnTradeField *) data, request_id, msg_source, cur_time);
+                            internal_pos[msg_source]->update((LFRtnTradeField*)data);
+                            processor->on_rtn_trade((LFRtnTradeField*)data, request_id, msg_source, cur_time);
                             break;
                         }
                     }
@@ -296,7 +299,6 @@ void WCDataWrapper::run()
     {
         processor->debug("[DataWrapper] forced to stop!");
     }
-
 }
 
 void WCDataWrapper::process_rsp_position(const LFRspPositionField* pos, bool is_last, int request_id, short source, long rcv_time)
@@ -428,7 +430,7 @@ double WCDataWrapper::get_ticker_pnl(short source, string ticker, bool include_f
 vector<int> WCDataWrapper::get_effective_orders() const
 {
     vector<int> res;
-    for (auto iter: order_statuses)
+    for (auto iter : order_statuses)
     {
         char status = iter.second;
         if (status != LF_CHAR_Error

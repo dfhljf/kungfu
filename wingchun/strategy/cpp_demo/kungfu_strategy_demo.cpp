@@ -27,7 +27,7 @@ struct Signal
     bool has_open_short_position;
 };
 
-class Strategy: public IWCStrategy
+class Strategy : public IWCStrategy
 {
 protected:
     bool td_connected;
@@ -36,18 +36,20 @@ protected:
     int md_num;
     int traded_volume;
     Signal signal;
+
 public:
     virtual void init();
     virtual void on_market_data(const LFMarketDataField* data, short source, long rcv_time);
     virtual void on_rsp_position(const PosHandlerPtr posMap, int request_id, short source, long rcv_time);
     virtual void on_rtn_trade(const LFRtnTradeField* data, int request_id, short source, long rcv_time);
-    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId=0, const char* errorMsg=nullptr);
+    virtual void on_rsp_order(const LFInputOrderField* data, int request_id, short source, long rcv_time, short errorId = 0, const char* errorMsg = nullptr);
 
 public:
     Strategy(const string& name);
 };
 
-Strategy::Strategy(const string& name): IWCStrategy(name)
+Strategy::Strategy(const string& name)
+    : IWCStrategy(name)
 {
     rid = -1;
 }
@@ -110,8 +112,8 @@ void Strategy::on_market_data(const LFMarketDataField* md, short source, long rc
         {
             int idx = signal.look_back - 1 - signal.param2 - i; // delay
             double curPrice = signal.TickPrice[idx];
-            rolling_max = (curPrice > rolling_max) ? curPrice: rolling_max;
-            rolling_min = (curPrice < rolling_min) ? curPrice: rolling_min;
+            rolling_max = (curPrice > rolling_max) ? curPrice : rolling_max;
+            rolling_min = (curPrice < rolling_min) ? curPrice : rolling_min;
         }
         bool long_entry_condition = rolling_max <= md->LastPrice;
         bool short_entry_condition = rolling_min >= md->LastPrice;
@@ -159,8 +161,9 @@ void Strategy::on_market_data(const LFMarketDataField* md, short source, long rc
 
 void Strategy::on_rtn_trade(const LFRtnTradeField* rtn_trade, int request_id, short source, long rcv_time)
 {
-    KF_LOG_DEBUG(logger, "[TRADE]" << " (t)" << rtn_trade->InstrumentID << " (p)" << rtn_trade->Price
-                                   << " (v)" << rtn_trade->Volume << " POS:" << data->get_pos(source)->to_string());
+    KF_LOG_DEBUG(logger, "[TRADE]"
+                         << " (t)" << rtn_trade->InstrumentID << " (p)" << rtn_trade->Price
+                         << " (v)" << rtn_trade->Volume << " POS:" << data->get_pos(source)->to_string());
     traded_volume += rtn_trade->Volume;
     if (rid == request_id)
     {

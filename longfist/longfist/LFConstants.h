@@ -27,27 +27,27 @@ const short SOURCE_XTP = 15;
 #define EXCHANGE_ID_CZCE 14 //郑州商品交易所
 
 // MsgTypes that used for LF data structure...
-const short MSG_TYPE_LF_MD            = 101;
-const short MSG_TYPE_LF_L2_MD         = 102;
-const short MSG_TYPE_LF_L2_INDEX      = 103;
-const short MSG_TYPE_LF_L2_ORDER      = 104;
-const short MSG_TYPE_LF_L2_TRADE      = 105;
-const short MSG_TYPE_LF_BAR_MD        = 110;
-const short MSG_TYPE_LF_QRY_POS       = 201;
-const short MSG_TYPE_LF_RSP_POS       = 202;
-const short MSG_TYPE_LF_ORDER         = 204;
-const short MSG_TYPE_LF_RTN_ORDER     = 205;
-const short MSG_TYPE_LF_RTN_TRADE     = 206;
-const short MSG_TYPE_LF_ORDER_ACTION  = 207;
-const short MSG_TYPE_LF_QRY_ACCOUNT   = 208;
-const short MSG_TYPE_LF_RSP_ACCOUNT   = 209;
+const short MSG_TYPE_LF_MD = 101;
+const short MSG_TYPE_LF_L2_MD = 102;
+const short MSG_TYPE_LF_L2_INDEX = 103;
+const short MSG_TYPE_LF_L2_ORDER = 104;
+const short MSG_TYPE_LF_L2_TRADE = 105;
+const short MSG_TYPE_LF_BAR_MD = 110;
+const short MSG_TYPE_LF_QRY_POS = 201;
+const short MSG_TYPE_LF_RSP_POS = 202;
+const short MSG_TYPE_LF_ORDER = 204;
+const short MSG_TYPE_LF_RTN_ORDER = 205;
+const short MSG_TYPE_LF_RTN_TRADE = 206;
+const short MSG_TYPE_LF_ORDER_ACTION = 207;
+const short MSG_TYPE_LF_QRY_ACCOUNT = 208;
+const short MSG_TYPE_LF_RSP_ACCOUNT = 209;
 
 // MsgTypes that from original data structures...
 // ctp, idx=1
-const short MSG_TYPE_LF_MD_CTP        = 1101; // CThostFtdcDepthMarketDataField from ctp/ThostFtdcUserApiStruct.h
-const short MSG_TYPE_LF_QRY_POS_CTP   = 1201; // CThostFtdcQryInvestorPositionField from ctp/ThostFtdcUserApiStruct.h
-const short MSG_TYPE_LF_RSP_POS_CTP   = 1202; // CThostFtdcInvestorPositionField from ctp/ThostFtdcUserApiStruct.h
-const short MSG_TYPE_LF_ORDER_CTP     = 1204; // CThostFtdcInputOrderField from ctp/ThostFtdcUserApiStruct.h
+const short MSG_TYPE_LF_MD_CTP = 1101; // CThostFtdcDepthMarketDataField from ctp/ThostFtdcUserApiStruct.h
+const short MSG_TYPE_LF_QRY_POS_CTP = 1201; // CThostFtdcQryInvestorPositionField from ctp/ThostFtdcUserApiStruct.h
+const short MSG_TYPE_LF_RSP_POS_CTP = 1202; // CThostFtdcInvestorPositionField from ctp/ThostFtdcUserApiStruct.h
+const short MSG_TYPE_LF_ORDER_CTP = 1204; // CThostFtdcInputOrderField from ctp/ThostFtdcUserApiStruct.h
 const short MSG_TYPE_LF_RTN_ORDER_CTP = 1205; // CThostFtdcOrderField from ctp/ThostFtdcUserApiStruct.h
 const short MSG_TYPE_LF_RTN_TRADE_CTP = 1206; // CThostFtdcTradeField from ctp/ThostFtdcUserApiStruct.h
 const short MSG_TYPE_LF_ORDER_ACTION_CTP = 1207; // CThostFtdcInputOrderActionField from ctp/ThostFtdcUserApiStruct.h
@@ -55,9 +55,9 @@ const short MSG_TYPE_LF_QRY_ACCOUNT_CTP = 1208; // CThostFtdcQryTradingAccountFi
 const short MSG_TYPE_LF_RSP_ACCOUNT_CTP = 1209; // CThostFtdcTradingAccountField from ctp/ThostFtdcUserApiStruct.h
 
 // xtp, idx=15
-const short MSG_TYPE_LF_MD_XTP        = 15101; // XTPMarketDataStruct from xtp/xquote_api_struct.h
-const short MSG_TYPE_LF_RSP_POS_XTP   = 15202; // XTPQueryStkPositionRsp from xtp/xoms_api_struct.h
-const short MSG_TYPE_LF_ORDER_XTP     = 15204; // XTPOrderInsertInfo from xtp/xoms_api_struct.h
+const short MSG_TYPE_LF_MD_XTP = 15101; // XTPMarketDataStruct from xtp/xquote_api_struct.h
+const short MSG_TYPE_LF_RSP_POS_XTP = 15202; // XTPQueryStkPositionRsp from xtp/xoms_api_struct.h
+const short MSG_TYPE_LF_ORDER_XTP = 15204; // XTPOrderInsertInfo from xtp/xoms_api_struct.h
 const short MSG_TYPE_LF_RTN_ORDER_XTP = 15205; // XTPOrderInfo from xtp/xoms_api_struct.h
 const short MSG_TYPE_LF_RTN_TRADE_XTP = 15206; // XTPTradeReport from xtp/xoms_api_struct.h
 
@@ -65,13 +65,13 @@ const short MSG_TYPE_LF_RTN_TRADE_XTP = 15206; // XTPTradeReport from xtp/xoms_a
 // LfActionFlagType: 报单操作标志
 ///////////////////////////////////
 //删除
-#define LF_CHAR_Delete          '0'
+#define LF_CHAR_Delete '0'
 //挂起
-#define LF_CHAR_Suspend         '1'
+#define LF_CHAR_Suspend '1'
 //激活
-#define LF_CHAR_Active          '2'
+#define LF_CHAR_Active '2'
 //修改
-#define LF_CHAR_Modify          '3'
+#define LF_CHAR_Modify '3'
 
 typedef char LfActionFlagType;
 
@@ -79,13 +79,13 @@ typedef char LfActionFlagType;
 // LfContingentConditionType: 触发条件
 ///////////////////////////////////
 //立即
-#define LF_CHAR_Immediately     '1'
+#define LF_CHAR_Immediately '1'
 //止损
-#define LF_CHAR_Touch           '2'
+#define LF_CHAR_Touch '2'
 //止赢
-#define LF_CHAR_TouchProfit     '3'
+#define LF_CHAR_TouchProfit '3'
 //预埋单
-#define LF_CHAR_ParkedOrder     '4'
+#define LF_CHAR_ParkedOrder '4'
 //最新价大于条件价
 #define LF_CHAR_LastPriceGreaterThanStopPrice '5'
 //最新价大于等于条件价
@@ -117,9 +117,9 @@ typedef char LfContingentConditionType;
 // LfDirectionType: 买卖方向
 ///////////////////////////////////
 //买
-#define LF_CHAR_Buy             '0'
+#define LF_CHAR_Buy '0'
 //卖
-#define LF_CHAR_Sell            '1'
+#define LF_CHAR_Sell '1'
 
 typedef char LfDirectionType;
 
@@ -127,21 +127,21 @@ typedef char LfDirectionType;
 // LfForceCloseReasonType: 强平原因
 ///////////////////////////////////
 //非强平
-#define LF_CHAR_NotForceClose   '0'
+#define LF_CHAR_NotForceClose '0'
 //资金不足
-#define LF_CHAR_LackDeposit     '1'
+#define LF_CHAR_LackDeposit '1'
 //客户超仓
 #define LF_CHAR_ClientOverPositionLimit '2'
 //会员超仓
 #define LF_CHAR_MemberOverPositionLimit '3'
 //持仓非整数倍
-#define LF_CHAR_NotMultiple     '4'
+#define LF_CHAR_NotMultiple '4'
 //违规
-#define LF_CHAR_Violation       '5'
+#define LF_CHAR_Violation '5'
 //其它
-#define LF_CHAR_Other           '6'
+#define LF_CHAR_Other '6'
 //自然人临近交割
-#define LF_CHAR_PersonDeliv     '7'
+#define LF_CHAR_PersonDeliv '7'
 
 typedef char LfForceCloseReasonType;
 
@@ -149,15 +149,15 @@ typedef char LfForceCloseReasonType;
 // LfHedgeFlagType: 投机套保标志
 ///////////////////////////////////
 //投机
-#define LF_CHAR_Speculation     '1'
+#define LF_CHAR_Speculation '1'
 //套利
-#define LF_CHAR_Argitrage       '2'
+#define LF_CHAR_Argitrage '2'
 //套保
-#define LF_CHAR_Hedge           '3'
+#define LF_CHAR_Hedge '3'
 //做市商(femas)
-#define LF_CHAR_MarketMaker     '4'
+#define LF_CHAR_MarketMaker '4'
 //匹配所有的值(femas)
-#define LF_CHAR_AllValue        '9'
+#define LF_CHAR_AllValue '9'
 
 typedef char LfHedgeFlagType;
 
@@ -165,21 +165,21 @@ typedef char LfHedgeFlagType;
 // LfOffsetFlagType: 开平标志
 ///////////////////////////////////
 //开仓
-#define LF_CHAR_Open            '0'
+#define LF_CHAR_Open '0'
 //平仓
-#define LF_CHAR_Close           '1'
+#define LF_CHAR_Close '1'
 //强平
-#define LF_CHAR_ForceClose      '2'
+#define LF_CHAR_ForceClose '2'
 //平今
-#define LF_CHAR_CloseToday      '3'
+#define LF_CHAR_CloseToday '3'
 //平昨
-#define LF_CHAR_CloseYesterday  '4'
+#define LF_CHAR_CloseYesterday '4'
 //强减
-#define LF_CHAR_ForceOff        '5'
+#define LF_CHAR_ForceOff '5'
 //本地强平
 #define LF_CHAR_LocalForceClose '6'
 //不分开平
-#define LF_CHAR_Non             'N'
+#define LF_CHAR_Non 'N'
 
 typedef char LfOffsetFlagType;
 
@@ -187,11 +187,11 @@ typedef char LfOffsetFlagType;
 // LfOrderPriceTypeType: 报单价格条件
 ///////////////////////////////////
 //任意价
-#define LF_CHAR_AnyPrice        '1'
+#define LF_CHAR_AnyPrice '1'
 //限价
-#define LF_CHAR_LimitPrice      '2'
+#define LF_CHAR_LimitPrice '2'
 //最优价
-#define LF_CHAR_BestPrice       '3'
+#define LF_CHAR_BestPrice '3'
 
 typedef char LfOrderPriceTypeType;
 
@@ -199,7 +199,7 @@ typedef char LfOrderPriceTypeType;
 // LfOrderStatusType: 报单状态
 ///////////////////////////////////
 //全部成交（最终状态）
-#define LF_CHAR_AllTraded       '0'
+#define LF_CHAR_AllTraded '0'
 //部分成交还在队列中
 #define LF_CHAR_PartTradedQueueing '1'
 //部分成交不在队列中（部成部撤， 最终状态）
@@ -209,21 +209,21 @@ typedef char LfOrderPriceTypeType;
 //未成交不在队列中（被拒绝，最终状态）
 #define LF_CHAR_NoTradeNotQueueing '4'
 //撤单
-#define LF_CHAR_Canceled        '5'
+#define LF_CHAR_Canceled '5'
 //订单已报入交易所未应答
 #define LF_CHAR_AcceptedNoReply '6'
 //未知
-#define LF_CHAR_Unknown         'a'
+#define LF_CHAR_Unknown 'a'
 //尚未触发
-#define LF_CHAR_NotTouched      'b'
+#define LF_CHAR_NotTouched 'b'
 //已触发
-#define LF_CHAR_Touched         'c'
+#define LF_CHAR_Touched 'c'
 //废单错误（最终状态）
-#define LF_CHAR_Error           'd'
+#define LF_CHAR_Error 'd'
 //订单已写入
-#define LF_CHAR_OrderInserted   'i'
+#define LF_CHAR_OrderInserted 'i'
 //前置已接受
-#define LF_CHAR_OrderAccepted   'j'
+#define LF_CHAR_OrderAccepted 'j'
 
 typedef char LfOrderStatusType;
 
@@ -231,11 +231,11 @@ typedef char LfOrderStatusType;
 // LfPosiDirectionType: 持仓多空方向
 ///////////////////////////////////
 //净
-#define LF_CHAR_Net             '1'
+#define LF_CHAR_Net '1'
 //多头
-#define LF_CHAR_Long            '2'
+#define LF_CHAR_Long '2'
 //空头
-#define LF_CHAR_Short           '3'
+#define LF_CHAR_Short '3'
 
 typedef char LfPosiDirectionType;
 
@@ -243,11 +243,11 @@ typedef char LfPosiDirectionType;
 // LfPositionDateType: 持仓日期
 ///////////////////////////////////
 //今日持仓
-#define LF_CHAR_Today           '1'
+#define LF_CHAR_Today '1'
 //历史持仓
-#define LF_CHAR_History         '2'
+#define LF_CHAR_History '2'
 //两种持仓
-#define LF_CHAR_Both            '3'
+#define LF_CHAR_Both '3'
 
 typedef char LfPositionDateType;
 
@@ -255,21 +255,21 @@ typedef char LfPositionDateType;
 // LfTimeConditionType: 有效期类型
 ///////////////////////////////////
 //立即完成，否则撤销
-#define LF_CHAR_IOC             '1'
+#define LF_CHAR_IOC '1'
 //本节有效
-#define LF_CHAR_GFS             '2'
+#define LF_CHAR_GFS '2'
 //当日有效
-#define LF_CHAR_GFD             '3'
+#define LF_CHAR_GFD '3'
 //指定日期前有效
-#define LF_CHAR_GTD             '4'
+#define LF_CHAR_GTD '4'
 //撤销前有效
-#define LF_CHAR_GTC             '5'
+#define LF_CHAR_GTC '5'
 //集合竞价有效
-#define LF_CHAR_GFA             '6'
+#define LF_CHAR_GFA '6'
 //FAK或IOC(yisheng)
-#define LF_CHAR_FAK             'A'
+#define LF_CHAR_FAK 'A'
 //FOK(yisheng)
-#define LF_CHAR_FOK             'O'
+#define LF_CHAR_FOK 'O'
 
 typedef char LfTimeConditionType;
 
@@ -277,11 +277,11 @@ typedef char LfTimeConditionType;
 // LfVolumeConditionType: 成交量类型
 ///////////////////////////////////
 //任何数量
-#define LF_CHAR_AV              '1'
+#define LF_CHAR_AV '1'
 //最小数量
-#define LF_CHAR_MV              '2'
+#define LF_CHAR_MV '2'
 //全部数量
-#define LF_CHAR_CV              '3'
+#define LF_CHAR_CV '3'
 
 typedef char LfVolumeConditionType;
 
@@ -289,13 +289,13 @@ typedef char LfVolumeConditionType;
 // LfYsHedgeFlagType: 易盛投机保值类型
 ///////////////////////////////////
 //保值
-#define LF_CHAR_YsB             'B'
+#define LF_CHAR_YsB 'B'
 //套利
-#define LF_CHAR_YsL             'L'
+#define LF_CHAR_YsL 'L'
 //无
-#define LF_CHAR_YsNon           'N'
+#define LF_CHAR_YsNon 'N'
 //投机
-#define LF_CHAR_YsT             'T'
+#define LF_CHAR_YsT 'T'
 
 typedef char LfYsHedgeFlagType;
 
@@ -303,39 +303,39 @@ typedef char LfYsHedgeFlagType;
 // LfYsOrderStateType: 易盛委托状态类型
 ///////////////////////////////////
 //终端提交
-#define LF_CHAR_YsSubmit        '0'
+#define LF_CHAR_YsSubmit '0'
 //已受理
-#define LF_CHAR_YsAccept        '1'
+#define LF_CHAR_YsAccept '1'
 //策略待触发
-#define LF_CHAR_YsTriggering    '2'
+#define LF_CHAR_YsTriggering '2'
 //交易所待触发
 #define LF_CHAR_YsExctriggering '3'
 //已排队
-#define LF_CHAR_YsQueued        '4'
+#define LF_CHAR_YsQueued '4'
 //部分成交
-#define LF_CHAR_YsPartFinished  '5'
+#define LF_CHAR_YsPartFinished '5'
 //完全成交
-#define LF_CHAR_YsFinished      '6'
+#define LF_CHAR_YsFinished '6'
 //待撤消(排队临时状态)
-#define LF_CHAR_YsCanceling     '7'
+#define LF_CHAR_YsCanceling '7'
 //待修改(排队临时状态)
-#define LF_CHAR_YsModifying     '8'
+#define LF_CHAR_YsModifying '8'
 //完全撤单
-#define LF_CHAR_YsCanceled      '9'
+#define LF_CHAR_YsCanceled '9'
 //已撤余单
-#define LF_CHAR_YsLeftDeleted   'A'
+#define LF_CHAR_YsLeftDeleted 'A'
 //指令失败
-#define LF_CHAR_YsFail          'B'
+#define LF_CHAR_YsFail 'B'
 //策略删除
-#define LF_CHAR_YsDeleted       'C'
+#define LF_CHAR_YsDeleted 'C'
 //已挂起
-#define LF_CHAR_YsSuppended     'D'
+#define LF_CHAR_YsSuppended 'D'
 //到期删除
 #define LF_CHAR_YsDeletedForExpire 'E'
 //已生效——询价成功
-#define LF_CHAR_YsEffect        'F'
+#define LF_CHAR_YsEffect 'F'
 //已申请——行权、弃权、套利等申请成功
-#define LF_CHAR_YsApply         'G'
+#define LF_CHAR_YsApply 'G'
 
 typedef char LfYsOrderStateType;
 
@@ -343,9 +343,9 @@ typedef char LfYsOrderStateType;
 // LfYsOrderTypeType: 易盛委托类型
 ///////////////////////////////////
 //市价
-#define LF_CHAR_YsMarket        '1'
+#define LF_CHAR_YsMarket '1'
 //限价
-#define LF_CHAR_YsLimit         '2'
+#define LF_CHAR_YsLimit '2'
 
 typedef char LfYsOrderTypeType;
 
@@ -353,13 +353,13 @@ typedef char LfYsOrderTypeType;
 // LfYsPositionEffectType: 易盛开平类型
 ///////////////////////////////////
 //平仓
-#define LF_CHAR_YsClose         'C'
+#define LF_CHAR_YsClose 'C'
 //不分开平
-#define LF_CHAR_YsNon           'N'
+#define LF_CHAR_YsNon 'N'
 //开仓
-#define LF_CHAR_YsOpen          'O'
+#define LF_CHAR_YsOpen 'O'
 //平当日
-#define LF_CHAR_YsCloseToday    'T'
+#define LF_CHAR_YsCloseToday 'T'
 
 typedef char LfYsPositionEffectType;
 
@@ -367,13 +367,13 @@ typedef char LfYsPositionEffectType;
 // LfYsSideTypeType: 易盛买卖类型
 ///////////////////////////////////
 //双边
-#define LF_CHAR_YsAll           'A'
+#define LF_CHAR_YsAll 'A'
 //买入
-#define LF_CHAR_YsBuy           'B'
+#define LF_CHAR_YsBuy 'B'
 //无
-#define LF_CHAR_YsNon           'N'
+#define LF_CHAR_YsNon 'N'
 //卖出
-#define LF_CHAR_YsSell          'S'
+#define LF_CHAR_YsSell 'S'
 
 typedef char LfYsSideTypeType;
 
@@ -381,15 +381,15 @@ typedef char LfYsSideTypeType;
 // LfYsTimeConditionType: 易盛委托有效类型
 ///////////////////////////////////
 //当日有效
-#define LF_CHAR_YsGFD           '0'
+#define LF_CHAR_YsGFD '0'
 //撤销前有效
-#define LF_CHAR_YsGTC           '1'
+#define LF_CHAR_YsGTC '1'
 //指定日期前有效
-#define LF_CHAR_YsGTD           '2'
+#define LF_CHAR_YsGTD '2'
 //FAK或IOC
-#define LF_CHAR_YsFAK           '3'
+#define LF_CHAR_YsFAK '3'
 //FOK
-#define LF_CHAR_YsFOK           '4'
+#define LF_CHAR_YsFOK '4'
 
 typedef char LfYsTimeConditionType;
 
